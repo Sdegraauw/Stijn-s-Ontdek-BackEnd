@@ -5,11 +5,9 @@ import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
 import Ontdekstation013.ClimateChecker.services.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -23,14 +21,14 @@ public class StationController {
     public StationController(StationService stationService){
         this.stationService = stationService;
     }
-    // get station based on ID
+    // get station based on id
     @GetMapping("{stationId}")
     public ResponseEntity<stationDto> getStationById(@PathVariable Long stationId) {
         stationDto dto = stationService.findStationById(stationId);
         return ResponseEntity.ok(dto);
     }
 
-    // get stations by user ID
+    // get stations by user id
     @GetMapping("user/{userId}")
     public ResponseEntity<List<stationTitleDto>> getStationsByUserId(@PathVariable Long userId) {
 
@@ -40,26 +38,41 @@ public class StationController {
 
     // get all by page number
     @GetMapping("page/{pageNumber}")
-    public ResponseEntity<List<stationDto>> getAllStations(Long pageId){
+    public ResponseEntity<List<stationTitleDto>> getAllStationsByPage(@PathVariable Long pageId){
 
-        List<stationDto> newDtoList = stationService.getAllByPageId(pageId);
+        List<stationTitleDto> newDtoList = stationService.getAllByPageId(pageId);
         return ResponseEntity.ok(newDtoList);
     }
 
     // get all stations
     @GetMapping
-    public ResponseEntity<List<stationDto>> getAllStations() {
+    public ResponseEntity<List<stationTitleDto>> getAllStations() {
 
-        List<stationDto> newDtoList = stationService.getAll();
+        List<stationTitleDto> newDtoList = stationService.getAll();
         return ResponseEntity.ok(newDtoList);
     }
 
     // create new station
+    @PostMapping
+    public ResponseEntity<stationDto> createStation(@RequestBody stationDto stationDto){
 
+        stationService.createStation(stationDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+    }
 
     // delete station
+    @DeleteMapping("{stationId}")
+    public ResponseEntity<stationDto> deleteStation(@PathVariable stationDto stationDto){
 
+        stationService.deleteStation(stationDto.getId());
+        return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(null);
+    }
 
     // edit station
+    @PutMapping
+    public ResponseEntity<stationDto> editStation(@RequestBody stationDto stationDto){
 
+        stationService.editStation(stationDto);
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
 }
