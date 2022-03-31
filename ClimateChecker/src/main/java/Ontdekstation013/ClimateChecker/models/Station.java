@@ -35,4 +35,15 @@ public class Station {
     private float height;
 
     private String Name;
+
+
+
+    public Station(Long id, List<Sensor> sensors, User owner, Location location, float height, String name) {
+        this.StationID = id;
+        this.sensors = sensors;
+        this.owner = owner;
+        this.location = location;
+        this.height = height;
+        this.Name = name;
+    }
 }

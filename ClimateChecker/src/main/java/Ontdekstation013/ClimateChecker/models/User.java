@@ -39,4 +39,30 @@ public class User {
     private byte passwordSalt;
 
     private byte Admin;
+
+
+
+    public User(Long id, List<Station> stations, String userName, String mailAddress, byte passwordHash, byte passwordSalt, byte Admin) {
+        this.UserID = id;
+        this.stations = stations;
+        this.userName = userName;
+        this.mailAddress = mailAddress;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
+        this.Admin = Admin;
+    }
+
+    public User(String userName, String mailAddress, byte passwordHash, byte passwordSalt) {
+        this.userName = userName;
+        this.mailAddress = mailAddress;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
+    }
+
+    public User(String mailAddress, byte passwordHash, byte passwordSalt) {
+        this.mailAddress = mailAddress;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
+    }
+
 }

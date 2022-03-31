@@ -24,4 +24,13 @@ public class Sensor {
     @ManyToOne
     @JoinColumn(name = "sensorTypeID")
     private SensorType sensorType;
+
+
+
+    public Sensor(Long id, Station station, int sensorData, SensorType sensorType){
+        this.SensorID = id;
+        this.station = station;
+        this.sensorData = sensorData;
+        this.sensorType = sensorType;
+    }
 }
