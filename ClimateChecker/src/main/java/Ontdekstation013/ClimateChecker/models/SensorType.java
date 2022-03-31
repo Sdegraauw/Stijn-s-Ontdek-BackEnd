@@ -26,4 +26,12 @@ public class SensorType {
             orphanRemoval = true,
             cascade = CascadeType.ALL)
     private List<Sensor> sensors = new LinkedList<>();
+
+
+
+    public SensorType(Long id, String typeName, List<Sensor> sensors){
+        this.TypeID = id;
+        this.TypeName = typeName;
+        this.sensors = sensors;
+    }
 }
