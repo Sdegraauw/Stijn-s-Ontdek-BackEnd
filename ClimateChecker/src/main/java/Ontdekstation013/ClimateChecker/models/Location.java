@@ -28,4 +28,21 @@ public class Location {
 
     @OneToOne(mappedBy = "location")
     private Station station;
+
+
+
+    public Location(Long id, String locationName, float latitude, float longitude, Station station) {
+        this.LocationID = id;
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.station = station;
+    }
+
+    public Location(Long id, String locationName, float latitude, float longitude){
+        this.LocationID = id;
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
