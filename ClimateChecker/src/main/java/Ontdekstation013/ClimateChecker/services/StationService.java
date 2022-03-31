@@ -51,18 +51,37 @@ public class StationService {
     }
 
     // not yet functional
-    public List<stationDto> getAll() {
-        List<stationDto> newDtoList = new ArrayList<stationDto>();
+    public List<stationTitleDto> getAll() {
+        List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
 
 
         return newDtoList;
     }
 
     // not yet functional
-    public List<stationDto> getAllByPageId(Long pageId) {
-        List<stationDto> newDtoList = new ArrayList<stationDto>();
+    public List<stationTitleDto> getAllByPageId(Long pageId) {
+        List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
 
 
         return newDtoList;
+    }
+
+    // not yet functional
+    public void createStation(stationDto stationDto) {
+
+
+
+    }
+
+    // not yet functional
+    public void deleteStation(Long id) {
+
+
+    }
+
+    // not yet functional
+    public void editStation(stationDto stationDto) {
+
+
     }
 }
