@@ -21,6 +21,7 @@ public class StationController {
     public StationController(StationService stationService){
         this.stationService = stationService;
     }
+
     // get station based on id
     @GetMapping("{stationId}")
     public ResponseEntity<stationDto> getStationById(@PathVariable Long stationId) {
@@ -62,9 +63,9 @@ public class StationController {
 
     // delete station
     @DeleteMapping("{stationId}")
-    public ResponseEntity<stationDto> deleteStation(@PathVariable stationDto stationDto){
+    public ResponseEntity<stationDto> deleteStation(@PathVariable Long stationId){
 
-        stationService.deleteStation(stationDto.getId());
+        stationService.deleteStation(stationId);
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(null);
     }
 

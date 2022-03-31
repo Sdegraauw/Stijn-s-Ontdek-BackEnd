@@ -26,11 +26,13 @@ public class UserService {
         return newdto;
     }
 
-    // not yet done
-    // convert all data
     private userDto UserToUserDTO (User user){
         userDto newdto = new userDto();
         newdto.setId(user.getUserID());
+        newdto.setMailAddress(user.getMailAddress());
+        newdto.setUsername(user.getUserName());
+        newdto.setPasswordHash(user.getPasswordHash());
+        newdto.setPasswordSalt(user.getPasswordSalt());
         return newdto;
     }
 
@@ -49,7 +51,7 @@ public class UserService {
     }
 
 
-    public void deleteUser(Long id) {
+    public void deleteUser(Long Id) {
 
 
     }

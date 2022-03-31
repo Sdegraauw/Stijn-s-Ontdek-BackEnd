@@ -34,9 +34,9 @@ public class User {
     @Email
     private String mailAddress;
 
-    private byte passwordHash;
+    private String passwordHash;
 
-    private byte passwordSalt;
+    private String passwordSalt;
 
     private byte Admin;
 

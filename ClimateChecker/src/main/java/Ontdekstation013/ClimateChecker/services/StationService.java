@@ -43,7 +43,7 @@ public class StationService {
 
 
     // not yet functional
-    public List<stationTitleDto> getAllByUserId(Long id) {
+    public List<stationTitleDto> getAllByUserId(Long userId) {
         List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
 
 
