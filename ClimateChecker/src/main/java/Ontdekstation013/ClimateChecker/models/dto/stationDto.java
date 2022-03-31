@@ -9,12 +9,13 @@ import java.util.List;
 @Setter
 public class stationDto extends Dto{
 
-    int id;
+    Long id;
     String name;
     float height;
-    int locationId;
+    Long locationId;
     String locationName;
     float latitude;
     float longitude;
     List<sensorDto> sensors;
 }
+

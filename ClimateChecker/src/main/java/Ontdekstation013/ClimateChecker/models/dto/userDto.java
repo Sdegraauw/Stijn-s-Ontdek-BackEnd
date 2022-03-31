@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class userDto extends Dto{
 
-    int id;
+    Long id;
     String username;
     String mailAddress;
     String passwordHash;
