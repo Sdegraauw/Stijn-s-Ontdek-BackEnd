@@ -21,5 +21,7 @@ public class Sensor {
 
     private int sensorData;
 
-    private String sensorType;
+    @ManyToOne
+    @JoinColumn(name = "sensorTypeID")
+    private SensorType sensorType;
 }

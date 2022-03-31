@@ -12,27 +12,18 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-public class Station {
+
+public class SensorType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long StationID;
+    private Long TypeID;
+    private String TypeName;
 
     @OneToMany(
-            mappedBy = "station",
+            mappedBy = "sensorType",
             fetch = FetchType.LAZY,
             orphanRemoval = true,
             cascade = CascadeType.ALL)
     private List<Sensor> sensors = new LinkedList<>();
-
-    @ManyToOne
-    @JoinColumn(name = "userID")
-    private User owner;
-
-    @OneToOne(cascade = CascadeType.ALL)
-    private Location location;
-
-    private float height;
-
-    private String Name;
 }

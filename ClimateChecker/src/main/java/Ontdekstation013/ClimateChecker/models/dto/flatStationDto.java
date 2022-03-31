@@ -7,6 +7,6 @@ import lombok.Setter;
 @Setter
 public class flatStationDto extends Dto{
 
-    int id;
+    Long id;
     String name;
 }
