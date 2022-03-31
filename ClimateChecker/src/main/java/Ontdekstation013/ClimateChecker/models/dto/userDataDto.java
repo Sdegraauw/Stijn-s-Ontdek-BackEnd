@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class flatUserDto extends Dto{
+public class userDataDto extends Dto{
 
     Long id;
     String username;

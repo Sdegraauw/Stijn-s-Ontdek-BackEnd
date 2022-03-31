@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class flatStationDto extends Dto{
+public class stationTitleDto extends Dto{
 
     Long id;
     String name;
