@@ -34,15 +34,15 @@ public class User {
     @Email
     private String mailAddress;
 
-    private String passwordHash;
+    private Byte passwordHash;
 
-    private String passwordSalt;
+    private Byte passwordSalt;
 
     private byte Admin;
 
 
 
-    public User(Long id, List<Station> stations, String userName, String mailAddress, byte passwordHash, byte passwordSalt, byte Admin) {
+    public User(Long id, List<Station> stations, String userName, String mailAddress, Byte passwordHash, Byte passwordSalt, byte Admin) {
         this.UserID = id;
         this.stations = stations;
         this.userName = userName;
@@ -52,14 +52,14 @@ public class User {
         this.Admin = Admin;
     }
 
-    public User(String userName, String mailAddress, byte passwordHash, byte passwordSalt) {
+    public User(String userName, String mailAddress, Byte passwordHash, Byte passwordSalt) {
         this.userName = userName;
         this.mailAddress = mailAddress;
-        this.passwordHash = passwordHash;
+        this.passwordHash =passwordHash;
         this.passwordSalt = passwordSalt;
     }
 
-    public User(String mailAddress, byte passwordHash, byte passwordSalt) {
+    public User(String mailAddress, Byte passwordHash, Byte passwordSalt) {
         this.mailAddress = mailAddress;
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
