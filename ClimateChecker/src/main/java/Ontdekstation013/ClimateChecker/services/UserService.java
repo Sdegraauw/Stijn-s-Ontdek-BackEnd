@@ -1,8 +1,7 @@
 package Ontdekstation013.ClimateChecker.services;
 
 import Ontdekstation013.ClimateChecker.models.User;
-import Ontdekstation013.ClimateChecker.models.dto.userDataDto;
-import Ontdekstation013.ClimateChecker.models.dto.userDto;
+import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -52,6 +51,22 @@ public class UserService {
 
 
     public void deleteUser(Long Id) {
+
+
+    }
+
+    public void createNewUser(registerDto registerDto) {
+
+
+
+    }
+
+    public void loginUser(loginDto loginDto) {
+
+
+    }
+
+    public void editUser(registerDto registerDto) {
 
 
     }

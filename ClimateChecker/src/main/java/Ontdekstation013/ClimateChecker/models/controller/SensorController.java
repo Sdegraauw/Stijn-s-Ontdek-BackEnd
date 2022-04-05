@@ -65,7 +65,7 @@ public class SensorController {
 
 
     // create new sensor type
-    @PostMapping
+    @PostMapping("newType")
     public ResponseEntity<sensorTypeDto> createSensorType(@RequestBody sensorTypeDto sensorTypeDto){
 
         sensorService.createSensorType(sensorTypeDto);
