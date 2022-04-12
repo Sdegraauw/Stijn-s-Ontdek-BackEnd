@@ -20,14 +20,14 @@ public class SensorService {
         this.sensorRepository = sensorRepository;
     }
 
-    public sensorDto findSensorById(Long id) {
+    public sensorDto findSensorById(long id) {
         Sensor sensor = sensorRepository.findById(id).get();
-        sensorDto newdto = SensorToSensorDTO(sensor);
+        sensorDto newdto = sensorToSensorDTO(sensor);
 
         return newdto;
     }
 
-    private sensorDto SensorToSensorDTO(Sensor sensor){
+    public sensorDto sensorToSensorDTO(Sensor sensor){
         sensorDto newdto = new sensorDto();
         newdto.setId(sensor.getSensorID());
         newdto.setStationId(sensor.getStation().getStationID());
@@ -53,14 +53,14 @@ public class SensorService {
     }
 
     // not yet functional
-    public List<sensorDto> getSensorsByType(Long typeId) {
+    public List<sensorDto> getSensorsByType(long typeId) {
         List<sensorDto> newDtoList = new ArrayList<sensorDto>();
 
         return newDtoList;
     }
 
     // not yet functional
-    public List<sensorDto> getSensorsByStation(Long stationId) {
+    public List<sensorDto> getSensorsByStation(long stationId) {
         List<sensorDto> newDtoList = new ArrayList<sensorDto>();
 
         return newDtoList;
@@ -75,6 +75,6 @@ public class SensorService {
     
     }
 
-    public void deleteSensor(Long sensorId) {
+    public void deleteSensor(long sensorId) {
     }
 }

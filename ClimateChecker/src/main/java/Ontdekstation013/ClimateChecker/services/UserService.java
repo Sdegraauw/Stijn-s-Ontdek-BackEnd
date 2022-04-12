@@ -19,7 +19,7 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public userDto findUserById(Long id) {
+    public userDto findUserById(long id) {
         User user = userRepository.findById(id).get();
         userDto newdto = UserToUserDTO(user);
         return newdto;
@@ -43,14 +43,14 @@ public class UserService {
     }
 
     // not yet functional
-    public List<userDataDto> getAllByPageId(Long pageId) {
+    public List<userDataDto> getAllByPageId(long pageId) {
         List<userDataDto> newDtoList = new ArrayList<userDataDto>();
 
         return newDtoList;
     }
 
 
-    public void deleteUser(Long Id) {
+    public void deleteUser(long Id) {
 
 
     }

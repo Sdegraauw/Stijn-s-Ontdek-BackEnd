@@ -24,14 +24,14 @@ public class StationController {
 
     // get station based on id
     @GetMapping("{stationId}")
-    public ResponseEntity<stationDto> getStationById(@PathVariable Long stationId) {
+    public ResponseEntity<stationDto> getStationById(@PathVariable long stationId) {
         stationDto dto = stationService.findStationById(stationId);
         return ResponseEntity.ok(dto);
     }
 
     // get stations by user id
     @GetMapping("user/{userId}")
-    public ResponseEntity<List<stationTitleDto>> getStationsByUserId(@PathVariable Long userId) {
+    public ResponseEntity<List<stationTitleDto>> getStationsByUserId(@PathVariable long userId) {
 
         List<stationTitleDto> newDtoList = stationService.getAllByUserId(userId);
         return ResponseEntity.ok(newDtoList);
@@ -39,7 +39,7 @@ public class StationController {
 
     // get all by page number
     @GetMapping("page/{pageNumber}")
-    public ResponseEntity<List<stationTitleDto>> getAllStationsByPage(@PathVariable Long pageId){
+    public ResponseEntity<List<stationTitleDto>> getAllStationsByPage(@PathVariable long pageId){
 
         List<stationTitleDto> newDtoList = stationService.getAllByPageId(pageId);
         return ResponseEntity.ok(newDtoList);
@@ -63,7 +63,7 @@ public class StationController {
 
     // delete station
     @DeleteMapping("{stationId}")
-    public ResponseEntity<stationDto> deleteStation(@PathVariable Long stationId){
+    public ResponseEntity<stationDto> deleteStation(@PathVariable long stationId){
 
         stationService.deleteStation(stationId);
         return ResponseEntity.status(HttpStatus.I_AM_A_TEAPOT).body(null);

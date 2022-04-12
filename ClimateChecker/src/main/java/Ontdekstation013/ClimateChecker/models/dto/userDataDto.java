@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class userDataDto extends Dto{
 
-    Long id;
+    long id;
     String username;
     String mailAddress;
     boolean admin;

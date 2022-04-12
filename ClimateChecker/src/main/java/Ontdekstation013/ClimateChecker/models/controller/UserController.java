@@ -24,7 +24,7 @@ public class UserController {
 
     // get user by id
     @GetMapping("{userId}")
-    public ResponseEntity<userDto> getUserById(@PathVariable Long userId){
+    public ResponseEntity<userDto> getUserById(@PathVariable long userId){
         userDto dto = userService.findUserById(userId);
         return ResponseEntity.ok(dto);
 
@@ -40,7 +40,7 @@ public class UserController {
 
     // get users by page number
     @GetMapping("page/{pageNumber}")
-    public ResponseEntity<List<userDataDto>> getAllUsersByPage(@PathVariable Long pageId){
+    public ResponseEntity<List<userDataDto>> getAllUsersByPage(@PathVariable long pageId){
 
         List<userDataDto> newDtoList = userService.getAllByPageId(pageId);
         return ResponseEntity.ok(newDtoList);
@@ -48,7 +48,7 @@ public class UserController {
 
     // delete user
     @DeleteMapping("{userId}")
-    public ResponseEntity<userDto> deleteUser(@PathVariable Long userId){
+    public ResponseEntity<userDto> deleteUser(@PathVariable long userId){
 
         userService.deleteUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(null);

@@ -20,7 +20,7 @@ public class SensorController {
 
     // get sensor based on id
     @GetMapping("{sensorId}")
-    public ResponseEntity<sensorDto> getSensorById(@PathVariable Long sensorId) {
+    public ResponseEntity<sensorDto> getSensorById(@PathVariable long sensorId) {
         sensorDto dto = sensorService.findSensorById(sensorId);
         return ResponseEntity.ok(dto);
     }
@@ -43,14 +43,14 @@ public class SensorController {
 
     // get all sensors by type
     @GetMapping("type/{typeId}")
-    public ResponseEntity<List<sensorDto>> getSensorsByType(@PathVariable Long typeId) {
+    public ResponseEntity<List<sensorDto>> getSensorsByType(@PathVariable long typeId) {
         List<sensorDto> dto = sensorService.getSensorsByType(typeId);
         return ResponseEntity.ok(dto);
     }
 
     // get all sensors by station
     @GetMapping("station/{stationId}")
-    public ResponseEntity<List<sensorDto>> getSensorsByStation(@PathVariable Long stationId) {
+    public ResponseEntity<List<sensorDto>> getSensorsByStation(@PathVariable long stationId) {
         List<sensorDto> dto = sensorService.getSensorsByStation(stationId);
         return ResponseEntity.ok(dto);
     }
@@ -75,7 +75,7 @@ public class SensorController {
 
     // delete sensor
     @DeleteMapping("{sensorId}")
-    public ResponseEntity<sensorDto> deleteSensor(@PathVariable Long sensorId){
+    public ResponseEntity<sensorDto> deleteSensor(@PathVariable long sensorId){
 
         sensorService.deleteSensor(sensorId);
         return ResponseEntity.status(HttpStatus.OK).body(null);

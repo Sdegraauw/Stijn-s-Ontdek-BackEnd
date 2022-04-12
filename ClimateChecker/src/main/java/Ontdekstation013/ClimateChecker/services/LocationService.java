@@ -15,7 +15,7 @@ public class LocationService {
         this.locationRepository = locationRepository;
     }
 
-    public Location findLocationById(Long id) {
+    public Location findLocationById(long id) {
         Location location = locationRepository.findById(id).get();
         return location;
     }

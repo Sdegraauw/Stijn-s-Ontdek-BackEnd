@@ -16,7 +16,7 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long LocationID;
+    private long LocationID;
 
     private String locationName;
 
@@ -31,7 +31,7 @@ public class Location {
 
 
 
-    public Location(Long id, String locationName, float latitude, float longitude, Station station) {
+    public Location(long id, String locationName, float latitude, float longitude, Station station) {
         this.LocationID = id;
         this.locationName = locationName;
         this.latitude = latitude;
@@ -39,7 +39,7 @@ public class Location {
         this.station = station;
     }
 
-    public Location(Long id, String locationName, float latitude, float longitude){
+    public Location(long id, String locationName, float latitude, float longitude){
         this.LocationID = id;
         this.locationName = locationName;
         this.latitude = latitude;

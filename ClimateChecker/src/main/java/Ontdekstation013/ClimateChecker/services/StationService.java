@@ -20,7 +20,7 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public stationDto findStationById(Long id) {
+    public stationDto findStationById(long id) {
         Station station = stationRepository.findById(id).get();
         stationDto newdto = StationToStationDTO(station);
         return newdto;
@@ -43,7 +43,7 @@ public class StationService {
 
 
     // not yet functional
-    public List<stationTitleDto> getAllByUserId(Long userId) {
+    public List<stationTitleDto> getAllByUserId(long userId) {
         List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
 
 
@@ -59,7 +59,7 @@ public class StationService {
     }
 
     // not yet functional
-    public List<stationTitleDto> getAllByPageId(Long pageId) {
+    public List<stationTitleDto> getAllByPageId(long pageId) {
         List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
 
 
@@ -74,7 +74,7 @@ public class StationService {
     }
 
     // not yet functional
-    public void deleteStation(Long id) {
+    public void deleteStation(long id) {
 
 
     }

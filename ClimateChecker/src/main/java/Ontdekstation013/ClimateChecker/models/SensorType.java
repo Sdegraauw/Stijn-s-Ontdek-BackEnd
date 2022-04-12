@@ -17,7 +17,7 @@ public class SensorType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long TypeID;
+    private long TypeID;
     private String TypeName;
 
     @OneToMany(
@@ -29,7 +29,7 @@ public class SensorType {
 
 
 
-    public SensorType(Long id, String typeName, List<Sensor> sensors){
+    public SensorType(long id, String typeName, List<Sensor> sensors){
         this.TypeID = id;
         this.TypeName = typeName;
         this.sensors = sensors;
