@@ -54,11 +54,12 @@ public class StationController {
     }
 
     // create new station
-    @PostMapping
-    public ResponseEntity<stationDto> createStation(@RequestBody stationDto stationDto){
+    @PostMapping (consumes = {"application/xml","application/json"})
+    public ResponseEntity<registerstationDto> createStation(@RequestBody registerstationDto registerstationDto){
 
-        stationService.createStation(stationDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        stationService.createStation(registerstationDto);
+        //return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        return ResponseEntity.status(HttpStatus.CREATED).body(registerstationDto);
     }
 
     // delete station

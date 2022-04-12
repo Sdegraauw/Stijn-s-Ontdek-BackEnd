@@ -4,6 +4,8 @@ import Ontdekstation013.ClimateChecker.models.Station;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Ontdekstation013.ClimateChecker.models.dto.registerstationDto;
 import Ontdekstation013.ClimateChecker.models.dto.stationDto;
 import Ontdekstation013.ClimateChecker.models.dto.stationTitleDto;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
@@ -67,7 +69,7 @@ public class StationService {
     }
 
     // not yet functional
-    public void createStation(stationDto stationDto) {
+    public void createStation(registerstationDto stationDto) {
 
 
 

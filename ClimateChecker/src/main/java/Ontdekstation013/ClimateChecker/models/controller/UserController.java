@@ -46,6 +46,7 @@ public class UserController {
         return ResponseEntity.ok(newDtoList);
     }
 
+
     // delete user
     @DeleteMapping("{userId}")
     public ResponseEntity<userDto> deleteUser(@PathVariable Long userId){
