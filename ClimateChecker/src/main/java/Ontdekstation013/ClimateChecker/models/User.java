@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long UserID;
+    private long UserID;
 
     @OneToMany(
             mappedBy = "owner",

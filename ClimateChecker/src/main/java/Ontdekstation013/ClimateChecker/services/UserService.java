@@ -21,11 +21,11 @@ public class UserService {
 
     public userDto findUserById(long id) {
         User user = userRepository.findById(id).get();
-        userDto newdto = UserToUserDTO(user);
+        userDto newdto = userToUserDto(user);
         return newdto;
     }
 
-    private userDto UserToUserDTO (User user){
+    public userDto userToUserDto (User user){
         userDto newdto = new userDto();
         newdto.setId(user.getUserID());
         newdto.setMailAddress(user.getMailAddress());
@@ -66,7 +66,7 @@ public class UserService {
 
     }
 
-    public void editUser(registerDto registerDto) {
+    public void editUser(editUserDto registerDto) {
 
 
     }

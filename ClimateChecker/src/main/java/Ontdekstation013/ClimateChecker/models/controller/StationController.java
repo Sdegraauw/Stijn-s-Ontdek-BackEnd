@@ -71,7 +71,7 @@ public class StationController {
 
     // edit station
     @PutMapping
-    public ResponseEntity<stationDto> editStation(@RequestBody registerStationDto stationDto){
+    public ResponseEntity<stationDto> editStation(@RequestBody editStationDto stationDto){
 
         stationService.editStation(stationDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);

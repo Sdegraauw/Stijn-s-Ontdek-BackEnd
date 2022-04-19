@@ -2,10 +2,7 @@ package Ontdekstation013.ClimateChecker;
 
 import Ontdekstation013.ClimateChecker.Mocks.MockStationRepo;
 import Ontdekstation013.ClimateChecker.models.*;
-import Ontdekstation013.ClimateChecker.models.dto.registerStationDto;
-import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
-import Ontdekstation013.ClimateChecker.models.dto.stationDto;
-import Ontdekstation013.ClimateChecker.models.dto.stationTitleDto;
+import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.services.StationService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -234,23 +231,25 @@ class StationServiceTests {
 		dto.setAddress("Yes");
 		stationService.createStation(dto);
 
-		dto.setUserId(1);
-		dto.setName("TestName1");
-		dto.setHeight(876);
-		dto.setLatitude(9843);
-		dto.setLongitude(8745);
-		dto.setAddress("No");
+		editStationDto dto2 = new editStationDto();
 
-		stationService.editStation(dto);
+		dto2.setId(1);
+		dto2.setName("TestNameNEW");
+		dto2.setHeight(876);
+		dto2.setLatitude(9843);
+		dto2.setLongitude(8745);
+		dto2.setAddress("NEW");
+
+		stationService.editStation(dto2);
 
 		stationDto newDto = stationService.findStationById(1);
 
 
-		Assertions.assertEquals(1,newDto.getId());
-		Assertions.assertEquals(dto.getName(),newDto.getName());
-		Assertions.assertEquals(dto.getLatitude(),newDto.getLatitude());
-		Assertions.assertEquals(dto.getLongitude(),newDto.getLongitude());
-		Assertions.assertEquals(dto.getHeight(),newDto.getHeight());
+		Assertions.assertEquals(dto2.getId(),newDto.getId());
+		Assertions.assertEquals(dto2.getName(),newDto.getName());
+		Assertions.assertEquals(dto2.getLatitude(),newDto.getLatitude());
+		Assertions.assertEquals(dto2.getLongitude(),newDto.getLongitude());
+		Assertions.assertEquals(dto2.getHeight(),newDto.getHeight());
 	}
 
 }
