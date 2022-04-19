@@ -169,6 +169,8 @@ class StationServiceTests {
 		Assertions.assertEquals(dto.getName(),newDtoList.get(0).getName());
 	}
 
+	// No functionality in StationService
+
 
 	@Test
 	void createStationTest() {
@@ -192,6 +194,8 @@ class StationServiceTests {
 		Assertions.assertEquals(dto.getHeight(),newDto.getHeight());
 	}
 
+	// No functionality in StationService
+
 	@Test
 	void deleteStationTest() {
 		registerStationDto dto = new registerStationDto();
@@ -214,6 +218,8 @@ class StationServiceTests {
 			Assertions.assertTrue(true);
 		}
 	}
+
+	// No functionality in StationService
 
 
 	@Test
