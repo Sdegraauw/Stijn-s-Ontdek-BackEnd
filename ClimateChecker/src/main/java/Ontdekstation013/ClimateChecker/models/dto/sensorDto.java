@@ -10,6 +10,6 @@ public class sensorDto extends Dto{
     long id;
     long stationId;
     long typeId;
-    int data;
+    float data;
 
 }

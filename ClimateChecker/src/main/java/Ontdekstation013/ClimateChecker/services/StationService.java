@@ -4,6 +4,8 @@ import Ontdekstation013.ClimateChecker.models.Station;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import Ontdekstation013.ClimateChecker.models.dto.registerStationDto;
 import Ontdekstation013.ClimateChecker.models.dto.stationDto;
 import Ontdekstation013.ClimateChecker.models.dto.stationTitleDto;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
@@ -22,11 +24,11 @@ public class StationService {
 
     public stationDto findStationById(long id) {
         Station station = stationRepository.findById(id).get();
-        stationDto newdto = StationToStationDTO(station);
+        stationDto newdto = stationToStationDTO(station);
         return newdto;
     }
 
-    private stationDto StationToStationDTO (Station station){
+    public stationDto stationToStationDTO (Station station){
         stationDto newdto = new stationDto();
         newdto.setId(station.getStationID());
         newdto.setName(station.getName());
@@ -54,7 +56,6 @@ public class StationService {
     public List<stationTitleDto> getAll() {
         List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
 
-
         return newDtoList;
     }
 
@@ -67,7 +68,7 @@ public class StationService {
     }
 
     // not yet functional
-    public void createStation(stationDto stationDto) {
+    public void createStation(registerStationDto stationDto) {
 
 
 
@@ -80,7 +81,7 @@ public class StationService {
     }
 
     // not yet functional
-    public void editStation(stationDto stationDto) {
+    public void editStation(registerStationDto stationDto) {
 
 
     }

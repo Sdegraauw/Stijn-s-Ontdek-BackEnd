@@ -12,15 +12,12 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
 class SensorServiceTests {
 	private SensorService sensorService;
 	private MockSensorRepo mockRepo;
-
-	private sensorDto sensorDto;
 
 
 
@@ -30,7 +27,7 @@ class SensorServiceTests {
 		this.sensorService = new SensorService(mockRepo);
 	}
 
-
+	// No functionality in SensorService
 	@Test
 	void sensorToSensorDtoTest() {
 		Sensor sensor = new Sensor();
@@ -41,8 +38,7 @@ class SensorServiceTests {
 		sensor.setStation(new Station());
 		sensor.getStation().setStationID(3);
 
-		sensorDto newDto = new sensorDto();
-		newDto = sensorService.sensorToSensorDTO(sensor);
+		sensorDto newDto = sensorService.sensorToSensorDTO(sensor);
 
 		Assertions.assertEquals(0,newDto.getId());
 		Assertions.assertEquals(1,newDto.getData());
@@ -51,7 +47,7 @@ class SensorServiceTests {
 	}
 
 
-	// No functionality in SensorService, tests the amount of sensors
+	// No functionality in SensorService
 	@Test
 	void getAllTest() {
 		sensorDto sensorDto = new sensorDto();
@@ -62,10 +58,9 @@ class SensorServiceTests {
 
 		sensorService.createSensor(sensorDto);
 
-		long x = 100;
 		List<sensorDto> sensorDtoList = sensorService.getAll();
 
-		Assertions.assertEquals(1, sensorDtoList.stream().count());
+		Assertions.assertEquals(1, sensorDtoList.size());
 
 		Assertions.assertEquals(sensorDto.getId(),sensorDtoList.get(0).getId() );
 		Assertions.assertEquals(sensorDto.getData(),sensorDtoList.get(0).getData() );
@@ -74,7 +69,7 @@ class SensorServiceTests {
 
 	}
 
-	//No functionality in SensorService, tests sensorTypes
+	// No functionality in SensorService
 	@Test
 	void getAllSensorTypesTest() {
 
@@ -100,9 +95,7 @@ class SensorServiceTests {
 	}
 
 
-
-
-	// Not yet functional, can't create sensors yet
+	// No functionality in SensorService
 	@Test
 	void createSensorTest() {
 		sensorDto dto = new sensorDto();
@@ -122,6 +115,7 @@ class SensorServiceTests {
 		Assertions.assertEquals(dto.getData(), newDto.getData());
 	}
 
+	// No functionality in SensorService
 	@Test
 	void createSensorTypeTest(){
 		sensorTypeDto typeDto = new sensorTypeDto();
@@ -137,6 +131,7 @@ class SensorServiceTests {
 	}
 
 
+	// No functionality in SensorService
 	@Test
 	void deleteSensorTest() {
 		sensorDto dto = new sensorDto();
@@ -150,13 +145,13 @@ class SensorServiceTests {
 
 		try {
 			sensorDto newDto = sensorService.findSensorById(dto.getId());
-			Assertions.assertTrue(false);
+			Assertions.fail();
 		} catch (Exception e) {
 			Assertions.assertTrue(true);
 		}
 	}
 
-
+	// No functionality in SensorService
 	@Test
 	void findSensorByIdTest(){
 		sensorDto dto = new sensorDto();
@@ -182,7 +177,7 @@ class SensorServiceTests {
 
 	}
 
-
+	// No functionality in SensorService
 	@Test
 	void getSensorsByTypeTest(){
 		sensorDto dto1 = new sensorDto();
@@ -220,7 +215,7 @@ class SensorServiceTests {
 		Assertions.assertEquals(newDtoList.get(1).getStationId() ,dto3.getStationId() );
 	}
 
-
+	// No functionality in SensorService
 	@Test
 	void getSensorByStation(){
 		sensorDto dto1 = new sensorDto();

@@ -55,7 +55,7 @@ public class StationController {
 
     // create new station
     @PostMapping
-    public ResponseEntity<stationDto> createStation(@RequestBody stationDto stationDto){
+    public ResponseEntity<stationDto> createStation(@RequestBody registerStationDto stationDto){
 
         stationService.createStation(stationDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
@@ -71,7 +71,7 @@ public class StationController {
 
     // edit station
     @PutMapping
-    public ResponseEntity<stationDto> editStation(@RequestBody stationDto stationDto){
+    public ResponseEntity<stationDto> editStation(@RequestBody registerStationDto stationDto){
 
         stationService.editStation(stationDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);
