@@ -12,6 +12,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @SpringBootTest
@@ -25,6 +26,57 @@ class SensorServiceTests {
 	void setup() throws Exception{
 		this.mockRepo = new MockSensorRepo();
 		this.sensorService = new SensorService(mockRepo);
+
+
+		List<Sensor> sensors = new ArrayList<>();
+
+		Sensor sensor = new Sensor();
+
+		// sensor 1
+		sensor.setSensorID(1);
+		sensor.setSensorData(2);
+
+		Station station = new Station();
+		station.setStationID(5);
+		sensor.setStation(station);
+
+		SensorType type = new SensorType();
+		type.setTypeID(4);
+		sensor.setSensorType(type);
+
+		sensors.add(sensor);
+
+		// sensor 2
+		sensor = new Sensor();
+		station = new Station();
+		type = new SensorType();
+		sensor.setSensorID(2);
+		sensor.setSensorData(1);
+
+		station.setStationID(7);
+		sensor.setStation(station);
+
+		type.setTypeID(6);
+		sensor.setSensorType(type);
+
+		sensors.add(sensor);
+
+		// sensor 3
+		sensor = new Sensor();
+		station = new Station();
+		type = new SensorType();
+		sensor.setSensorID(3);
+		sensor.setSensorData(4);
+
+		station.setStationID(5);
+		sensor.setStation(station);
+
+		type.setTypeID(6);
+		sensor.setSensorType(type);
+
+		sensors.add(sensor);
+
+		mockRepo.FillDatabase(sensors);
 	}
 
 	// No functionality in SensorService
