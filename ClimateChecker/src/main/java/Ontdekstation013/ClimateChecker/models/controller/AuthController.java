@@ -33,7 +33,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    // register user
+    // update user
     @PutMapping
     public ResponseEntity<userDto> editUser(@RequestBody registerDto registerDto){
 
