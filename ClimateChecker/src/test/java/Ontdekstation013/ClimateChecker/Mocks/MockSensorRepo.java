@@ -169,36 +169,4 @@ public class MockSensorRepo implements SensorRepository {
     public <S extends Sensor, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
-
-    @Override
-    public List<Sensor> findAllByType(long typeId) {
-        List<Sensor>  sensorList = new ArrayList<>();
-
-        for (Sensor sensor: sensors
-        ) {
-
-            if (sensor.getSensorType().getTypeID() == typeId){
-                sensorList.add(sensor);
-            }
-
-        }
-
-        return sensorList;
-    }
-
-    @Override
-    public List<Sensor> findAllByStation(long stationId) {
-        List<Sensor>  sensorList = new ArrayList<>();
-
-        for (Sensor sensor: sensors
-        ) {
-
-            if (sensor.getStation().getStationID() == stationId){
-                sensorList.add(sensor);
-            }
-
-        }
-
-        return sensorList;
-    }
 }
