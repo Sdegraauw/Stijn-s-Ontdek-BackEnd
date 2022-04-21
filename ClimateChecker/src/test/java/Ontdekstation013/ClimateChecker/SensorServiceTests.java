@@ -102,22 +102,17 @@ class SensorServiceTests {
 	// No functionality in SensorService
 	@Test
 	void getAllTest() {
-		sensorDto sensorDto = new sensorDto();
-		sensorDto.setId(1);
-		sensorDto.setData(2);
-		sensorDto.setTypeId(3);
-		sensorDto.setStationId(4);
-
-		sensorService.createSensor(sensorDto);
 
 		List<sensorDto> sensorDtoList = sensorService.getAll();
 
-		Assertions.assertEquals(1, sensorDtoList.size());
-
-		Assertions.assertEquals(sensorDto.getId(),sensorDtoList.get(0).getId() );
-		Assertions.assertEquals(sensorDto.getData(),sensorDtoList.get(0).getData() );
-		Assertions.assertEquals(sensorDto.getTypeId(),sensorDtoList.get(0).getTypeId() );
-		Assertions.assertEquals(sensorDto.getStationId(),sensorDtoList.get(0).getStationId() );
+		Assertions.assertEquals(1,sensorDtoList.get(0).getId() );
+		Assertions.assertEquals(2,sensorDtoList.get(0).getData() );
+		Assertions.assertEquals(4,sensorDtoList.get(0).getTypeId() );
+		Assertions.assertEquals(5,sensorDtoList.get(0).getStationId() );
+		Assertions.assertEquals(2,sensorDtoList.get(1).getId() );
+		Assertions.assertEquals(1,sensorDtoList.get(1).getData() );
+		Assertions.assertEquals(6,sensorDtoList.get(1).getTypeId() );
+		Assertions.assertEquals(7,sensorDtoList.get(1).getStationId() );
 
 	}
 
