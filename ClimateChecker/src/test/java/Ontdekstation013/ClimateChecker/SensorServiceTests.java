@@ -171,102 +171,46 @@ class SensorServiceTests {
 	// No functionality in SensorService
 	@Test
 	void findSensorByIdTest(){
-		sensorDto dto = new sensorDto();
-		dto.setStationId(1);
-		dto.setData(2);
-		dto.setId(3);
-		dto.setTypeId(4);
-		sensorService.createSensor(dto);
 
-		dto.setStationId(4);
-		dto.setData(3);
-		dto.setId(2);
-		dto.setTypeId(1);
-		sensorService.createSensor(dto);
+		sensorDto newDto = sensorService.findSensorById(2);
 
-
-		sensorDto newDto = sensorService.findSensorById(dto.getId());
-
-		Assertions.assertEquals(newDto.getStationId(), dto.getStationId());
-		Assertions.assertEquals(newDto.getId(),dto.getId());
-		Assertions.assertEquals(newDto.getData(),dto.getData());
-		Assertions.assertEquals(newDto.getTypeId(),dto.getTypeId());
+		Assertions.assertEquals(newDto.getStationId(),7);
+		Assertions.assertEquals(newDto.getId(),2);
+		Assertions.assertEquals(newDto.getData(),1);
+		Assertions.assertEquals(newDto.getTypeId(),6);
 
 	}
 
 	// No functionality in SensorService
 	@Test
 	void getSensorsByTypeTest(){
-		sensorDto dto1 = new sensorDto();
-		dto1.setStationId(1);
-		dto1.setData(2);
-		dto1.setId(3);
-		dto1.setTypeId(999);
-		sensorService.createSensor(dto1);
+		List<sensorDto> newDtoList = sensorService.getSensorsByType(6);
 
-		sensorDto dto2 = new sensorDto();
-		dto2.setStationId(5);
-		dto2.setData(6);
-		dto2.setId(7);
-		dto2.setTypeId(8);
-		sensorService.createSensor(dto2);
+		Assertions.assertEquals(newDtoList.get(0).getId() ,2);
+		Assertions.assertEquals(newDtoList.get(0).getTypeId() ,6);
+		Assertions.assertEquals(newDtoList.get(0).getData() ,1);
+		Assertions.assertEquals(newDtoList.get(0).getStationId() ,7);
 
-		sensorDto dto3 = new sensorDto();
-		dto2.setStationId(1);
-		dto2.setData(10);
-		dto2.setId(11);
-		dto2.setTypeId(999);
-		sensorService.createSensor(dto3);
-
-
-		List<sensorDto> newDtoList = sensorService.getSensorsByType(999);
-
-		Assertions.assertEquals(newDtoList.get(0).getId() ,dto1.getId() );
-		Assertions.assertEquals(newDtoList.get(0).getTypeId() ,dto1.getTypeId() );
-		Assertions.assertEquals(newDtoList.get(0).getData() ,dto1.getData() );
-		Assertions.assertEquals(newDtoList.get(0).getStationId() ,dto1.getStationId() );
-
-		Assertions.assertEquals(newDtoList.get(1).getId() ,dto3.getId() );
-		Assertions.assertEquals(newDtoList.get(1).getTypeId() ,dto3.getTypeId() );
-		Assertions.assertEquals(newDtoList.get(1).getData() ,dto3.getData() );
-		Assertions.assertEquals(newDtoList.get(1).getStationId() ,dto3.getStationId() );
+		Assertions.assertEquals(newDtoList.get(1).getId() ,3);
+		Assertions.assertEquals(newDtoList.get(1).getTypeId() ,6);
+		Assertions.assertEquals(newDtoList.get(1).getData() ,4);
+		Assertions.assertEquals(newDtoList.get(1).getStationId() ,5);
 	}
 
 	// No functionality in SensorService
 	@Test
 	void getSensorByStation(){
-		sensorDto dto1 = new sensorDto();
-		dto1.setStationId(1);
-		dto1.setData(2);
-		dto1.setId(3);
-		dto1.setTypeId(999);
-		sensorService.createSensor(dto1);
 
-		sensorDto dto2 = new sensorDto();
-		dto2.setStationId(5);
-		dto2.setData(6);
-		dto2.setId(7);
-		dto2.setTypeId(8);
-		sensorService.createSensor(dto2);
+		List<sensorDto> newDtoList = sensorService.getSensorsByStation(5);
 
-		sensorDto dto3 = new sensorDto();
-		dto2.setStationId(1);
-		dto2.setData(10);
-		dto2.setId(11);
-		dto2.setTypeId(999);
-		sensorService.createSensor(dto3);
+		Assertions.assertEquals(newDtoList.get(0).getId() ,1);
+		Assertions.assertEquals(newDtoList.get(0).getTypeId() ,4);
+		Assertions.assertEquals(newDtoList.get(0).getData() ,2);
+		Assertions.assertEquals(newDtoList.get(0).getStationId() ,5);
 
-
-		List<sensorDto> newDtoList = sensorService.getSensorsByStation(1);
-
-		Assertions.assertEquals(newDtoList.get(0).getId() ,dto1.getId() );
-		Assertions.assertEquals(newDtoList.get(0).getTypeId() ,dto1.getTypeId() );
-		Assertions.assertEquals(newDtoList.get(0).getData() ,dto1.getData() );
-		Assertions.assertEquals(newDtoList.get(0).getStationId() ,dto1.getStationId() );
-
-		Assertions.assertEquals(newDtoList.get(1).getId() ,dto3.getId() );
-		Assertions.assertEquals(newDtoList.get(1).getTypeId() ,dto3.getTypeId() );
-		Assertions.assertEquals(newDtoList.get(1).getData() ,dto3.getData() );
-		Assertions.assertEquals(newDtoList.get(1).getStationId() ,dto3.getStationId() );
+		Assertions.assertEquals(newDtoList.get(1).getId() ,3);
+		Assertions.assertEquals(newDtoList.get(1).getTypeId() ,6);
+		Assertions.assertEquals(newDtoList.get(1).getData() ,4);
+		Assertions.assertEquals(newDtoList.get(1).getStationId() ,5);
 	}
 }
