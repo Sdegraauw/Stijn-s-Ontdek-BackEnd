@@ -61,14 +61,30 @@ public class SensorService {
 
     // not yet functional
     public List<sensorDto> getSensorsByType(long typeId) {
-        List<sensorDto> newDtoList = new ArrayList<sensorDto>();
+        List<Sensor> sensorList = sensorRepository.findAllByType(typeId);
+
+        List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: sensorList
+        ) {
+
+            newDtoList.add(sensorToSensorDTO(sensor));
+
+        }
 
         return newDtoList;
     }
 
     // not yet functional
     public List<sensorDto> getSensorsByStation(long stationId) {
-        List<sensorDto> newDtoList = new ArrayList<sensorDto>();
+        List<Sensor> sensorList = sensorRepository.findAllByStation(stationId);
+
+        List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: sensorList
+        ) {
+
+            newDtoList.add(sensorToSensorDTO(sensor));
+
+        }
 
         return newDtoList;
     }
