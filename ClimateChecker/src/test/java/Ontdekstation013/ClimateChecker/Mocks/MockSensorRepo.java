@@ -87,6 +87,15 @@ public class MockSensorRepo implements SensorRepository {
 
     @Override
     public Optional<Sensor> findById(Long aLong) {
+
+        for (Sensor sensor: sensors
+        ) {
+
+            if (sensor.getSensorID() == aLong){
+                return Optional.of(sensor);
+            }
+
+        }
         return Optional.empty();
     }
 
