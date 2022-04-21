@@ -39,7 +39,14 @@ public class SensorService {
 
     // not yet functional
     public List<sensorDto> getAll() {
-        List<sensorDto> newDtoList = new ArrayList<sensorDto>();
+        List<Sensor> SensorList = sensorRepository.findAll();
+        List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: SensorList
+        ) {
+
+            newDtoList.add(sensorToSensorDTO(sensor));
+
+        }
 
 
         return newDtoList;
