@@ -21,15 +21,7 @@ public class MockUserRepo implements UserRepository {
         return null;
     }
 
-    @Override
-    public List<User> findAll(Sort sort) {
-        return null;
-    }
 
-    @Override
-    public Page<User> findAll(Pageable pageable) {
-        return null;
-    }
 
     @Override
     public List<User> findAllById(Iterable<Long> longs) {
@@ -84,80 +76,5 @@ public class MockUserRepo implements UserRepository {
     @Override
     public boolean existsById(Long aLong) {
         return false;
-    }
-
-    @Override
-    public void flush() {
-
-    }
-
-    @Override
-    public <S extends User> S saveAndFlush(S entity) {
-        return null;
-    }
-
-    @Override
-    public <S extends User> List<S> saveAllAndFlush(Iterable<S> entities) {
-        return null;
-    }
-
-    @Override
-    public void deleteAllInBatch(Iterable<User> entities) {
-
-    }
-
-    @Override
-    public void deleteAllByIdInBatch(Iterable<Long> longs) {
-
-    }
-
-    @Override
-    public void deleteAllInBatch() {
-
-    }
-
-    @Override
-    public User getOne(Long aLong) {
-        return null;
-    }
-
-    @Override
-    public User getById(Long aLong) {
-        return null;
-    }
-
-    @Override
-    public <S extends User> Optional<S> findOne(Example<S> example) {
-        return Optional.empty();
-    }
-
-    @Override
-    public <S extends User> List<S> findAll(Example<S> example) {
-        return null;
-    }
-
-    @Override
-    public <S extends User> List<S> findAll(Example<S> example, Sort sort) {
-        return null;
-    }
-
-    @Override
-    public <S extends User> Page<S> findAll(Example<S> example, Pageable pageable) {
-        return null;
-    }
-
-    @Override
-    public <S extends User> long count(Example<S> example) {
-        return 0;
-    }
-
-    @Override
-    public <S extends User> boolean exists(Example<S> example) {
-        return false;
-    }
-
-    @Override
-    public <S extends User, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
-        return null;
     }
 }

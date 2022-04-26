@@ -86,25 +86,6 @@ public class MockSensorRepo implements SensorRepository {
     }
 
     @Override
-    public Optional<Sensor> findById(Long aLong) {
-
-        for (Sensor sensor: sensors
-        ) {
-
-            if (sensor.getSensorID() == aLong){
-                return Optional.of(sensor);
-            }
-
-        }
-        return Optional.empty();
-    }
-
-    @Override
-    public boolean existsById(Long aLong) {
-        return false;
-    }
-
-    @Override
     public void flush() {
 
     }
@@ -176,6 +157,35 @@ public class MockSensorRepo implements SensorRepository {
 
     @Override
     public <S extends Sensor, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+        return null;
+    }
+
+    @Override
+    public Optional<Sensor> findById(Long aLong) {
+
+        for (Sensor sensor: sensors
+        ) {
+
+            if (sensor.getSensorID() == aLong){
+                return Optional.of(sensor);
+            }
+
+        }
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsById(Long aLong) {
+        return false;
+    }
+
+    @Override
+    public List<Sensor> findAllByType(long typeId) {
+        return null;
+    }
+
+    @Override
+    public List<Sensor> findAllByStation(long stationId) {
         return null;
     }
 }

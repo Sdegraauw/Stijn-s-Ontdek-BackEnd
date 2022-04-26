@@ -39,7 +39,7 @@ public class SensorService {
 
     // not yet functional
     public List<sensorDto> getAll() {
-        List<Sensor> SensorList = sensorRepository.findAll();
+        Iterable<Sensor> SensorList = sensorRepository.findAll();
         List<sensorDto> newDtoList = new ArrayList<>();
         for (Sensor sensor: SensorList
         ) {
@@ -54,21 +54,37 @@ public class SensorService {
 
     // not yet functional
     public List<sensorTypeDto> getAllSensorTypes() {
-        List<sensorTypeDto> newDtoList = new ArrayList<sensorTypeDto>();
+        List<sensorTypeDto> newDtoList = new ArrayList();
 
         return newDtoList;
     }
 
     // not yet functional
     public List<sensorDto> getSensorsByType(long typeId) {
+        Iterable<Sensor> sensorList = sensorRepository.findAllByType(typeId);
+
         List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: sensorList
+        ) {
+
+            newDtoList.add(sensorToSensorDTO(sensor));
+
+        }
 
         return newDtoList;
     }
 
     // not yet functional
     public List<sensorDto> getSensorsByStation(long stationId) {
+        Iterable<Sensor> sensorList = sensorRepository.findAllByStation(stationId);
+
         List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: sensorList
+        ) {
+
+            newDtoList.add(sensorToSensorDTO(sensor));
+
+        }
 
         return newDtoList;
     }

@@ -5,6 +5,7 @@ import Ontdekstation013.ClimateChecker.repositories.LocationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,7 +24,7 @@ public class LocationService {
     }
 
     public List<Location> getAll() {
-        List<Location> locations = locationRepository.findAll();
+        List<Location> locations = new ArrayList<>();//locationRepository.findAll();
         return locations;
     }
 }
