@@ -179,13 +179,33 @@ public class MockSensorRepo implements SensorRepository {
         return false;
     }
 
-    /*@Override
+    @Override
     public List<Sensor> findAllByType(long typeId) {
-        return null;
+        List<Sensor> sensorList = new ArrayList<>();
+
+        for (Sensor sensor: sensors
+        ) {
+
+            if (sensor.getSensorType().getTypeID() == typeId){
+                sensorList.add(sensor);
+            }
+
+        }
+        return sensorList;
     }
 
     @Override
     public List<Sensor> findAllByStation(long stationId) {
-        return null;
-    }*/
+        List<Sensor> sensorList = new ArrayList<>();
+
+        for (Sensor sensor: sensors
+        ) {
+
+            if (sensor.getStation().getStationID() == stationId){
+                sensorList.add(sensor);
+            }
+
+        }
+        return sensorList;
+    }
 }

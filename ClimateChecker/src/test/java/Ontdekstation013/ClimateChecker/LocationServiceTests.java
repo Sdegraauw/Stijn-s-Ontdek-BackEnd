@@ -66,13 +66,20 @@ class LocationServiceTests {
 	// Make this when it works in Sensor
 	@Test
 	void findLocationByIdTest() {
-		/*Location location = locationService.findLocationById(1);
+		Location location = locationService.findLocationById(1);
 
 
-		Assertions.assertEquals(location.getLatitude(), dto.getLatitude());
-		Assertions.assertEquals(location.getLongitude(), dto.getLongitude());
-		Assertions.assertEquals(location.getStation().getStationID(), 1); // assert station id = 1*/
-		Assertions.fail();
+		Assertions.assertEquals(location.getLatitude(), 10);
+		Assertions.assertEquals(location.getLongitude(), 100);
+		Assertions.assertEquals(location.getStation().getStationID(), 1000);
+
+
+		location = locationService.findLocationById(2);
+
+
+		Assertions.assertEquals(location.getLatitude(), 20);
+		Assertions.assertEquals(location.getLongitude(), 200);
+		Assertions.assertEquals(location.getStation().getStationID(), 2000);
 	}
 
 

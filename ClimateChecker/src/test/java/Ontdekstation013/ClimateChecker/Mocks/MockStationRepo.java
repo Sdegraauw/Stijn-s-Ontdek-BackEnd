@@ -178,4 +178,18 @@ public class MockStationRepo implements StationRepository {
     public <S extends Station, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
+
+    @Override
+    public List<Station> findAllByUserId(long userId) {
+        List<Station> stationList = new ArrayList<>();
+        for (Station station: stations
+        ) {
+
+            if (station.getOwner().getUserID() == userId){
+                stationList.add(station);
+            }
+
+        }
+        return stationList;
+    }
 }

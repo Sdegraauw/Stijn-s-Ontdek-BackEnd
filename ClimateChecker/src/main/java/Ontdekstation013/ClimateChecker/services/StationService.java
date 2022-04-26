@@ -55,7 +55,7 @@ public class StationService {
 
     // not yet functional
     public List<stationTitleDto> getAllByUserId(long userId) {
-        Iterable<Station> stationList = new ArrayList<>();// stationRepository.findAllByUserId(userId);
+        Iterable<Station> stationList = stationRepository.findAllByUserId(userId);
 
         List<stationTitleDto> newDtoList = new ArrayList<>();
         for (Station station: stationList

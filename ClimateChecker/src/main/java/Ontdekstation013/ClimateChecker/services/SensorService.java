@@ -61,7 +61,7 @@ public class SensorService {
 
     // not yet functional
     public List<sensorDto> getSensorsByType(long typeId) {
-        Iterable<Sensor> sensorList = new ArrayList<>();// sensorRepository.findAllByType(typeId);
+        Iterable<Sensor> sensorList = sensorRepository.findAllByType(typeId);
 
         List<sensorDto> newDtoList = new ArrayList<>();
         for (Sensor sensor: sensorList
@@ -76,7 +76,7 @@ public class SensorService {
 
     // not yet functional
     public List<sensorDto> getSensorsByStation(long stationId) {
-        Iterable<Sensor> sensorList = new ArrayList<>(); //sensorRepository.findAllByStation(stationId);
+        Iterable<Sensor> sensorList = sensorRepository.findAllByStation(stationId);
 
         List<sensorDto> newDtoList = new ArrayList<>();
         for (Sensor sensor: sensorList

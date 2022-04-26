@@ -124,11 +124,10 @@ class StationServiceTests {
 		List<stationTitleDto> newDtoList = stationService.getAllByUserId(69);
 
 
-		/*Assertions.assertEquals(2,newDtoList.get(0).getId());
+		Assertions.assertEquals(2,newDtoList.get(0).getId());
 		Assertions.assertEquals("name2",newDtoList.get(0).getName());
 		Assertions.assertEquals(3,newDtoList.get(1).getId());
-		Assertions.assertEquals("name3",newDtoList.get(1).getName());*/
-		Assertions.fail();
+		Assertions.assertEquals("name3",newDtoList.get(1).getName());
 
 	}
 

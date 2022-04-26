@@ -7,8 +7,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface SensorRepository extends JpaRepository<Sensor, Long> {
-    /*List<Sensor> findAllByType(long typeId);
-
-    List<Sensor> findAllByStation(long stationId);*/
+public interface SensorRepository extends JpaRepository<Sensor, Long>, SensorRepositoryCustom {
 }

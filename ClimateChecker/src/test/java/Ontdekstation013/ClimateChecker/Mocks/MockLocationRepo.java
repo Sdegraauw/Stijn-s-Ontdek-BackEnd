@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker.Mocks;
 
 import Ontdekstation013.ClimateChecker.models.Location;
+import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.repositories.LocationRepository;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
@@ -89,6 +90,15 @@ public class MockLocationRepo implements LocationRepository {
 
     @Override
     public Optional<Location> findById(Long aLong) {
+
+        for (Location location: locationList
+        ) {
+
+            if (location.getLocationID() == aLong){
+                return Optional.of(location);
+            }
+
+        }
         return Optional.empty();
     }
 
