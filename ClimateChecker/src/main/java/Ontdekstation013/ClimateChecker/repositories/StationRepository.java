@@ -7,5 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 
-public interface StationRepository extends CrudRepository<Station, Long> {
+public interface StationRepository extends JpaRepository<Station, Long> {
 }

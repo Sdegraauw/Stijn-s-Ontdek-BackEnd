@@ -47,7 +47,7 @@ public class MockSensorRepo implements SensorRepository {
 
     @Override
     public long count() {
-        return 0;
+        return sensors.size();
     }
 
     @Override

@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.services;
 
+import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
@@ -25,6 +26,14 @@ public class UserService {
         return newdto;
     }
 
+    public userDataDto userToUserDataDto (User user){
+        userDataDto newdto = new userDataDto();
+        newdto.setId(user.getUserID());
+        newdto.setMailAddress(user.getMailAddress());
+        newdto.setUsername(user.getUserName());
+        return newdto;
+    }
+
     public userDto userToUserDto (User user){
         userDto newdto = new userDto();
         newdto.setId(user.getUserID());
@@ -37,7 +46,15 @@ public class UserService {
 
     // not yet functional
     public List<userDataDto> getAllUsers() {
-        List<userDataDto> newDtoList = new ArrayList<userDataDto>();
+        List<User> userList = userRepository.findAll();
+        List<userDataDto> newDtoList = new ArrayList<>();
+
+        for (User user: userList
+        ) {
+
+            newDtoList.add(userToUserDataDto(user));
+
+        }
 
         return newDtoList;
     }

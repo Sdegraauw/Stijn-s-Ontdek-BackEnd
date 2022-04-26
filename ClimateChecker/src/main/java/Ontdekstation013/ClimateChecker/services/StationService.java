@@ -1,14 +1,12 @@
 package Ontdekstation013.ClimateChecker.services;
 
+import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.Station;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Ontdekstation013.ClimateChecker.models.dto.editStationDto;
-import Ontdekstation013.ClimateChecker.models.dto.registerStationDto;
-import Ontdekstation013.ClimateChecker.models.dto.stationDto;
-import Ontdekstation013.ClimateChecker.models.dto.stationTitleDto;
+import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +27,16 @@ public class StationService {
         return newdto;
     }
 
+    public stationTitleDto stationToStationTitleDTo (Station station){
+        stationTitleDto newdto = new stationTitleDto();
+        newdto.setId(station.getStationID());
+        newdto.setName(station.getName());
+
+
+        return newdto;
+    }
+
+
     public stationDto stationToStationDTO (Station station){
         stationDto newdto = new stationDto();
         newdto.setId(station.getStationID());
@@ -47,15 +55,30 @@ public class StationService {
 
     // not yet functional
     public List<stationTitleDto> getAllByUserId(long userId) {
-        List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
+        Iterable<Station> stationList = new ArrayList<>();// stationRepository.findAllByUserId(userId);
 
+        List<stationTitleDto> newDtoList = new ArrayList<>();
+        for (Station station: stationList
+        ) {
+
+            newDtoList.add(stationToStationTitleDTo(station));
+
+        }
 
         return newDtoList;
     }
 
     // not yet functional
     public List<stationTitleDto> getAll() {
-        List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
+        Iterable<Station> StationList = stationRepository.findAll();
+        List<stationTitleDto> newDtoList = new ArrayList<>();
+        for (Station station: StationList
+        ) {
+
+            newDtoList.add(stationToStationTitleDTo(station));
+
+        }
+
 
         return newDtoList;
     }
