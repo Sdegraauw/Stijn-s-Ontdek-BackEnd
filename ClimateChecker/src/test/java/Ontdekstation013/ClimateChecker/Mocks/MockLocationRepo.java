@@ -10,14 +10,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class MockLocationRepo implements LocationRepository {
+    public List<Location> locationList;
+
+    public MockLocationRepo(){
+        locationList = new ArrayList<>();
+    }
+
+    public void FillDatabase(List<Location> locationList){
+        this.locationList = locationList;
+    }
+
+
     @Override
     public List<Location> findAll() {
-        return null;
+        return locationList;
     }
 
     @Override
