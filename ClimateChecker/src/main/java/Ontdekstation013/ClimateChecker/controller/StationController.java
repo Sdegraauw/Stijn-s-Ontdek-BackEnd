@@ -1,4 +1,4 @@
-package Ontdekstation013.ClimateChecker.models.controller;
+package Ontdekstation013.ClimateChecker.controller;
 
 import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.dto.*;
