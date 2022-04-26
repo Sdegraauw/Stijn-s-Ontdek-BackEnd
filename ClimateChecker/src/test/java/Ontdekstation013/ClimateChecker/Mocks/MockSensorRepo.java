@@ -179,7 +179,7 @@ public class MockSensorRepo implements SensorRepository {
         return false;
     }
 
-    @Override
+    /*@Override
     public List<Sensor> findAllByType(long typeId) {
         return null;
     }
@@ -187,5 +187,5 @@ public class MockSensorRepo implements SensorRepository {
     @Override
     public List<Sensor> findAllByStation(long stationId) {
         return null;
-    }
+    }*/
 }

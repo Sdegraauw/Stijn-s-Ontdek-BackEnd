@@ -8,7 +8,7 @@ import java.util.List;
 
 @Repository
 public interface SensorRepository extends JpaRepository<Sensor, Long> {
-    List<Sensor> findAllByType(long typeId);
+    /*List<Sensor> findAllByType(long typeId);
 
-    List<Sensor> findAllByStation(long stationId);
+    List<Sensor> findAllByStation(long stationId);*/
 }
