@@ -9,6 +9,7 @@ import java.util.List;
 @Setter
 public class stationDto extends Dto{
 
+
     long id;
     String name;
     float height;
