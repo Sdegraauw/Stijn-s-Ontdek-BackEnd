@@ -16,7 +16,7 @@ public class Location {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long LocationID;
+    private long LocationID;
 
     private String locationName;
 
@@ -28,4 +28,21 @@ public class Location {
 
     @OneToOne(mappedBy = "location")
     private Station station;
+
+
+
+    public Location(long id, String locationName, float latitude, float longitude, Station station) {
+        this.LocationID = id;
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.station = station;
+    }
+
+    public Location(long id, String locationName, float latitude, float longitude){
+        this.LocationID = id;
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }

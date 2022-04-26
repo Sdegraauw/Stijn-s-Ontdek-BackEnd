@@ -18,7 +18,7 @@ public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long UserID;
+    private long UserID;
 
     @OneToMany(
             mappedBy = "owner",
@@ -34,9 +34,35 @@ public class User {
     @Email
     private String mailAddress;
 
-    private byte passwordHash;
+    private Byte passwordHash;
 
-    private byte passwordSalt;
+    private Byte passwordSalt;
 
     private byte Admin;
+
+
+
+    public User(long id, List<Station> stations, String userName, String mailAddress, Byte passwordHash, Byte passwordSalt, byte Admin) {
+        this.UserID = id;
+        this.stations = stations;
+        this.userName = userName;
+        this.mailAddress = mailAddress;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
+        this.Admin = Admin;
+    }
+
+    public User(String userName, String mailAddress, Byte passwordHash, Byte passwordSalt) {
+        this.userName = userName;
+        this.mailAddress = mailAddress;
+        this.passwordHash =passwordHash;
+        this.passwordSalt = passwordSalt;
+    }
+
+    public User(String mailAddress, Byte passwordHash, Byte passwordSalt) {
+        this.mailAddress = mailAddress;
+        this.passwordHash = passwordHash;
+        this.passwordSalt = passwordSalt;
+    }
+
 }

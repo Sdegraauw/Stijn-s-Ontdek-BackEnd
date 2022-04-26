@@ -13,7 +13,7 @@ import javax.persistence.*;
 public class Sensor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long SensorID;
+    private long SensorID;
 
     @ManyToOne
     @JoinColumn(name = "stationID")
@@ -21,5 +21,16 @@ public class Sensor {
 
     private int sensorData;
 
-    private String sensorType;
+    @ManyToOne
+    @JoinColumn(name = "sensorTypeID")
+    private SensorType sensorType;
+
+
+
+    public Sensor(long id, Station station, int sensorData, SensorType sensorType){
+        this.SensorID = id;
+        this.station = station;
+        this.sensorData = sensorData;
+        this.sensorType = sensorType;
+    }
 }

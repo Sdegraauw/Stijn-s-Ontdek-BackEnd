@@ -7,9 +7,10 @@ import lombok.Setter;
 @Setter
 public class sensorDto extends Dto{
 
-    int id;
-    int stationId;
-    int typeId;
+
+    long id;
+    long stationId;
+    long typeId;
     float data;
 
 }

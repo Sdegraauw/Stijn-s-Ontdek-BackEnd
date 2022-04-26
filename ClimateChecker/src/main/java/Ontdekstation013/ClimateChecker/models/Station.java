@@ -16,7 +16,7 @@ public class Station {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long StationID;
+    private long StationID;
 
     @OneToMany(
             mappedBy = "station",
@@ -32,5 +32,18 @@ public class Station {
     @OneToOne(cascade = CascadeType.ALL)
     private Location location;
 
-    private double height;
+    private float height;
+
+    private String Name;
+
+
+
+    public Station(long id, List<Sensor> sensors, User owner, Location location, float height, String name) {
+        this.StationID = id;
+        this.sensors = sensors;
+        this.owner = owner;
+        this.location = location;
+        this.height = height;
+        this.Name = name;
+    }
 }
