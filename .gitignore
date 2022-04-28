@@ -34,5 +34,5 @@ build/
 
 ### H2 Database ###
 import.sql
-/Database/
+*/Database/
 
