@@ -36,3 +36,4 @@ build/
 import.sql
 */Database/
 
+ClimateChecker/Database/climateCheckerDB.mv.db

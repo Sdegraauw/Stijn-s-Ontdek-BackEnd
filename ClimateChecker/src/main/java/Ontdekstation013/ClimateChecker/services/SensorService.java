@@ -20,14 +20,14 @@ public class SensorService {
         this.sensorRepository = sensorRepository;
     }
 
-    public sensorDto findSensorById(Long id) {
-        Sensor sensor = sensorRepository.findById(id).get();
-        sensorDto newdto = SensorToSensorDTO(sensor);
 
+    public sensorDto findSensorById(long id) {
+        Sensor sensor = sensorRepository.findById(id).get();
+        sensorDto newdto = sensorToSensorDTO(sensor);
         return newdto;
     }
 
-    private sensorDto SensorToSensorDTO(Sensor sensor){
+    public sensorDto sensorToSensorDTO(Sensor sensor){
         sensorDto newdto = new sensorDto();
         newdto.setId(sensor.getSensorID());
         newdto.setStationId(sensor.getStation().getStationID());
@@ -39,7 +39,12 @@ public class SensorService {
 
     // not yet functional
     public List<sensorDto> getAll() {
-        List<sensorDto> newDtoList = new ArrayList<sensorDto>();
+        Iterable<Sensor> SensorList = sensorRepository.findAll();
+        List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: SensorList
+        ) {
+            newDtoList.add(sensorToSensorDTO(sensor));
+        }
 
 
         return newDtoList;
@@ -47,21 +52,39 @@ public class SensorService {
 
     // not yet functional
     public List<sensorTypeDto> getAllSensorTypes() {
-        List<sensorTypeDto> newDtoList = new ArrayList<sensorTypeDto>();
+
+        List<sensorTypeDto> newDtoList = new ArrayList();
 
         return newDtoList;
     }
 
     // not yet functional
-    public List<sensorDto> getSensorsByType(Long typeId) {
-        List<sensorDto> newDtoList = new ArrayList<sensorDto>();
+    public List<sensorDto> getSensorsByType(long typeId) {
+        Iterable<Sensor> sensorList = sensorRepository.findAllByType(typeId);
+
+        List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: sensorList
+        ) {
+
+            newDtoList.add(sensorToSensorDTO(sensor));
+
+        }
 
         return newDtoList;
     }
 
     // not yet functional
-    public List<sensorDto> getSensorsByStation(Long stationId) {
-        List<sensorDto> newDtoList = new ArrayList<sensorDto>();
+    public List<sensorDto> getSensorsByStation(long stationId) {
+        Iterable<Sensor> sensorList = sensorRepository.findAllByStation(stationId);
+
+        List<sensorDto> newDtoList = new ArrayList<>();
+        for (Sensor sensor: sensorList
+        ) {
+
+            newDtoList.add(sensorToSensorDTO(sensor));
+
+        }
+
 
         return newDtoList;
     }
@@ -75,6 +98,7 @@ public class SensorService {
     
     }
 
-    public void deleteSensor(Long sensorId) {
+
+    public void deleteSensor(long sensorId) {
     }
 }

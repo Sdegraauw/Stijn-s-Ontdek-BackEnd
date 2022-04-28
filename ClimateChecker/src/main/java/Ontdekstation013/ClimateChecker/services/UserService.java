@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.services;
 
+import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
@@ -19,13 +20,21 @@ public class UserService {
         this.userRepository = userRepository;
     }
 
-    public userDto findUserById(Long id) {
+    public userDto findUserById(long id) {
         User user = userRepository.findById(id).get();
-        userDto newdto = UserToUserDTO(user);
+        userDto newdto = userToUserDto(user);
         return newdto;
     }
 
-    private userDto UserToUserDTO (User user){
+    public userDataDto userToUserDataDto (User user){
+        userDataDto newdto = new userDataDto();
+        newdto.setId(user.getUserID());
+        newdto.setMailAddress(user.getMailAddress());
+        newdto.setUsername(user.getUserName());
+        return newdto;
+    }
+
+    public userDto userToUserDto (User user){
         userDto newdto = new userDto();
         newdto.setId(user.getUserID());
         newdto.setMailAddress(user.getMailAddress());
@@ -37,37 +46,43 @@ public class UserService {
 
     // not yet functional
     public List<userDataDto> getAllUsers() {
-        List<userDataDto> newDtoList = new ArrayList<userDataDto>();
+        List<User> userList = userRepository.findAll();
+        List<userDataDto> newDtoList = new ArrayList<>();
+
+        for (User user: userList
+        ) {
+
+            newDtoList.add(userToUserDataDto(user));
+        }
+
 
         return newDtoList;
     }
 
     // not yet functional
-    public List<userDataDto> getAllByPageId(Long pageId) {
+    public List<userDataDto> getAllByPageId(long pageId) {
         List<userDataDto> newDtoList = new ArrayList<userDataDto>();
 
         return newDtoList;
     }
 
 
-    public void deleteUser(Long Id) {
 
+    public void deleteUser(long Id) {
 
     }
 
     public void createNewUser(registerDto registerDto) {
 
 
-
     }
 
     public void loginUser(loginDto loginDto) {
 
-
     }
 
-    public void editUser(registerDto registerDto) {
 
+    public void editUser(editUserDto registerDto) {
 
     }
 }

@@ -5,10 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class userDataDto extends Dto{
+public class editUserDto extends Dto{
 
-    long id;
+    int id;
     String username;
     String mailAddress;
-    boolean admin;
+    String password;
 }

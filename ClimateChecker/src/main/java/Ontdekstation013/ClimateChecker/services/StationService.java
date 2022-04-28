@@ -1,13 +1,12 @@
 package Ontdekstation013.ClimateChecker.services;
 
+import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.Station;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import Ontdekstation013.ClimateChecker.models.dto.registerstationDto;
-import Ontdekstation013.ClimateChecker.models.dto.stationDto;
-import Ontdekstation013.ClimateChecker.models.dto.stationTitleDto;
+import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,13 +21,23 @@ public class StationService {
         this.stationRepository = stationRepository;
     }
 
-    public stationDto findStationById(Long id) {
+    public stationDto findStationById(long id) {
         Station station = stationRepository.findById(id).get();
-        stationDto newdto = StationToStationDTO(station);
+        stationDto newdto = stationToStationDTO(station);
         return newdto;
     }
 
-    private stationDto StationToStationDTO (Station station){
+    public stationTitleDto stationToStationTitleDTo (Station station){
+        stationTitleDto newdto = new stationTitleDto();
+        newdto.setId(station.getStationID());
+        newdto.setName(station.getName());
+
+
+        return newdto;
+    }
+
+
+    public stationDto stationToStationDTO (Station station){
         stationDto newdto = new stationDto();
         newdto.setId(station.getStationID());
         newdto.setName(station.getName());
@@ -43,17 +52,37 @@ public class StationService {
         return newdto;
     }
 
+    public List<stationTitleDto> getAllByUserId(long userId) {
+        Iterable<Station> stationList = stationRepository.findAllByUserId(userId);
 
-    // not yet functional
-    public List<stationTitleDto> getAllByUserId(Long userId) {
-        List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
+        List<stationTitleDto> newDtoList = new ArrayList<>();
+        for (Station station: stationList
+        ) {
 
+            newDtoList.add(stationToStationTitleDTo(station));
+
+        }
 
         return newDtoList;
     }
 
     // not yet functional
     public List<stationTitleDto> getAll() {
+        Iterable<Station> StationList = stationRepository.findAll();
+        List<stationTitleDto> newDtoList = new ArrayList<>();
+        for (Station station: StationList
+        ) {
+
+            newDtoList.add(stationToStationTitleDTo(station));
+
+        }
+
+
+        return newDtoList;
+    }
+
+    // not yet functional
+    public List<stationTitleDto> getAllByPageId(long pageId) {
         List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
 
 
@@ -61,29 +90,17 @@ public class StationService {
     }
 
     // not yet functional
-    public List<stationTitleDto> getAllByPageId(Long pageId) {
-        List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
-
-
-        return newDtoList;
-    }
-
-    // not yet functional
-    public void createStation(registerstationDto stationDto) {
-
-
+    public void createStation(registerStationDto stationDto) {
 
     }
 
     // not yet functional
-    public void deleteStation(Long id) {
-
+    public void deleteStation(long id) {
 
     }
 
     // not yet functional
-    public void editStation(stationDto stationDto) {
-
+    public void editStation(editStationDto stationDto) {
 
     }
 }

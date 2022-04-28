@@ -16,7 +16,7 @@ public class Station {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long StationID;
+    private long StationID;
 
     @OneToMany(
             mappedBy = "station",
@@ -36,9 +36,7 @@ public class Station {
 
     private String Name;
 
-
-
-    public Station(Long id, List<Sensor> sensors, User owner, Location location, float height, String name) {
+    public Station(long id, List<Sensor> sensors, User owner, Location location, float height, String name) {
         this.StationID = id;
         this.sensors = sensors;
         this.owner = owner;

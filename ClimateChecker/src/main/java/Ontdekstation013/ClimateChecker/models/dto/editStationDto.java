@@ -5,8 +5,13 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class sensorTypeDto extends Dto{
+public class editStationDto extends Dto{
 
-    long id;
+    int Id;
     String name;
+    float height;
+    String address;
+    float latitude;
+    float longitude;
+
 }
