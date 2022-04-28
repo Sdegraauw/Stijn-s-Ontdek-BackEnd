@@ -45,4 +45,10 @@ public class Location {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+
+    public Location(String locationName, float latitude, float longitude){
+        this.locationName = locationName;
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
 }
