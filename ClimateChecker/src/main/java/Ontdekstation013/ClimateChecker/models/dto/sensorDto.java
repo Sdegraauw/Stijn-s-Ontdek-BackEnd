@@ -7,7 +7,6 @@ import lombok.Setter;
 @Setter
 public class sensorDto extends Dto{
 
-
     long id;
     long stationId;
     long typeId;

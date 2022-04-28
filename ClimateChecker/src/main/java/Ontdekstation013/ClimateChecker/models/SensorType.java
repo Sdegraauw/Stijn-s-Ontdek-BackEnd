@@ -17,6 +17,7 @@ public class SensorType {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private long TypeID;
     private String TypeName;
 
@@ -26,6 +27,7 @@ public class SensorType {
             orphanRemoval = true,
             cascade = CascadeType.ALL)
     private List<Sensor> sensors = new LinkedList<>();
+
 
 
 

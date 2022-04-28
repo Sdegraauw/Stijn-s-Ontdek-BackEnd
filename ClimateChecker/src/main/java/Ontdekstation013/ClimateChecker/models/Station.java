@@ -36,8 +36,6 @@ public class Station {
 
     private String Name;
 
-
-
     public Station(long id, List<Sensor> sensors, User owner, Location location, float height, String name) {
         this.StationID = id;
         this.sensors = sensors;
