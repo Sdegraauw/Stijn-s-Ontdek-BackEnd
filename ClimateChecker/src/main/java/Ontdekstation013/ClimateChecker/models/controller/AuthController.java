@@ -35,7 +35,7 @@ public class AuthController {
 
     // update user
     @PutMapping
-    public ResponseEntity<userDto> editUser(@RequestBody registerDto registerDto){
+    public ResponseEntity<userDto> editUser(@RequestBody editUserDto registerDto){
 
         userService.editUser(registerDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);

@@ -168,8 +168,8 @@ class StationServiceTests {
 	void createStationTest() {
 		registerStationDto dto = new registerStationDto();
 
-		dto.setUserId(4);
-		dto.setName("name4");
+		//dto.setUserId(4);
+		dto.setStationname("name4");
 		dto.setHeight(54);
 		dto.setLatitude(5687);
 		dto.setLongitude(89767);

@@ -1,8 +1,6 @@
 package Ontdekstation013.ClimateChecker.models.controller;
 
-import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.dto.*;
-import Ontdekstation013.ClimateChecker.repositories.StationRepository;
 import Ontdekstation013.ClimateChecker.services.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -55,7 +53,7 @@ public class StationController {
 
     // create new station
     @PostMapping (consumes = {"application/xml","application/json"})
-    public ResponseEntity<registerstationDto> createStation(@RequestBody registerstationDto registerstationDto){
+    public ResponseEntity<registerStationDto> createStation(@RequestBody registerStationDto registerstationDto){
 
         stationService.createStation(registerstationDto);
         //return ResponseEntity.status(HttpStatus.CREATED).body(null);
@@ -72,7 +70,7 @@ public class StationController {
 
     // edit station
     @PutMapping
-    public ResponseEntity<stationDto> editStation(@RequestBody stationDto stationDto){
+    public ResponseEntity<stationDto> editStation(@RequestBody editStationDto stationDto){
 
         stationService.editStation(stationDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);

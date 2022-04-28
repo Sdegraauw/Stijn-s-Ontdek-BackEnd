@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class registerstationDto extends Dto{
+public class registerStationDto extends Dto{
 
     String stationname;
     float height;
