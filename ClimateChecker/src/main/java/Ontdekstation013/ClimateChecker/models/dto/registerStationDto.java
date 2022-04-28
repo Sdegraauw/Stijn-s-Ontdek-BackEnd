@@ -5,13 +5,11 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class registerStationDto extends Dto{
+public class registerstationDto extends Dto{
 
-    int userId;
-    String name;
+    String stationname;
     float height;
     String address;
     float latitude;
     float longitude;
-
 }
