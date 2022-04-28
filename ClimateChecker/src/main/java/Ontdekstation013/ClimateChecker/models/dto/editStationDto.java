@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class editStationDto extends Dto{
 
-    int Id;
+    long Id;
     String name;
     float height;
     String address;
