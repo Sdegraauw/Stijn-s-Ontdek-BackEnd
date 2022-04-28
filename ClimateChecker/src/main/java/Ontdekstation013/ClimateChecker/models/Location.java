@@ -39,6 +39,7 @@ public class Location {
         this.station = station;
     }
 
+
     public Location(long id, String locationName, float latitude, float longitude){
         this.LocationID = id;
         this.locationName = locationName;

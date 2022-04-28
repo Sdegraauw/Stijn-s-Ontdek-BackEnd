@@ -3,19 +3,13 @@ package Ontdekstation013.ClimateChecker.models.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-public class stationDto extends Dto{
+public class registerstationDto extends Dto{
 
-    long id;
-    String name;
+    String stationname;
     float height;
-    long locationId;
-    String locationName;
+    String address;
     float latitude;
     float longitude;
-    List<sensorDto> sensors;
 }
-

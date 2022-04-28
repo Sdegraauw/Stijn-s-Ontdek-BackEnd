@@ -27,6 +27,7 @@ public class Sensor {
 
 
 
+
     public Sensor(long id, Station station, int sensorData, SensorType sensorType){
         this.SensorID = id;
         this.station = station;

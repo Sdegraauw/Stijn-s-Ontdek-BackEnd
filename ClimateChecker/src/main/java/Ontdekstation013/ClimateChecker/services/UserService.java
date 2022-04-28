@@ -53,8 +53,8 @@ public class UserService {
         ) {
 
             newDtoList.add(userToUserDataDto(user));
-
         }
+
 
         return newDtoList;
     }
@@ -67,24 +67,22 @@ public class UserService {
     }
 
 
-    public void deleteUser(long Id) {
 
+    public void deleteUser(long Id) {
 
     }
 
     public void createNewUser(registerDto registerDto) {
 
 
-
     }
 
     public void loginUser(loginDto loginDto) {
 
-
     }
 
-    public void editUser(editUserDto registerDto) {
 
+    public void editUser(editUserDto registerDto) {
 
     }
 }

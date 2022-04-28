@@ -42,6 +42,7 @@ public class User {
 
 
 
+
     public User(long id, List<Station> stations, String userName, String mailAddress, Byte passwordHash, Byte passwordSalt, byte Admin) {
         this.UserID = id;
         this.stations = stations;

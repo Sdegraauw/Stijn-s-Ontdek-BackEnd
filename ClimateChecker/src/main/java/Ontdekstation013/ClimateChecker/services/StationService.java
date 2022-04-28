@@ -52,8 +52,6 @@ public class StationService {
         return newdto;
     }
 
-
-    // not yet functional
     public List<stationTitleDto> getAllByUserId(long userId) {
         Iterable<Station> stationList = stationRepository.findAllByUserId(userId);
 
@@ -94,19 +92,15 @@ public class StationService {
     // not yet functional
     public void createStation(registerStationDto stationDto) {
 
-
-
     }
 
     // not yet functional
     public void deleteStation(long id) {
 
-
     }
 
     // not yet functional
     public void editStation(editStationDto stationDto) {
-
 
     }
 }
