@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker;
 
 import Ontdekstation013.ClimateChecker.Mocks.MockSensorRepo;
+import Ontdekstation013.ClimateChecker.Mocks.MockTypeRepo;
 import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.SensorType;
 import Ontdekstation013.ClimateChecker.models.Station;
@@ -19,13 +20,15 @@ import java.util.List;
 class SensorServiceTests {
 	private SensorService sensorService;
 	private MockSensorRepo mockRepo;
+	private MockTypeRepo mockTypeRepo;
 
 
 
 	@BeforeEach
 	void setup() throws Exception{
 		this.mockRepo = new MockSensorRepo();
-		this.sensorService = new SensorService(mockRepo);
+		this.mockTypeRepo = new MockTypeRepo();
+		this.sensorService = new SensorService(mockRepo, mockTypeRepo);
 
 
 		List<Sensor> sensors = new ArrayList<>();
