@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.services;
 
+import Ontdekstation013.ClimateChecker.models.Location;
 import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.Station;
 
@@ -52,8 +53,6 @@ public class StationService {
         return newdto;
     }
 
-
-    // not yet functional
     public List<stationTitleDto> getAllByUserId(long userId) {
         Iterable<Station> stationList = stationRepository.findAllByUserId(userId);
 
@@ -94,19 +93,22 @@ public class StationService {
     // not yet functional
     public void createStation(registerStationDto stationDto) {
 
-
-
     }
 
-    // not yet functional
     public void deleteStation(long id) {
 
-
+        stationRepository.deleteById(id);
     }
 
-    // not yet functional
     public void editStation(editStationDto stationDto) {
+        Station station = new Station();
+        station.setStationID(stationDto.getId());
+        station.setName(stationDto.getName());
+        station.setHeight(stationDto.getHeight());
 
+        Location location = new Location(stationDto.getAddress(), stationDto.getLatitude(), stationDto.getLongitude());
+        station.setLocation(location);
 
+        stationRepository.save(station);
     }
 }

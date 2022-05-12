@@ -72,8 +72,22 @@ public class StationController {
     // edit station
     @PutMapping
     public ResponseEntity<stationDto> editStation(@RequestBody editStationDto stationDto){
+        stationDto currentStation = stationService.findStationById(stationDto.getId());
+        currentStation.setName(stationDto.getName());
+        currentStation.setHeight(stationDto.getHeight());
+        currentStation.setLocationName(stationDto.getAddress());
+        currentStation.setLatitude(stationDto.getLatitude());
+        currentStation.setLongitude(stationDto.getLongitude());
 
-        stationService.editStation(stationDto);
+        editStationDto editedStation = new editStationDto();
+        editedStation.setId(currentStation.getId());
+        editedStation.setName(currentStation.getName());
+        editedStation.setHeight(currentStation.getHeight());
+        editedStation.setAddress(currentStation.getLocationName());
+        editedStation.setLongitude(currentStation.getLongitude());
+        editedStation.setLatitude(currentStation.getLatitude());
+
+        stationService.editStation(editedStation);
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 }

@@ -7,11 +7,9 @@ import lombok.Setter;
 @Setter
 public class registerStationDto extends Dto{
 
-    int userId;
-    String name;
+    String stationname;
     float height;
     String address;
     float latitude;
     float longitude;
-
 }

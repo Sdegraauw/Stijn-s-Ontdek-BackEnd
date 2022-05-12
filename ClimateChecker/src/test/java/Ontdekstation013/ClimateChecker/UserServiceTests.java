@@ -120,7 +120,7 @@ class UserServiceTests {
 
 		dto.setUsername("Jan");
 		dto.setPassword("fuckingpassword");
-		dto.setMailAddress("Jan@home.nl");
+		dto.setEmail("Jan@home.nl");
 		userService.createNewUser(dto);
 
 		Assertions.assertTrue(true);
