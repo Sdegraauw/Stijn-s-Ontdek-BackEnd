@@ -25,6 +25,7 @@ public class SensorRepositoryImpl implements SensorRepositoryCustom {
     }
 
 
+
     public List<Sensor> findAllByStation(long stationId) {
         List<Sensor> sensors = new ArrayList<>();
 
