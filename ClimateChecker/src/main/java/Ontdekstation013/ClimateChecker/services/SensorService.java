@@ -1,9 +1,11 @@
 package Ontdekstation013.ClimateChecker.services;
 
 import Ontdekstation013.ClimateChecker.models.Sensor;
+import Ontdekstation013.ClimateChecker.models.SensorType;
 import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
 import Ontdekstation013.ClimateChecker.models.dto.sensorTypeDto;
 import Ontdekstation013.ClimateChecker.repositories.SensorRepository;
+import Ontdekstation013.ClimateChecker.repositories.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -14,10 +16,12 @@ import java.util.List;
 public class SensorService {
 
     private final SensorRepository sensorRepository;
+    private TypeRepository typeRepository;
 
     @Autowired
-    public SensorService(SensorRepository sensorRepository) {
+    public SensorService(SensorRepository sensorRepository, TypeRepository typeRepository) {
         this.sensorRepository = sensorRepository;
+        this.typeRepository = typeRepository;
     }
 
 
@@ -54,20 +58,32 @@ public class SensorService {
     public List<sensorTypeDto> getAllSensorTypes() {
 
         List<sensorTypeDto> newDtoList = new ArrayList();
+        Iterable<SensorType> sensorTypes = typeRepository.findAll();
+
+
+        for (SensorType type:sensorTypes
+             ) {
+            sensorTypeDto newdto = new sensorTypeDto();
+
+            newdto.setId(type.getTypeID());
+            newdto.setName(type.getTypeName());
+
+            newDtoList.add(newdto);
+        }
+
 
         return newDtoList;
     }
 
     // not yet functional
     public List<sensorDto> getSensorsByType(long typeId) {
-        Iterable<Sensor> sensorList = sensorRepository.findAllByType(typeId);
+        Iterable<Sensor> sensorList = sensorRepository.findAll();
 
         List<sensorDto> newDtoList = new ArrayList<>();
         for (Sensor sensor: sensorList
         ) {
-
+            if (sensor.getSensorType().getTypeID() == typeId)
             newDtoList.add(sensorToSensorDTO(sensor));
-
         }
 
         return newDtoList;
@@ -81,6 +97,7 @@ public class SensorService {
         for (Sensor sensor: sensorList
         ) {
 
+            if (sensor.getStation().getStationID() == stationId)
             newDtoList.add(sensorToSensorDTO(sensor));
 
         }
