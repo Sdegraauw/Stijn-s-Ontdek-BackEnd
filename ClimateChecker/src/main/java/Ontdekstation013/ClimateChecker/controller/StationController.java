@@ -78,6 +78,7 @@ public class StationController {
         currentStation.setLocationName(stationDto.getAddress());
         currentStation.setLatitude(stationDto.getLatitude());
         currentStation.setLongitude(stationDto.getLongitude());
+        currentStation.setIspublic(stationDto.isIspublic());
 
         editStationDto editedStation = new editStationDto();
         editedStation.setId(currentStation.getId());
@@ -86,6 +87,7 @@ public class StationController {
         editedStation.setAddress(currentStation.getLocationName());
         editedStation.setLongitude(currentStation.getLongitude());
         editedStation.setLatitude(currentStation.getLatitude());
+        editedStation.setIspublic(currentStation.isIspublic());
 
         stationService.editStation(editedStation);
         return ResponseEntity.status(HttpStatus.OK).body(null);

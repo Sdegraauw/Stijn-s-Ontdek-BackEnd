@@ -94,7 +94,7 @@ class StationServiceTests {
 		Assertions.assertEquals(20,newDto.getHeight());
 		Assertions.assertEquals("name2",newDto.getName());
 		Assertions.assertEquals(2000,newDto.getLocationId());
-		Assertions.assertFalse(newDto.isPublic());
+		Assertions.assertFalse(newDto.isIspublic());
 
 	}
 
@@ -118,7 +118,7 @@ class StationServiceTests {
 		Assertions.assertEquals(station.getLocation().getLocationID(),newDto.getLocationId());
 		Assertions.assertEquals(station.getLocation().getLongitude(),newDto.getLongitude());
 		Assertions.assertEquals(station.getLocation().getLatitude(),newDto.getLatitude());
-		Assertions.assertEquals(station.isPublic(), newDto.isPublic());
+		Assertions.assertEquals(station.isPublic(), newDto.isIspublic());
 	}
 
 
@@ -180,7 +180,7 @@ class StationServiceTests {
 		dto.setLatitude(5687);
 		dto.setLongitude(89767);
 		dto.setAddress("Yes");
-		dto.setPublic(true);
+		dto.setIspublic(true);
 
 		stationService.createStation(dto);
 
@@ -208,7 +208,7 @@ class StationServiceTests {
 		dto2.setLatitude(9843);
 		dto2.setLongitude(8745);
 		dto2.setAddress("NEW");
-		dto2.setPublic(false);
+		dto2.setIspublic(false);
 
 		stationService.editStation(dto2);
 

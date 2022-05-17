@@ -47,7 +47,7 @@ public class StationService {
         newdto.setLocationName(station.getLocation().getLocationName());
         newdto.setLatitude(station.getLocation().getLatitude());
         newdto.setLongitude(station.getLocation().getLongitude());
-        newdto.setPublic(station.isPublic());
+        newdto.setIspublic(station.isPublic());
         //newdto.setSensors(station.getSensors());
 
 
@@ -106,7 +106,7 @@ public class StationService {
         station.setStationID(stationDto.getId());
         station.setName(stationDto.getName());
         station.setHeight(stationDto.getHeight());
-        station.setPublic(stationDto.isPublic());
+        station.setPublic(stationDto.isIspublic());
 
         Location location = new Location(stationDto.getAddress(), stationDto.getLatitude(), stationDto.getLongitude());
         station.setLocation(location);

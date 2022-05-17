@@ -13,5 +13,5 @@ public class registerStationDto extends Dto{
     String address;
     float latitude;
     float longitude;
-    boolean isPublic;
+    boolean ispublic;
 }
