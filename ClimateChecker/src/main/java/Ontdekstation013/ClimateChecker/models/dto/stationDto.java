@@ -16,6 +16,7 @@ public class stationDto extends Dto{
     String locationName;
     float latitude;
     float longitude;
+    boolean isPublic;
     List<sensorDto> sensors;
 }
 

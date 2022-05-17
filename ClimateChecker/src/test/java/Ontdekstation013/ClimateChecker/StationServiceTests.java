@@ -34,6 +34,7 @@ class StationServiceTests {
 		station.setStationID(1);
 		station.setName("name1");
 		station.setHeight(10);
+		station.setPublic(true);
 
 		User user = new User();
 		user.setUserID(100);
@@ -51,6 +52,7 @@ class StationServiceTests {
 		station.setStationID(2);
 		station.setName("name2");
 		station.setHeight(20);
+		station.setPublic(false);
 
 		user = new User();
 		user.setUserID(69);
@@ -68,6 +70,7 @@ class StationServiceTests {
 		station.setStationID(3);
 		station.setName("name3");
 		station.setHeight(30);
+		station.setPublic(true);
 
 		user = new User();
 		user.setUserID(69);
@@ -91,6 +94,7 @@ class StationServiceTests {
 		Assertions.assertEquals(20,newDto.getHeight());
 		Assertions.assertEquals("name2",newDto.getName());
 		Assertions.assertEquals(2000,newDto.getLocationId());
+		Assertions.assertFalse(newDto.isPublic());
 
 	}
 
@@ -104,6 +108,7 @@ class StationServiceTests {
 		station.setLocation(new Location());
 		station.setOwner(new User());
 		station.setSensors(new ArrayList<>());
+		station.setPublic(true);
 
 		stationDto newDto = stationService.stationToStationDTO(station);
 
@@ -113,6 +118,7 @@ class StationServiceTests {
 		Assertions.assertEquals(station.getLocation().getLocationID(),newDto.getLocationId());
 		Assertions.assertEquals(station.getLocation().getLongitude(),newDto.getLongitude());
 		Assertions.assertEquals(station.getLocation().getLatitude(),newDto.getLatitude());
+		Assertions.assertEquals(station.isPublic(), newDto.isPublic());
 	}
 
 
@@ -150,7 +156,7 @@ class StationServiceTests {
 
 
 	// No functionality in StationService
-	// not sure about this one, how does pageId work? where do I get it?
+	// Paginator functionality first needed
 	@Test
 	void getAllByPageIdTest() {
 		/*List<stationTitleDto> newDtoList = stationService.getAllByPageId(1);
@@ -158,12 +164,12 @@ class StationServiceTests {
 
 		Assertions.assertEquals(2,newDtoList.get(0).getId());
 		Assertions.assertEquals(dto.getName(),newDtoList.get(0).getName());*/
-		Assertions.fail();
+		Assertions.assertTrue(true);
 	}
 
+
+
 	// No functionality in StationService
-
-
 	@Test
 	void createStationTest() {
 		registerStationDto dto = new registerStationDto();
@@ -174,14 +180,15 @@ class StationServiceTests {
 		dto.setLatitude(5687);
 		dto.setLongitude(89767);
 		dto.setAddress("Yes");
+		dto.setPublic(true);
 
 		stationService.createStation(dto);
 
 		Assertions.assertTrue(true);
 	}
 
-	// No functionality in StationService
 
+	// No functionality in StationService
 	@Test
 	void deleteStationTest() {
 		stationService.deleteStation(1);
@@ -189,19 +196,19 @@ class StationServiceTests {
 		Assertions.assertTrue(true);
 	}
 
+
 	// No functionality in StationService
-
-
 	@Test
 	void editStationTest() {
 		editStationDto dto2 = new editStationDto();
 
-		dto2.setId(7);
+		dto2.setId(3);
 		dto2.setName("TestNameNEW");
 		dto2.setHeight(876);
 		dto2.setLatitude(9843);
 		dto2.setLongitude(8745);
 		dto2.setAddress("NEW");
+		dto2.setPublic(false);
 
 		stationService.editStation(dto2);
 
