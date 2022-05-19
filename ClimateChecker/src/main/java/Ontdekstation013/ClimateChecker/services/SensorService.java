@@ -3,12 +3,14 @@ package Ontdekstation013.ClimateChecker.services;
 import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.SensorType;
 import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
+import Ontdekstation013.ClimateChecker.models.dto.sensorAverageDto;
 import Ontdekstation013.ClimateChecker.models.dto.sensorTypeDto;
 import Ontdekstation013.ClimateChecker.repositories.SensorRepository;
 import Ontdekstation013.ClimateChecker.repositories.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,6 +19,8 @@ public class SensorService {
 
     private final SensorRepository sensorRepository;
     private TypeRepository typeRepository;
+
+    private static final DecimalFormat dfSharp = new DecimalFormat("#.##");
 
     @Autowired
     public SensorService(SensorRepository sensorRepository, TypeRepository typeRepository) {
@@ -75,7 +79,53 @@ public class SensorService {
         return newDtoList;
     }
 
-    // not yet functional
+    // return the average data of every sensor type
+    public sensorAverageDto getAllAverageSensorData() {
+        sensorAverageDto avgDto = new sensorAverageDto();
+
+        //get all types
+        Iterable<SensorType> sensorTypes = typeRepository.findAll();
+
+        //foreach type
+        for (SensorType type: sensorTypes){
+            // get all sensor values per sensor type
+            List<sensorDto> sensors = getSensorsByType(type.getTypeID());
+
+            //calculate the average for each type
+            double avgData = 0;
+                //type var: array
+            for (sensorDto sensor : sensors) {
+                avgData += sensor.getData();
+            }
+            avgData /= sensors.size();
+            double avgRounded = Double.parseDouble(dfSharp.format(avgData));
+
+            switch ((int) type.getTypeID()) {
+                case 1:
+                    avgDto.setTemperature(avgRounded);
+                    break;
+                case 2:
+                    avgDto.setNitrogen(avgRounded);
+                    break;
+                case 3:
+                    avgDto.setCarbonDioxide(avgRounded);
+                    break;
+                case 4:
+                    avgDto.setParticulateMatter(avgRounded);
+                    break;
+                case 5:
+                    avgDto.setHumidity(avgRounded);
+                    break;
+                case 6:
+                    avgDto.setWindSpeed(avgRounded);
+                    break;
+            }
+        }
+        //return all the averages
+        return avgDto;
+    }
+
+    // gets all sensors by specific type
     public List<sensorDto> getSensorsByType(long typeId) {
         Iterable<Sensor> sensorList = sensorRepository.findAll();
 

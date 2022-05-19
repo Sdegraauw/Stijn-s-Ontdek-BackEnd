@@ -5,6 +5,7 @@ import Ontdekstation013.ClimateChecker.Mocks.MockTypeRepo;
 import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.SensorType;
 import Ontdekstation013.ClimateChecker.models.Station;
+import Ontdekstation013.ClimateChecker.models.dto.sensorAverageDto;
 import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
 import Ontdekstation013.ClimateChecker.models.dto.sensorTypeDto;
 import Ontdekstation013.ClimateChecker.services.SensorService;
@@ -30,9 +31,22 @@ class SensorServiceTests {
 		this.mockTypeRepo = new MockTypeRepo();
 		this.sensorService = new SensorService(mockRepo, mockTypeRepo);
 
+		List<SensorType> sensorTypes = new ArrayList<>();
+
+		//sensor type 1
+		SensorType sensorType = new SensorType();
+		sensorType.setTypeID(4);
+		sensorTypes.add(sensorType);
+
+		//sensor type 2
+		SensorType sensorType1 = new SensorType();
+		sensorType1.setTypeID(6);
+		sensorTypes.add(sensorType1);
+		mockTypeRepo.FillDatabase(sensorTypes);
+
+
 
 		List<Sensor> sensors = new ArrayList<>();
-
 		Sensor sensor = new Sensor();
 
 		// sensor 1
@@ -133,6 +147,15 @@ class SensorServiceTests {
 		 */
 	}
 
+	// Has functionality
+	@Test
+	void getAllAverageSensorDataTest() {
+		sensorAverageDto avgDto = sensorService.getAllAverageSensorData();
+
+		Assertions.assertEquals(avgDto.getParticulateMatter(), 2);
+		Assertions.assertEquals(avgDto.getWindSpeed(), 2.5);
+	}
+
 
 	// No functionality in SensorService
 	@Test
@@ -184,7 +207,7 @@ class SensorServiceTests {
 
 	}
 
-	// No functionality in SensorService
+	// Has functionality
 	@Test
 	void getSensorsByTypeTest(){
 		List<sensorDto> newDtoList = sensorService.getSensorsByType(6);

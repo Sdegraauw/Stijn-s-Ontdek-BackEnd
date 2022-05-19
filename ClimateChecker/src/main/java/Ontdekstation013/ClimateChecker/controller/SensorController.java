@@ -48,6 +48,13 @@ public class SensorController {
         return ResponseEntity.ok(dto);
     }
 
+    // get the average data of each sensor type
+    @GetMapping("average")
+    public ResponseEntity<sensorAverageDto> getSensorAverage(){
+        sensorAverageDto avgDto = sensorService.getAllAverageSensorData();
+        return ResponseEntity.ok(avgDto);
+    }
+
     // get all sensors by station
     @GetMapping("station/{stationId}")
     public ResponseEntity<List<sensorDto>> getSensorsByStation(@PathVariable long stationId) {
