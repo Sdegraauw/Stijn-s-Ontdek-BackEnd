@@ -9,6 +9,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
+import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -77,6 +78,7 @@ public class MockStationRepo implements StationRepository {
 
     @Override
     public <S extends Station> S save(S entity) {
+        stations.add(entity);
         return null;
     }
 

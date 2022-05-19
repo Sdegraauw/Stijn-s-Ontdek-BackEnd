@@ -169,22 +169,27 @@ class StationServiceTests {
 
 
 
-	// No functionality in StationService
 	@Test
 	void createStationTest() {
 		registerStationDto dto = new registerStationDto();
 
-		//dto.setUserId(4);
-		dto.setStationname("name4");
+		dto.setUserId(4);
+		dto.setStationname("nameTest");
 		dto.setHeight(54);
 		dto.setLatitude(5687);
 		dto.setLongitude(89767);
-		dto.setAddress("Yes");
+		dto.setAddress("AddressTitle");
 		dto.setIspublic(true);
-
 		stationService.createStation(dto);
 
-		Assertions.assertTrue(true);
+		Station result = mockRepo.stations.get(3);
+
+		Assertions.assertEquals(dto.getStationname(), result.getName());
+		Assertions.assertEquals(dto.getHeight(), result.getHeight());
+		Assertions.assertEquals(dto.getLatitude(), result.getLocation().getLatitude());
+		Assertions.assertEquals(dto.getLongitude(), result.getLocation().getLongitude());
+		Assertions.assertEquals(dto.getAddress(), result.getLocation().getLocationName());
+		Assertions.assertEquals(dto.isIspublic(), result.isPublic());
 	}
 
 

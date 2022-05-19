@@ -47,4 +47,12 @@ public class Station {
         this.Name = name;
         this.isPublic = isPublic;
     }
+
+    public Station(User owner, String name, float height, Location location, boolean isPublic) {
+        this.owner = owner;
+        this.location = location;
+        this.height = height;
+        this.Name = name;
+        this.isPublic = isPublic;
+    }
 }
