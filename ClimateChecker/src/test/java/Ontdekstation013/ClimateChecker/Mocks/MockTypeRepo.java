@@ -19,7 +19,7 @@ public class MockTypeRepo implements TypeRepository {
     public List<SensorType> typeList;
 
     public MockTypeRepo(){
-        typeList = new ArrayList<>();
+        this.typeList = new ArrayList<>();
     }
 
     public void FillDatabase(List<SensorType> typeList){
@@ -28,7 +28,7 @@ public class MockTypeRepo implements TypeRepository {
 
     @Override
     public List<SensorType> findAll() {
-        return null;
+        return typeList;
     }
 
     @Override
