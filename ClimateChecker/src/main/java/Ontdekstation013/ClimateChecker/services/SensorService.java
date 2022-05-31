@@ -11,8 +11,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class SensorService {
@@ -20,7 +22,15 @@ public class SensorService {
     private final SensorRepository sensorRepository;
     private TypeRepository typeRepository;
 
-    private static final DecimalFormat dfSharp = new DecimalFormat("#.##");
+
+    public static double avgformat(double num) {
+        /*DecimalFormatSymbols decimalSymbols = DecimalFormatSymbols.getInstance();*/
+        DecimalFormatSymbols formatSymbols = new DecimalFormatSymbols(Locale.getDefault());
+        formatSymbols.setDecimalSeparator('.');
+        DecimalFormat dfSharp = new DecimalFormat("#.##", formatSymbols);
+        double newAverage = Double.parseDouble(dfSharp.format(num));
+        return newAverage;
+    }
 
     @Autowired
     public SensorService(SensorRepository sensorRepository, TypeRepository typeRepository) {
@@ -98,7 +108,7 @@ public class SensorService {
                 avgData += sensor.getData();
             }
             avgData /= sensors.size();
-            double avgRounded = Double.parseDouble(dfSharp.format(avgData));
+            double avgRounded = avgformat(avgData);
 
             switch ((int) type.getTypeID()) {
                 case 1:
