@@ -36,12 +36,23 @@ public class Station {
 
     private String Name;
 
-    public Station(long id, List<Sensor> sensors, User owner, Location location, float height, String name) {
+    private boolean isPublic;
+
+    public Station(long id, List<Sensor> sensors, User owner, Location location, float height, String name, boolean isPublic) {
         this.StationID = id;
         this.sensors = sensors;
         this.owner = owner;
         this.location = location;
         this.height = height;
         this.Name = name;
+        this.isPublic = isPublic;
+    }
+
+    public Station(User owner, String name, float height, Location location, boolean isPublic) {
+        this.owner = owner;
+        this.location = location;
+        this.height = height;
+        this.Name = name;
+        this.isPublic = isPublic;
     }
 }

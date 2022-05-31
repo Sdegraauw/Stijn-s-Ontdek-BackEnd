@@ -7,6 +7,7 @@ import Ontdekstation013.ClimateChecker.models.Station;
 import java.util.ArrayList;
 import java.util.List;
 
+import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,7 @@ public class StationService {
         newdto.setLocationName(station.getLocation().getLocationName());
         newdto.setLatitude(station.getLocation().getLatitude());
         newdto.setLongitude(station.getLocation().getLongitude());
+        newdto.setIspublic(station.isPublic());
         //newdto.setSensors(station.getSensors());
 
 
@@ -90,9 +92,16 @@ public class StationService {
         return newDtoList;
     }
 
-    // not yet functional
-    public void createStation(registerStationDto stationDto) {
 
+    public void createStation(registerStationDto stationDto) {
+        User owner = new User();
+        owner.setUserID(stationDto.getUserId());
+
+        Location location = new Location(stationDto.getAddress(), stationDto.getLatitude(), stationDto.getLongitude());
+
+        Station station = new Station(owner, stationDto.getStationname(), stationDto.getHeight(), location, stationDto.isIspublic());
+
+        stationRepository.save(station);
     }
 
     public void deleteStation(long id) {
@@ -105,6 +114,7 @@ public class StationService {
         station.setStationID(stationDto.getId());
         station.setName(stationDto.getName());
         station.setHeight(stationDto.getHeight());
+        station.setPublic(stationDto.isIspublic());
 
         Location location = new Location(stationDto.getAddress(), stationDto.getLatitude(), stationDto.getLongitude());
         station.setLocation(location);

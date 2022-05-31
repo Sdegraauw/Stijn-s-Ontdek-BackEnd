@@ -13,5 +13,6 @@ public class editStationDto extends Dto{
     String address;
     float latitude;
     float longitude;
+    boolean ispublic;
 
 }
