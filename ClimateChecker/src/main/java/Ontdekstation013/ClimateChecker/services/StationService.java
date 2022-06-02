@@ -11,6 +11,8 @@ import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -103,7 +105,16 @@ public class StationService {
     }
 
 
-    public void createStation(registerStationDto stationDto) {
+    // Returns false if not all information is filled in
+    // Returns true if successful
+    public boolean createStation(registerStationDto stationDto) {
+
+        if (stationDto.getUserId() < 1 || stationDto.getStationname().equals("")
+                || stationDto.getAddress().equals("")) {
+            return false;
+        }
+
+
         User owner = new User();
         owner.setUserID(stationDto.getUserId());
 
@@ -112,6 +123,8 @@ public class StationService {
         Station station = new Station(owner, stationDto.getStationname(), stationDto.getHeight(), location, stationDto.isIspublic());
 
         stationRepository.save(station);
+
+        return true;
     }
 
     public void deleteStation(long id) {

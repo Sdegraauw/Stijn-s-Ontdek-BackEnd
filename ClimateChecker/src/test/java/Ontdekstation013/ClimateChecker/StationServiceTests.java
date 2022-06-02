@@ -180,7 +180,8 @@ class StationServiceTests {
 		dto.setLongitude(89767);
 		dto.setAddress("AddressTitle");
 		dto.setIspublic(true);
-		stationService.createStation(dto);
+
+		Assertions.assertTrue(stationService.createStation(dto));
 
 		Station result = mockRepo.stations.get(3);
 
@@ -190,6 +191,15 @@ class StationServiceTests {
 		Assertions.assertEquals(dto.getLongitude(), result.getLocation().getLongitude());
 		Assertions.assertEquals(dto.getAddress(), result.getLocation().getLocationName());
 		Assertions.assertEquals(dto.isIspublic(), result.isPublic());
+	}
+
+	@Test
+	void createStationTest_ShouldFail() {
+		registerStationDto dto = new registerStationDto();
+
+		boolean created = stationService.createStation(dto);
+
+		Assertions.assertFalse(created);
 	}
 
 
