@@ -84,6 +84,16 @@ public class StationService {
         return newDtoList;
     }
 
+    public List<stationDto> getAllStations() {
+        Iterable<Station> StationList = stationRepository.findAll();
+        List<stationDto> newDtoList = new ArrayList<>();
+        for (Station station: StationList
+        ) {
+            newDtoList.add(stationToStationDTO(station));
+        }
+        return newDtoList;
+    }
+
     // not yet functional
     public List<stationTitleDto> getAllByPageId(long pageId) {
         List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
@@ -110,15 +120,15 @@ public class StationService {
     }
 
     public void editStation(editStationDto stationDto) {
-        Station station = new Station();
-        station.setStationID(stationDto.getId());
-        station.setName(stationDto.getName());
-        station.setHeight(stationDto.getHeight());
-        station.setPublic(stationDto.isIspublic());
+        Station currentStation = stationRepository.findById(stationDto.getId()).get();
+
+        currentStation.setName(stationDto.getName());
+        currentStation.setHeight(stationDto.getHeight());
+        currentStation.setPublic(stationDto.isIspublic());
 
         Location location = new Location(stationDto.getAddress(), stationDto.getLatitude(), stationDto.getLongitude());
-        station.setLocation(location);
+        currentStation.setLocation(location);
 
-        stationRepository.save(station);
+        stationRepository.save(currentStation);
     }
 }
