@@ -196,9 +196,10 @@ class StationServiceTests {
 	// No functionality in StationService
 	@Test
 	void deleteStationTest() {
-		stationService.deleteStation(1);
+		long testId = 1;
+		stationService.deleteStation(testId);
 
-		Assertions.assertTrue(true);
+		Assertions.assertFalse(mockRepo.stations.contains(testId));
 	}
 
 
@@ -217,7 +218,14 @@ class StationServiceTests {
 
 		stationService.editStation(dto2);
 
-		Assertions.assertTrue(true);
+		Station result = mockRepo.stations.get(3);
+
+		Assertions.assertEquals(dto2.getName(), result.getName());
+		Assertions.assertEquals(dto2.getHeight(), result.getHeight());
+		Assertions.assertEquals(dto2.getLatitude(), result.getLocation().getLatitude());
+		Assertions.assertEquals(dto2.getLongitude(), result.getLocation().getLongitude());
+		Assertions.assertEquals(dto2.getAddress(), result.getLocation().getLocationName());
+		Assertions.assertEquals(dto2.isIspublic(), result.isPublic());
 	}
 
 }
