@@ -57,8 +57,13 @@ public class StationController {
     @PostMapping
     public ResponseEntity<stationDto> createStation(@RequestBody registerStationDto stationDto){
 
-        stationService.createStation(stationDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        boolean created = stationService.createStation(stationDto);
+
+        if (created) {
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        }
+
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     // delete station
