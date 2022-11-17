@@ -135,7 +135,7 @@ class UserServiceTests {
 
 		dto.setPassword("fuckingpassword");
 		dto.setMailAddress("Jan@home.nl");
-		userService.loginUser(dto);
+		userService.verifyMail(dto);
 
 
 		Assertions.assertTrue(true);

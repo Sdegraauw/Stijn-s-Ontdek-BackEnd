@@ -1,6 +1,5 @@
 package Ontdekstation013.ClimateChecker.controller;
 
-import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,8 +28,11 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto){
 
-        userService.loginUser(loginDto);
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        if(userService.verifyMail(loginDto)) {
+            // TODO Link Code
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
     }
 
     // edit user
