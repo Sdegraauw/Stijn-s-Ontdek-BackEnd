@@ -11,6 +11,7 @@ public class userDataDto extends Dto{
     String firstName;
     String namePreposition;
     String lastName;
+    String Username;
     String mailAddress;
     boolean admin;
 }

@@ -37,6 +37,9 @@ public class User {
     private String lastName;
 
     @NotBlank
+    private String username;
+
+    @NotBlank
     @Email
     private String mailAddress;
 
@@ -49,22 +52,24 @@ public class User {
 
 
 
-    public User(long id, List<Station> stations, String firstName, String namePreposition, String lastName, String mailAddress, Byte passwordHash, Byte passwordSalt, boolean Admin) {
+    public User(long id, List<Station> stations, String firstName, String namePreposition, String lastName, String Username, String mailAddress, Byte passwordHash, Byte passwordSalt, boolean Admin) {
         this.UserID = id;
         this.stations = stations;
         this.firstName = firstName;
         this.namePreposition = namePreposition;
         this.lastName = lastName;
+        this.username = Username;
         this.mailAddress = mailAddress;
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
         this.Admin = Admin;
     }
 
-    public User(String firstName, String namePreposition, String lastName, String mailAddress) {
+    public User(String firstName, String namePreposition, String lastName, String Username, String mailAddress) {
         this.firstName = firstName;
         this.namePreposition = namePreposition;
         this.lastName = lastName;
+        this.username = Username;
         this.mailAddress = mailAddress;
     }
 

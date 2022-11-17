@@ -81,12 +81,14 @@ public class UserService {
     }
 
     public boolean createNewUser(registerDto registerDto) {
-        if (registerDto.getFirstName().length() < 256 && registerDto.getNamePreposition().length() < 256 && registerDto.getLastName().length() < 256) {
+        if (registerDto.getFirstName().length() < 256 && registerDto.getNamePreposition().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUsername().length() < 256) {
             if (registerDto.getMailAddress().contains("@")) {
-                User user = new User(registerDto.getFirstName(), registerDto.getNamePreposition(), registerDto.getLastName(), registerDto.getMailAddress());
-                userRepository.save(user);
-                System.out.println("Gelukt");
-                return true;
+                if (!userRepository.existsUserByUsernameOrMailAddress(registerDto.getUsername(), registerDto.getMailAddress())) {
+                    User user = new User(registerDto.getFirstName(), registerDto.getNamePreposition(), registerDto.getLastName(), registerDto.getUsername(), registerDto.getMailAddress());
+                    userRepository.save(user);
+                    System.out.println("Gelukt");
+                    return true;
+                }
             }
         }
         System.out.println("Niet gelukt");

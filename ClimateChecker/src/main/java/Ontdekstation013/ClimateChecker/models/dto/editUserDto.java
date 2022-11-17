@@ -11,6 +11,7 @@ public class editUserDto extends Dto{
     String firstName;
     String namePreposition;
     String lastName;
+    String Username;
     String mailAddress;
     String password;
 }

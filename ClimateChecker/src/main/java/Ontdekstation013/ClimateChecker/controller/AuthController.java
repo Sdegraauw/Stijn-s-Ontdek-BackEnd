@@ -22,7 +22,6 @@ public class AuthController {
     @PostMapping("register")
     @CrossOrigin
     public ResponseEntity<userDto> createNewUser(@RequestBody registerDto registerDto) {
-
         boolean created = userService.createNewUser(registerDto);
 
         if (created) {

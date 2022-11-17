@@ -14,6 +14,7 @@ public class userDto extends Dto{
     private String firstName;
     private String namePreposition;
     private String lastName;
+    private String Username;
     private String mailAddress;
     private Byte passwordHash;
     private Byte passwordSalt;
