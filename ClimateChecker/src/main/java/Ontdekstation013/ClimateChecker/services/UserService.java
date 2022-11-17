@@ -1,6 +1,5 @@
 package Ontdekstation013.ClimateChecker.services;
 
-import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
@@ -39,8 +38,6 @@ public class UserService {
         newdto.setId(user.getUserID());
         newdto.setMailAddress(user.getMailAddress());
         newdto.setUsername(user.getUserName());
-        newdto.setPasswordHash(user.getPasswordHash());
-        newdto.setPasswordSalt(user.getPasswordSalt());
         return newdto;
     }
 
@@ -77,11 +74,9 @@ public class UserService {
 
     }
 
-    public void loginUser(loginDto loginDto) {
-
-
+    public boolean verifyMail(loginDto loginDto) {
+        return userRepository.findByMailAddress(loginDto.getMailAddress()) != null;
     }
-
 
     public void editUser(editUserDto registerDto) {
 

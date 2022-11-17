@@ -7,6 +7,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -34,36 +35,36 @@ public class User {
     @Email
     private String mailAddress;
 
-    private Byte passwordHash;
+    private Byte linkHash;
 
-    private Byte passwordSalt;
+    private LocalDateTime creationTime;
 
     private byte Admin;
 
 
 
 
-    public User(long id, List<Station> stations, String userName, String mailAddress, Byte passwordHash, Byte passwordSalt, byte Admin) {
+    public User(long id, List<Station> stations, String userName, String mailAddress, Byte linkHash, LocalDateTime creationTime, byte Admin) {
         this.UserID = id;
         this.stations = stations;
         this.userName = userName;
         this.mailAddress = mailAddress;
-        this.passwordHash = passwordHash;
-        this.passwordSalt = passwordSalt;
+        this.linkHash = linkHash;
+        this.creationTime = creationTime;
         this.Admin = Admin;
     }
 
-    public User(String userName, String mailAddress, Byte passwordHash, Byte passwordSalt) {
+    public User(String userName, String mailAddress, Byte linkHash, LocalDateTime creationTime) {
         this.userName = userName;
         this.mailAddress = mailAddress;
-        this.passwordHash =passwordHash;
-        this.passwordSalt = passwordSalt;
+        this.linkHash = linkHash;
+        this.creationTime = creationTime;
     }
 
-    public User(String mailAddress, Byte passwordHash, Byte passwordSalt) {
+    public User(String mailAddress, Byte linkHash, LocalDateTime creationTime) {
         this.mailAddress = mailAddress;
-        this.passwordHash = passwordHash;
-        this.passwordSalt = passwordSalt;
+        this.linkHash = linkHash;
+        this.creationTime = creationTime;
     }
 
 }
