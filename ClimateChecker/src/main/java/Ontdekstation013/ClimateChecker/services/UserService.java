@@ -78,12 +78,11 @@ public class UserService {
     }
 
     public void loginUser(loginDto loginDto) {
-
-
+        System.out.println("Test loginuser");
     }
 
 
     public void editUser(editUserDto registerDto) {
-
+        System.out.println("Test edituser");
     }
 }
