@@ -44,7 +44,7 @@ public class HeatmapController {
             stationDto station = stationService.findStationById(dto.getStationId());
             Location location = locationService.findLocationById(station.getLocationId());
 
-            returnValue.add(new heatmapPointDto(location.getLongitude(), location.getLatitude(), dto.getData()*100));
+            returnValue.add(new heatmapPointDto(location.getLongitude(), location.getLatitude(), dto.getData()));
         }
 
         return returnValue;
