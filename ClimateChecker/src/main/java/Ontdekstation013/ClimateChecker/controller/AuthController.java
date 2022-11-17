@@ -6,6 +6,7 @@ import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.services.EmailSenderService;
 //import Ontdekstation013.ClimateChecker.services.MailService;
 import Ontdekstation013.ClimateChecker.services.UserService;
+import ch.qos.logback.core.encoder.EchoEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -29,8 +30,9 @@ public class AuthController {
 
     // create new user
     @PostMapping("register")
-    public ResponseEntity<userDto> createNewUser(@RequestBody registerDto registerDto) {
+    public ResponseEntity<userDto> createNewUser(@RequestBody registerDto registerDto) throws Exception {
         userService.createNewUser(registerDto);
+
         emailSenderService.sendSignupMail(registerDto.getEmail(), registerDto.getUsername());
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
