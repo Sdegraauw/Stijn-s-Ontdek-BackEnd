@@ -28,7 +28,13 @@ public class User {
     private List<Station> stations = new LinkedList<>();
 
     @NotBlank
-    private String userName;
+    private String firstName;
+
+    @NotBlank
+    private String namePreposition;
+
+    @NotBlank
+    private String lastName;
 
     @NotBlank
     @Email
@@ -38,32 +44,34 @@ public class User {
 
     private Byte passwordSalt;
 
-    private byte Admin;
+    private boolean Admin;
 
 
 
 
-    public User(long id, List<Station> stations, String userName, String mailAddress, Byte passwordHash, Byte passwordSalt, byte Admin) {
+    public User(long id, List<Station> stations, String firstName, String namePreposition, String lastName, String mailAddress, Byte passwordHash, Byte passwordSalt, boolean Admin) {
         this.UserID = id;
         this.stations = stations;
-        this.userName = userName;
+        this.firstName = firstName;
+        this.namePreposition = namePreposition;
+        this.lastName = lastName;
         this.mailAddress = mailAddress;
         this.passwordHash = passwordHash;
         this.passwordSalt = passwordSalt;
         this.Admin = Admin;
     }
 
-    public User(String userName, String mailAddress, Byte passwordHash, Byte passwordSalt) {
-        this.userName = userName;
+    public User(String firstName, String namePreposition, String lastName, String mailAddress) {
+        this.firstName = firstName;
+        this.namePreposition = namePreposition;
+        this.lastName = lastName;
         this.mailAddress = mailAddress;
-        this.passwordHash =passwordHash;
-        this.passwordSalt = passwordSalt;
     }
 
-    public User(String mailAddress, Byte passwordHash, Byte passwordSalt) {
-        this.mailAddress = mailAddress;
-        this.passwordHash = passwordHash;
-        this.passwordSalt = passwordSalt;
-    }
+//    public User(String mailAddress, Byte passwordHash, Byte passwordSalt) {
+//        this.mailAddress = mailAddress;
+//        this.passwordHash = passwordHash;
+//        this.passwordSalt = passwordSalt;
+//    }
 
 }

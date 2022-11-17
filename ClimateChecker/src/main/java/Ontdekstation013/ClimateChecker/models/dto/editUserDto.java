@@ -8,7 +8,9 @@ import lombok.Setter;
 public class editUserDto extends Dto{
 
     int id;
-    String username;
+    String firstName;
+    String namePreposition;
+    String lastName;
     String mailAddress;
     String password;
 }

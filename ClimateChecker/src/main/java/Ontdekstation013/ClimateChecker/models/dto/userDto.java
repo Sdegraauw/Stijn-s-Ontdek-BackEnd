@@ -3,13 +3,19 @@ package Ontdekstation013.ClimateChecker.models.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotBlank;
+
 @Getter
 @Setter
 public class userDto extends Dto{
 
     long id;
-    String username;
-    String mailAddress;
-    Byte passwordHash;
-    Byte passwordSalt;
+    private String firstName;
+    private String namePreposition;
+    private String lastName;
+    private String mailAddress;
+    private Byte passwordHash;
+    private Byte passwordSalt;
+    private boolean Admin;
 }
