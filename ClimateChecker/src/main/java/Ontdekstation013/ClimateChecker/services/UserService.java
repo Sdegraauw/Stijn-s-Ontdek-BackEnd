@@ -35,7 +35,6 @@ public class UserService {
         newdto.setId(user.getUserID());
         newdto.setMailAddress(user.getMailAddress());
         newdto.setFirstName(user.getFirstName());
-        newdto.setNamePreposition(user.getNamePreposition());
         newdto.setLastName(user.getLastName());
         return newdto;
     }
@@ -45,7 +44,6 @@ public class UserService {
         newdto.setId(user.getUserID());
         newdto.setMailAddress(user.getMailAddress());
         newdto.setFirstName(user.getFirstName());
-        newdto.setNamePreposition(user.getNamePreposition());
         newdto.setLastName(user.getLastName());
         newdto.setPasswordHash(user.getPasswordHash());
         newdto.setPasswordSalt(user.getPasswordSalt());
@@ -81,10 +79,10 @@ public class UserService {
     }
 
     public boolean createNewUser(registerDto registerDto) {
-        if (registerDto.getFirstName().length() < 256 && registerDto.getNamePreposition().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUsername().length() < 256) {
+        if (registerDto.getFirstName().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUsername().length() < 256) {
             if (registerDto.getMailAddress().contains("@")) {
                 if (!userRepository.existsUserByUsernameOrMailAddress(registerDto.getUsername(), registerDto.getMailAddress())) {
-                    User user = new User(registerDto.getFirstName(), registerDto.getNamePreposition(), registerDto.getLastName(), registerDto.getUsername(), registerDto.getMailAddress());
+                    User user = new User(registerDto.getFirstName(), registerDto.getLastName(), registerDto.getUsername(), registerDto.getMailAddress());
                     userRepository.save(user);
                     System.out.println("Gelukt");
                     return true;

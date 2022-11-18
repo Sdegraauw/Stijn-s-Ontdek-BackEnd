@@ -31,9 +31,6 @@ public class User {
     private String firstName;
 
     @NotBlank
-    private String namePreposition;
-
-    @NotBlank
     private String lastName;
 
     @NotBlank
@@ -52,11 +49,10 @@ public class User {
 
 
 
-    public User(long id, List<Station> stations, String firstName, String namePreposition, String lastName, String Username, String mailAddress, Byte passwordHash, Byte passwordSalt, boolean Admin) {
+    public User(long id, List<Station> stations, String firstName, String lastName, String Username, String mailAddress, Byte passwordHash, Byte passwordSalt, boolean Admin) {
         this.UserID = id;
         this.stations = stations;
         this.firstName = firstName;
-        this.namePreposition = namePreposition;
         this.lastName = lastName;
         this.username = Username;
         this.mailAddress = mailAddress;
@@ -65,9 +61,8 @@ public class User {
         this.Admin = Admin;
     }
 
-    public User(String firstName, String namePreposition, String lastName, String Username, String mailAddress) {
+    public User(String firstName, String lastName, String Username, String mailAddress) {
         this.firstName = firstName;
-        this.namePreposition = namePreposition;
         this.lastName = lastName;
         this.username = Username;
         this.mailAddress = mailAddress;

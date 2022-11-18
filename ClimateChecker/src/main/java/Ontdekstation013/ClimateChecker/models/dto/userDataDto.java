@@ -9,7 +9,6 @@ public class userDataDto extends Dto{
 
     long id;
     String firstName;
-    String namePreposition;
     String lastName;
     String Username;
     String mailAddress;
