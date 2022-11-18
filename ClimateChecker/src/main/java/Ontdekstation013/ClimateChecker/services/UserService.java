@@ -79,6 +79,6 @@ public class UserService {
     }
 
     public void editUser(editUserDto registerDto) {
-
+        System.out.println("Test edituser");
     }
 }
