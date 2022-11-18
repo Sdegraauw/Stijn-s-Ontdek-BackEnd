@@ -179,4 +179,8 @@ public class MockUserRepo implements UserRepository {
     public void FillDatabase(List<User> userList) {
         this.userList = userList;
     }
+
+    public User findByMailAddress(String mail) {
+        return null;
+    }
 }

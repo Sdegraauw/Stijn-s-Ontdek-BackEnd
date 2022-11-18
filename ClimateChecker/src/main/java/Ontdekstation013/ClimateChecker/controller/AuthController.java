@@ -40,8 +40,6 @@ public class AuthController {
     // login user
     @PostMapping("login")
     public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto){
-        userService.loginUser(loginDto);
-
         if(userService.verifyMail(loginDto)) {
             // TODO Link Code
             return ResponseEntity.status(HttpStatus.OK).body(null);
