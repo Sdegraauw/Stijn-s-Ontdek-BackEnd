@@ -22,7 +22,7 @@ class UserServiceTests {
 	@BeforeEach
 	void setup() throws Exception{
 		this.mockRepo = new MockUserRepo();
-		this.userService = new UserService(mockRepo);
+//		this.userService = new UserService(mockRepo);
 
 		List<User> userList = new ArrayList<>();
 
@@ -119,7 +119,7 @@ class UserServiceTests {
 		registerDto dto = new registerDto();
 
 		dto.setUsername("Jan");
-		dto.setPassword("fuckingpassword");
+		dto.setPassword("password");
 		dto.setEmail("Jan@home.nl");
 		userService.createNewUser(dto);
 
@@ -133,7 +133,7 @@ class UserServiceTests {
 	void loginUserTest() {
 		loginDto dto = new loginDto();
 
-		dto.setPassword("fuckingpassword");
+//		dto.setPassword("password");
 		dto.setMailAddress("Jan@home.nl");
 		userService.loginUser(dto);
 
@@ -154,5 +154,14 @@ class UserServiceTests {
 		userService.editUser(dto2);
 
 		Assertions.assertTrue(true);
+	}
+
+	@Test
+	void createTokenTest() {
+		User user = new User();
+		user.setUserID(1);
+		user.setMailAddress("Quinn@");
+
+//		.createToken(user);
 	}
 }

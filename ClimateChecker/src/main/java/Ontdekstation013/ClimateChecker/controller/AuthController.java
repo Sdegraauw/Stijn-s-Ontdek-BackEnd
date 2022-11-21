@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker.controller;
 
-import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
+import Ontdekstation013.ClimateChecker.models.Token;
+import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,11 +13,13 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/Authentication")
 
 public class AuthController {
-
-
     private final UserService userService;
+
+
     @Autowired
-    public AuthController(UserService userService) {this.userService = userService;}
+    public AuthController(UserService userService) {
+        this.userService = userService;
+    }
 
     // create new user
     @PostMapping("register")
@@ -28,6 +31,11 @@ public class AuthController {
     // login user
     @PostMapping("login")
     public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto){
+        User user = new User(loginDto.getMailAddress(), Long.valueOf(1) );
+
+        Token token = userService.createToken(user);
+        userService.saveToken(token);
+
 
         userService.loginUser(loginDto);
         return ResponseEntity.status(HttpStatus.OK).body(null);

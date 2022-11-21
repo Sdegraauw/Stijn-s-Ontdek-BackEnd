@@ -34,37 +34,27 @@ public class User {
     @NotBlank
     @Email
     private String mailAddress;
-
-    private Byte linkHash;
-
-    private LocalDateTime creationTime;
-
     private byte Admin;
 
 
 
 
-    public User(long id, List<Station> stations, String userName, String mailAddress, Byte linkHash, LocalDateTime creationTime, byte Admin) {
+    public User(long id, List<Station> stations, String userName, String mailAddress, byte Admin) {
         this.UserID = id;
         this.stations = stations;
         this.userName = userName;
         this.mailAddress = mailAddress;
-        this.linkHash = linkHash;
-        this.creationTime = creationTime;
         this.Admin = Admin;
     }
 
-    public User(String userName, String mailAddress, Byte linkHash, LocalDateTime creationTime) {
+    public User(String userName, String mailAddress) {
         this.userName = userName;
         this.mailAddress = mailAddress;
-        this.linkHash = linkHash;
-        this.creationTime = creationTime;
     }
 
-    public User(String mailAddress, Byte linkHash, LocalDateTime creationTime) {
+    public User(String mailAddress, Long id) {
+        this.UserID = id;
         this.mailAddress = mailAddress;
-        this.linkHash = linkHash;
-        this.creationTime = creationTime;
     }
 
 }
