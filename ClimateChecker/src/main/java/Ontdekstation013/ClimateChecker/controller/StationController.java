@@ -3,6 +3,7 @@ package Ontdekstation013.ClimateChecker.controller;
 import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.StationRepository;
+import Ontdekstation013.ClimateChecker.services.SensorService;
 import Ontdekstation013.ClimateChecker.services.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,12 @@ import java.util.List;
 public class StationController {
 
     private final StationService stationService;
+    private final SensorService sensorService;
+
     @Autowired
-    public StationController(StationService stationService){
+    public StationController(StationService stationService, SensorService sensorService){
         this.stationService = stationService;
+        this.sensorService = sensorService;
     }
 
     // get station based on id
@@ -58,6 +62,11 @@ public class StationController {
     public ResponseEntity<List<stationDto>> getAllStationsMap() {
 
         List<stationDto> newDtoList = stationService.getAllStations();
+
+        for(stationDto dto : newDtoList){
+            dto.setSensors(sensorService.getSensorsByStation(dto.getId()));
+        }
+
         return ResponseEntity.ok(newDtoList);
     }
 

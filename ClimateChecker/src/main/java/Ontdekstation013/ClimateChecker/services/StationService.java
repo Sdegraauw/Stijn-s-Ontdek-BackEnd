@@ -89,8 +89,8 @@ public class StationService {
     public List<stationDto> getAllStations() {
         Iterable<Station> StationList = stationRepository.findAll();
         List<stationDto> newDtoList = new ArrayList<>();
-        for (Station station: StationList
-        ) {
+        for (Station station: StationList)
+        {
             newDtoList.add(stationToStationDTO(station));
         }
         return newDtoList;
