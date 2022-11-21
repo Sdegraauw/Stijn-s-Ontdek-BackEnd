@@ -29,7 +29,13 @@ public class User {
     private List<Station> stations = new LinkedList<>();
 
     @NotBlank
-    private String userName;
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
+    @NotBlank
+    private String username;
 
     @NotBlank
     @Email
@@ -39,7 +45,7 @@ public class User {
 
     private LocalDateTime creationTime;
 
-    private byte Admin;
+    private boolean Admin;
 
 
 
@@ -47,7 +53,9 @@ public class User {
     public User(long id, List<Station> stations, String userName, String mailAddress, Byte linkHash, LocalDateTime creationTime, byte Admin) {
         this.UserID = id;
         this.stations = stations;
-        this.userName = userName;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.username = Username;
         this.mailAddress = mailAddress;
         this.linkHash = linkHash;
         this.creationTime = creationTime;
