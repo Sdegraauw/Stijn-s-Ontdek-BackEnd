@@ -1,5 +1,7 @@
 package Ontdekstation013.ClimateChecker.controller;
 
+import Ontdekstation013.ClimateChecker.models.Token;
+import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.Mail;
 import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
 import Ontdekstation013.ClimateChecker.models.dto.*;
@@ -16,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/api/Authentication")
 
 public class AuthController {
+    private final UserService userService;
 
 
     private final UserService userService;
@@ -41,10 +44,14 @@ public class AuthController {
     @PostMapping("login")
     public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto){
         if(userService.verifyMail(loginDto)) {
-            // TODO Link Code
+            User user = new User(loginDto.getMailAddress(), Long.valueOf(1) );
+            Token token = userService.createToken(user);
+            userService.saveToken(token);
+            
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
         return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
+
     }
 
     // edit user

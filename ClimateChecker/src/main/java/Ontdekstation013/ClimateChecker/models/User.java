@@ -57,8 +57,6 @@ public class User {
         this.lastName = lastName;
         this.userName = Username;
         this.mailAddress = mailAddress;
-        this.linkHash = linkHash;
-        this.creationTime = creationTime;
         this.Admin = Admin;
     }
 
@@ -82,6 +80,11 @@ public class User {
         this.mailAddress = mailAddress;
         this.linkHash = linkHash;
         this.creationTime = creationTime;
+    }
+
+    public User(String mailAddress, Long id) {
+        this.UserID = id;
+        this.mailAddress = mailAddress;
     }
 
 }

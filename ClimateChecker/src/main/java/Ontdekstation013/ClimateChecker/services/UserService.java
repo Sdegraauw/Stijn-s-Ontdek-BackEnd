@@ -1,16 +1,21 @@
 package Ontdekstation013.ClimateChecker.services;
 import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.Location;
+import Ontdekstation013.ClimateChecker.models.Token;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
+import Ontdekstation013.ClimateChecker.repositories.TokenRepository;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+//import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,10 +23,12 @@ import java.util.List;
 public class UserService {
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     @Autowired
-    public UserService(UserRepository userRepository) {
+    public UserService(UserRepository userRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
+        this.tokenRepository = tokenRepository;
     }
 
     public userDto findUserById(long id) {
@@ -102,5 +109,36 @@ public class UserService {
 
     public void editUser(editUserDto registerDto) {
         System.out.println("Test edituser");
+    }
+
+
+//    PasswordEncoder encoder = new BCryptPasswordEncoder();
+
+    public Token createToken(User user){
+        Token token = new Token();
+
+        token.setUser(user);
+        token.setCreationTime(LocalDateTime.now());
+//        tokenDto.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
+        token.setLinkHash("abcdefhijk");
+
+        return token;
+    }
+
+    public void saveToken(Token token){
+        if (tokenRepository.existsByUser(token.getUser())) {
+            token.setUser(token.getUser());
+            System.out.println("something else");
+        }
+        token.setId(token.getUser().getUserID());
+        tokenRepository.save(token);
+    }
+
+    public boolean decryptToken(Token token) {
+//        Long userId = userRepository.findById(token.getUser().getUserID());
+//        if (encoder.decode()) {
+//        return true
+//        }
+        return false;
     }
 }
