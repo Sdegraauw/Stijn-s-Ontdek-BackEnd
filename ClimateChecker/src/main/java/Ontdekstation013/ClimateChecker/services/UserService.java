@@ -80,8 +80,8 @@ public class UserService {
     public boolean createNewUser(registerDto registerDto) {
         if (registerDto.getFirstName().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUsername().length() < 256) {
             if (registerDto.getMailAddress().contains("@")) {
-                if (!userRepository.existsUserByUsernameOrMailAddress(registerDto.getUsername(), registerDto.getMailAddress())) {
-                    User user = new User(registerDto.getFirstName(), registerDto.getLastName(), registerDto.getUsername(), registerDto.getMailAddress());
+                if (!userRepository.existsUserByUserNameOrMailAddress(registerDto.getUsername(), registerDto.getMailAddress())) {
+                    User user = new User(registerDto.getUsername(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getMailAddress());
                     userRepository.save(user);
                     System.out.println("Gelukt");
                     return true;
@@ -96,9 +96,9 @@ public class UserService {
         return userRepository.findByMailAddress(loginDto.getMailAddress()) != null;
     }
     
-    public void loginUser(loginDto loginDto) {
+/*    public void loginUser(loginDto loginDto) {
         System.out.println(loginDto.getPassword());
-    }
+    }*/
 
     public void editUser(editUserDto registerDto) {
         System.out.println("Test edituser");

@@ -35,7 +35,7 @@ public class User {
     private String lastName;
 
     @NotBlank
-    private String username;
+    private String userName;
 
     @NotBlank
     @Email
@@ -50,23 +50,32 @@ public class User {
 
 
 
-    public User(long id, List<Station> stations, String userName, String mailAddress, Byte linkHash, LocalDateTime creationTime, byte Admin) {
+    public User(long id, List<Station> stations, String firstName, String lastName, String Username, String mailAddress, Byte linkHash, LocalDateTime creationTime, boolean Admin) {
         this.UserID = id;
         this.stations = stations;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.username = Username;
+        this.userName = Username;
         this.mailAddress = mailAddress;
         this.linkHash = linkHash;
         this.creationTime = creationTime;
         this.Admin = Admin;
     }
 
-    public User(String userName, String mailAddress, Byte linkHash, LocalDateTime creationTime) {
-        this.userName = userName;
+    public User(String Username, String mailAddress, String firstName, String lastName, Byte linkHash, LocalDateTime creationTime) {
+        this.userName = Username;
         this.mailAddress = mailAddress;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.linkHash = linkHash;
         this.creationTime = creationTime;
+    }
+
+    public User(String Username, String mailAddress, String firstName, String lastName) {
+        this.userName = Username;
+        this.mailAddress = mailAddress;
+        this.firstName = firstName;
+        this.lastName = lastName;
     }
 
     public User(String mailAddress, Byte linkHash, LocalDateTime creationTime) {
