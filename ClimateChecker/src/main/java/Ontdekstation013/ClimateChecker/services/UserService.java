@@ -9,9 +9,11 @@ import Ontdekstation013.ClimateChecker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -112,15 +114,15 @@ public class UserService {
     }
 
 
-//    PasswordEncoder encoder = new BCryptPasswordEncoder();
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public Token createToken(User user){
         Token token = new Token();
 
         token.setUser(user);
         token.setCreationTime(LocalDateTime.now());
-//        tokenDto.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
-        token.setLinkHash("abcdefhijk");
+//        token.setLinkHash("abcdefhijk");
+        token.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
 
         return token;
     }
@@ -135,10 +137,11 @@ public class UserService {
     }
 
     public boolean decryptToken(Token token) {
-//        Long userId = userRepository.findById(token.getUser().getUserID());
-//        if (encoder.decode()) {
-//        return true
-//        }
+        User user = userRepository.findById(token.getUser().getUserID()).get();
+
+        if (encoder.matches(user.getMailAddress() + user.getUserID(), token.getLinkHash())) {
+            return true;
+        }
         return false;
     }
 }
