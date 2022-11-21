@@ -50,7 +50,7 @@ public class UserService {
         userDto newdto = new userDto();
         newdto.setId(user.getUserID());
         newdto.setMailAddress(user.getMailAddress());
-        newdto.setUsername(user.getUserName());
+        newdto.setUserName(user.getUserName());
         newdto.setLastName(user.getLastName());
         newdto.setFirstName(user.getFirstName());
         return newdto;
@@ -85,10 +85,10 @@ public class UserService {
     }
 
     public boolean createNewUser(registerDto registerDto) {
-        if (registerDto.getFirstName().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUsername().length() < 256) {
+        if (registerDto.getFirstName().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUserName().length() < 256) {
             if (registerDto.getMailAddress().contains("@")) {
-                if (!userRepository.existsUserByUserNameOrMailAddress(registerDto.getUsername(), registerDto.getMailAddress())) {
-                    User user = new User(registerDto.getUsername(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getMailAddress());
+                if (!userRepository.existsUserByUserNameOrMailAddress(registerDto.getUserName(), registerDto.getMailAddress())) {
+                    User user = new User(registerDto.getUserName(), registerDto.getMailAddress(), registerDto.getFirstName(), registerDto.getLastName());
                     userRepository.save(user);
                     System.out.println("Gelukt");
                     return true;

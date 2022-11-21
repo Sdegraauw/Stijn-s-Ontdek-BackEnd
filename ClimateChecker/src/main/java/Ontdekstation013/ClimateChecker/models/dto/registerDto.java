@@ -9,7 +9,7 @@ public class registerDto extends Dto{
 
     String firstName;
     String lastName;
-    String Username;
+    String userName;
     String mailAddress;
     String password;
 }

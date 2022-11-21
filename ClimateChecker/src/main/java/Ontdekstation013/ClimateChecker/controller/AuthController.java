@@ -36,7 +36,7 @@ public class AuthController {
     public ResponseEntity<userDto> createNewUser(@RequestBody registerDto registerDto) throws Exception {
         userService.createNewUser(registerDto);
 
-        emailSenderService.sendSignupMail(registerDto.getMailAddress(), registerDto.getUsername());
+        emailSenderService.sendSignupMail(registerDto.getMailAddress(), registerDto.getUserName());
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 

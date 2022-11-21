@@ -13,7 +13,7 @@ public class userDto extends Dto{
     long id;
     private String firstName;
     private String lastName;
-    private String Username;
+    private String userName;
     private String mailAddress;
     private Byte passwordHash;
     private Byte passwordSalt;
