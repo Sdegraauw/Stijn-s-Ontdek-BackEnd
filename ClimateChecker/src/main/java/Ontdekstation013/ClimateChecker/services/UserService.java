@@ -9,9 +9,11 @@ import Ontdekstation013.ClimateChecker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-//import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-//import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -99,8 +101,8 @@ public class UserService {
         return false;
     }
 
-    public boolean verifyMail(loginDto loginDto) {
-        return userRepository.findByMailAddress(loginDto.getMailAddress()) != null;
+    public User verifyMail(loginDto loginDto) {
+        return userRepository.findByMailAddress(loginDto.getMailAddress());
     }
     
 /*    public void loginUser(loginDto loginDto) {
@@ -112,15 +114,14 @@ public class UserService {
     }
 
 
-//    PasswordEncoder encoder = new BCryptPasswordEncoder();
+    PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public Token createToken(User user){
         Token token = new Token();
 
         token.setUser(user);
         token.setCreationTime(LocalDateTime.now());
-//        tokenDto.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
-        token.setLinkHash("abcdefhijk");
+        token.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
 
         return token;
     }
@@ -134,11 +135,20 @@ public class UserService {
         tokenRepository.save(token);
     }
 
-    public boolean decryptToken(Token token) {
-//        Long userId = userRepository.findById(token.getUser().getUserID());
-//        if (encoder.decode()) {
-//        return true
-//        }
+    public boolean verifyToken(String linkHash, String email) {
+        User user = userRepository.findByMailAddress(email);
+        Token officialToken = tokenRepository.findByUser(user);
+        if (officialToken != null){
+            if (officialToken.getLinkHash().equals(linkHash)) {
+                tokenRepository.delete(officialToken);
+                return true;
+            }
+        }
         return false;
+    }
+
+    public String createLink(Token token){
+        String domain = "http://localhost:8082/";
+        return (domain + "api/Authentication/verify" + "?linkHash=" + token.getLinkHash() + "&email=" + token.getUser().getMailAddress());
     }
 }

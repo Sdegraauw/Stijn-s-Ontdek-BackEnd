@@ -20,8 +20,6 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final UserService userService;
 
-
-    private final UserService userService;
     //private final MailService mailService;
     private final EmailSenderService emailSenderService;
 
@@ -43,15 +41,20 @@ public class AuthController {
     // login user
     @PostMapping("login")
     public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto){
-        if(userService.verifyMail(loginDto)) {
-            User user = new User(loginDto.getMailAddress(), Long.valueOf(1) );
-            Token token = userService.createToken(user);
-            userService.saveToken(token);
-            
+        User user = userService.verifyMail(loginDto);
+        Token token = userService.createToken(user);
+        userService.saveToken(token);
+        System.out.println(userService.createLink(token)); //Send mail with {link param}
+
+        return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<userDto> fetchLink(@RequestParam String linkHash, @RequestParam String email){
+        if (userService.verifyToken(linkHash, email)){
             return ResponseEntity.status(HttpStatus.OK).body(null);
         }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null);
-
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     // edit user
@@ -61,6 +64,5 @@ public class AuthController {
 
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
-
 
 }
