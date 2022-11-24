@@ -9,4 +9,5 @@ import org.springframework.stereotype.Repository;
 
 public interface TokenRepository extends JpaRepository<Token, Long> {
     boolean existsByUser(User user);
+    Token findByUser(User user);
 }

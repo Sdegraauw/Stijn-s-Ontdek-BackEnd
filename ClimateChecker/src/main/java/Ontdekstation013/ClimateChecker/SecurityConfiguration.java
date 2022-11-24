@@ -1,6 +1,6 @@
 package Ontdekstation013.ClimateChecker;
 
-//***NOT FOR PRODUCTION ENVIRONMENT ONLY FOR TESTING***
+//***NOT FOR PRODUCTION ENVIRONMENT, SOLELY FOR TESTING***
 
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;

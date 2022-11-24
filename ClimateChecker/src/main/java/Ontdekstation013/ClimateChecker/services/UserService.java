@@ -101,8 +101,8 @@ public class UserService {
         return false;
     }
 
-    public boolean verifyMail(loginDto loginDto) {
-        return userRepository.findByMailAddress(loginDto.getMailAddress()) != null;
+    public User verifyMail(loginDto loginDto) {
+        return userRepository.findByMailAddress(loginDto.getMailAddress());
     }
     
 /*    public void loginUser(loginDto loginDto) {
@@ -121,7 +121,6 @@ public class UserService {
 
         token.setUser(user);
         token.setCreationTime(LocalDateTime.now());
-//        token.setLinkHash("abcdefhijk");
         token.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
 
         return token;
@@ -136,12 +135,20 @@ public class UserService {
         tokenRepository.save(token);
     }
 
-    public boolean decryptToken(Token token) {
-        User user = userRepository.findById(token.getUser().getUserID()).get();
-
-        if (encoder.matches(user.getMailAddress() + user.getUserID(), token.getLinkHash())) {
-            return true;
+    public boolean verifyToken(String linkHash, String email) {
+        User user = userRepository.findByMailAddress(email);
+        Token officialToken = tokenRepository.findByUser(user);
+        if (officialToken != null){
+            if (officialToken.getLinkHash().equals(linkHash)) {
+                tokenRepository.delete(officialToken);
+                return true;
+            }
         }
         return false;
+    }
+
+    public String createLink(Token token){
+        String domain = "http://localhost:8082/";
+        return (domain + "api/Authentication/verify" + "?linkHash=" + token.getLinkHash() + "&email=" + token.getUser().getMailAddress());
     }
 }
