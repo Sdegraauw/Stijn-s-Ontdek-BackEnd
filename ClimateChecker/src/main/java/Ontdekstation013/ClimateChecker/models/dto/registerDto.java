@@ -11,5 +11,4 @@ public class registerDto extends Dto{
     String lastName;
     String userName;
     String mailAddress;
-    String password;
 }

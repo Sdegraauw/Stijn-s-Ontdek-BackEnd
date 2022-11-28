@@ -19,34 +19,39 @@ import org.springframework.web.bind.annotation.*;
 
 public class AuthController {
     private final UserService userService;
-
-    //private final MailService mailService;
     private final EmailSenderService emailSenderService;
 
     @Autowired
     public AuthController(UserService userService, EmailSenderService emailSenderService)
     {
-        this.userService = userService; this.emailSenderService = emailSenderService;
+        this.userService = userService;
+        this.emailSenderService = emailSenderService;
     }
 
     // create new user
     @PostMapping("register")
     public ResponseEntity<userDto> createNewUser(@RequestBody registerDto registerDto) throws Exception {
-        userService.createNewUser(registerDto);
-
-        emailSenderService.sendSignupMail(registerDto.getMailAddress(), registerDto.getUserName());
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        User user = userService.createNewUser(registerDto);
+        if (user != null) {
+            Token token = userService.createToken(user);
+            userService.saveToken(token);
+            emailSenderService.sendSignupMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     // login user
     @PostMapping("login")
-    public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto){
+    public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto) throws Exception {
         User user = userService.verifyMail(loginDto);
-        Token token = userService.createToken(user);
-        userService.saveToken(token);
-        System.out.println(userService.createLink(token)); //Send mail with {link param}
-
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        if (user != null){
+            Token token = userService.createToken(user);
+            userService.saveToken(token);
+            emailSenderService.sendLoginMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     @GetMapping("/verify")
