@@ -45,6 +45,7 @@ public class UserService {
         newdto.setMailAddress(user.getMailAddress());
         newdto.setFirstName(user.getFirstName());
         newdto.setLastName(user.getLastName());
+        newdto.setUserName(user.getUserName());
         return newdto;
     }
 
@@ -52,9 +53,9 @@ public class UserService {
         userDto newdto = new userDto();
         newdto.setId(user.getUserID());
         newdto.setMailAddress(user.getMailAddress());
-        newdto.setUserName(user.getUserName());
         newdto.setLastName(user.getLastName());
         newdto.setFirstName(user.getFirstName());
+        newdto.setUserName(user.getUserName());
         return newdto;
     }
 
@@ -63,12 +64,9 @@ public class UserService {
         List<User> userList = userRepository.findAll();
         List<userDataDto> newDtoList = new ArrayList<>();
 
-        for (User user: userList
-        ) {
-
+        for (User user: userList) {
             newDtoList.add(userToUserDataDto(user));
         }
-
 
         return newDtoList;
     }
@@ -86,28 +84,23 @@ public class UserService {
 
     }
 
-    public boolean createNewUser(registerDto registerDto) {
+    public User createNewUser(registerDto registerDto) {
         if (registerDto.getFirstName().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUserName().length() < 256) {
             if (registerDto.getMailAddress().contains("@")) {
                 if (!userRepository.existsUserByUserNameOrMailAddress(registerDto.getUserName(), registerDto.getMailAddress())) {
-                    User user = new User(registerDto.getUserName(), registerDto.getMailAddress(), registerDto.getFirstName(), registerDto.getLastName());
-                    userRepository.save(user);
-                    System.out.println("Gelukt");
-                    return true;
+                    User user = new User(registerDto.getMailAddress(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getUserName());
+                    return userRepository.save(user);
+                    //gelukt
                 }
             }
         }
-        System.out.println("Niet gelukt");
-        return false;
+        //niet gelukt
+        return null;
     }
 
     public User verifyMail(loginDto loginDto) {
         return userRepository.findByMailAddress(loginDto.getMailAddress());
     }
-    
-/*    public void loginUser(loginDto loginDto) {
-        System.out.println(loginDto.getPassword());
-    }*/
 
     public void editUser(editUserDto registerDto) {
         System.out.println("Test edituser");
@@ -127,12 +120,11 @@ public class UserService {
     }
 
     public void saveToken(Token token){
-        if (tokenRepository.existsByUser(token.getUser())) {
-            token.setUser(token.getUser());
-            System.out.println("something else");
-        }
-        token.setId(token.getUser().getUserID());
-        tokenRepository.save(token);
+            if (tokenRepository.existsByUser(token.getUser())) {
+                token.setUser(token.getUser());
+            }
+            token.setId(token.getUser().getUserID());
+            tokenRepository.save(token);
     }
 
     public boolean verifyToken(String linkHash, String email) {
@@ -140,8 +132,10 @@ public class UserService {
         Token officialToken = tokenRepository.findByUser(user);
         if (officialToken != null){
             if (officialToken.getLinkHash().equals(linkHash)) {
-                tokenRepository.delete(officialToken);
-                return true;
+                if (officialToken.getCreationTime().isBefore(LocalDateTime.now().plusMinutes(5))) {
+                    tokenRepository.delete(officialToken);
+                    return true;
+                }
             }
         }
         return false;

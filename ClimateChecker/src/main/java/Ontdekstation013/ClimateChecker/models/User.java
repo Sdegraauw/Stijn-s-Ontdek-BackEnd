@@ -34,57 +34,36 @@ public class User {
     @NotBlank
     private String lastName;
 
-    @NotBlank
     private String userName;
 
     @NotBlank
     @Email
     private String mailAddress;
 
-    private Byte linkHash;
-
-    private LocalDateTime creationTime;
-
     private boolean Admin;
 
 
-
-
-    public User(long id, List<Station> stations, String firstName, String lastName, String Username, String mailAddress, Byte linkHash, LocalDateTime creationTime, boolean Admin) {
+    public User(long id, List<Station> stations, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
         this.UserID = id;
         this.stations = stations;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.userName = Username;
+        this.userName = userName;
         this.mailAddress = mailAddress;
         this.Admin = Admin;
     }
 
-    public User(String Username, String mailAddress, String firstName, String lastName, Byte linkHash, LocalDateTime creationTime) {
-        this.userName = Username;
+    //register
+    public User(String mailAddress, String firstName, String lastName, String userName) {
         this.mailAddress = mailAddress;
         this.firstName = firstName;
         this.lastName = lastName;
-        this.linkHash = linkHash;
-        this.creationTime = creationTime;
+        this.userName = userName;
     }
 
-    public User(String Username, String mailAddress, String firstName, String lastName) {
-        this.userName = Username;
-        this.mailAddress = mailAddress;
-        this.firstName = firstName;
-        this.lastName = lastName;
-    }
-
-    public User(String mailAddress, Byte linkHash, LocalDateTime creationTime) {
-        this.mailAddress = mailAddress;
-        this.linkHash = linkHash;
-        this.creationTime = creationTime;
-    }
 
     public User(String mailAddress, Long id) {
         this.UserID = id;
         this.mailAddress = mailAddress;
     }
-
 }

@@ -17,11 +17,11 @@ public class EmailSenderService {
     @Autowired
     private JavaMailSender mailSender;
 
-    public void sendEmail(String toEmail, String name, String body){
+    public void sendEmail(String toEmail, String firstName, String lastName, String body){
         SimpleMailMessage message = new SimpleMailMessage();
         message.setFrom("kayletmail@gmail.com");
         message.setTo(toEmail);
-        message.setSubject(String.format("Welcome %s", name));
+        message.setSubject(String.format("Welcome %s", firstName + " " + lastName));
         message.setText(String.format("Welcome %s", body));
 
 
@@ -30,16 +30,18 @@ public class EmailSenderService {
         System.out.printf("Mail Send");
     }
 
-    public void sendSignupMail(String toEmail, String name) throws MessagingException {
+    public void sendSignupMail(String toEmail, String firstName, String lastName, String linkHash) throws MessagingException {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        File file = new File(".\\ClimateChecker\\src\\main\\resources\\images\\ontdekstation013-logo.png");
-        helper.addAttachment("logo.png", file);
+//        File file = new File(".\\ClimateChecker\\src\\main\\resources\\images\\ontdekstation013-logo.png");
+//        helper.addAttachment("logo.png", file);
 
         String body = "Je hebt net je account aangemaakt bij Ontdekstation 013,"
                 + "<br>"
                 + "<br>"
+                + "<br>"
+                + linkHash
                 + "<br>"
                 + "<br>"
                 + "Met vriendelijke groet,"
@@ -50,12 +52,41 @@ public class EmailSenderService {
 
         helper.setTo("kayletmail@host.com");
         helper.setTo(toEmail);
-        helper.setSubject(String.format("Welkom %s", name));
+        helper.setSubject(String.format("Welkom %s", firstName + " " + lastName));
         helper.setText(body, true);
 
         mailSender.send(message);
 
-        System.out.printf("Mail Send");
+        System.out.printf("Mail Sent");
+    }
+
+    public void sendLoginMail(String toEmail, String firstName, String lastName, String linkHash) throws MessagingException {
+        MimeMessage message = mailSender.createMimeMessage();
+        MimeMessageHelper helper = new MimeMessageHelper(message, true);
+
+//        File file = new File(".\\ClimateChecker\\src\\main\\resources\\images\\ontdekstation013-logo.png");
+//        helper.addAttachment("logo.png", file);
+
+        String body = "Inlog link: ,"
+                + "<br>"
+                + "<br> [insert beautiful html button]"
+                + linkHash
+                + "<br>"
+                + "<br>"
+                + "Met vriendelijke groet,"
+                + "<br>"
+                + " Ontdekstation 013"
+                + "<br>"
+                + "<img src=\"cid:logo.png\"></img><br/>";
+
+        helper.setTo("kayletmail@host.com");
+        helper.setTo(toEmail);
+        helper.setSubject(String.format("Welkom %s", firstName + " " + lastName));
+        helper.setText(body, true);
+
+        mailSender.send(message);
+
+        System.out.printf("Mail Sent");
     }
 
 }
