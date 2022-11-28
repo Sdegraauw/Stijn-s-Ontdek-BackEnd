@@ -1,8 +1,7 @@
 package Ontdekstation013.ClimateChecker.controller;
 
 import Ontdekstation013.ClimateChecker.models.Region;
-import Ontdekstation013.ClimateChecker.models.RegionCords;
-import Ontdekstation013.ClimateChecker.repositories.RegionCordsRepository;
+import Ontdekstation013.ClimateChecker.models.dto.RegionInfoDto;
 import Ontdekstation013.ClimateChecker.services.RegionCordsService;
 import Ontdekstation013.ClimateChecker.services.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +32,14 @@ public class RegionController {
         return regionService.getAll();
     }
 
-    @GetMapping("/cords")
-    public List<RegionCords> getAllRegionCords()
+    @GetMapping("/regioninfo")
+    public List<RegionInfoDto> getAllRegionCords()
     {
         return regionCordsService.getAll();
     }
 
-    @GetMapping("/cords/{id}")
-    public List<RegionCords> getAllRegionCordsByRegion(@PathVariable(value = "id") long id)
+    @GetMapping("/regioninfo/{id}")
+    public RegionInfoDto getAllRegionCordsByRegion(@PathVariable(value = "id") long id)
     {
         return regionCordsService.getAllByRegionId(id);
     }

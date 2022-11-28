@@ -63,9 +63,9 @@ public class StationController {
 
         List<stationDto> newDtoList = stationService.getAllStations();
 
-        for(stationDto dto : newDtoList){
-            dto.setSensors(sensorService.getSensorsByStation(dto.getId()));
-        }
+//        for(stationDto dto : newDtoList){
+//            dto.setSensors(sensorService.getSensorsByStation(dto.getId()));
+//        }
 
         return ResponseEntity.ok(newDtoList);
     }
