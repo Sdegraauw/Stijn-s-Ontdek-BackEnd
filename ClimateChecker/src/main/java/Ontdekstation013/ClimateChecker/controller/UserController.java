@@ -27,7 +27,6 @@ public class UserController {
     public ResponseEntity<userDto> getUserById(@PathVariable long userId){
         userDto dto = userService.findUserById(userId);
         return ResponseEntity.ok(dto);
-
     }
 
     // get all users
@@ -46,11 +45,24 @@ public class UserController {
         return ResponseEntity.ok(newDtoList);
     }
 
+    // edit user
+    @PutMapping
+    public ResponseEntity<userDto> editUser(@RequestBody editUserDto editUserDto) throws Exception {
+        return ResponseEntity.status(HttpStatus.OK).body(userService.editUser(editUserDto));
+    }
+
     // delete user
     @DeleteMapping("{userId}")
     public ResponseEntity<userDto> deleteUser(@PathVariable long userId){
-
         userService.deleteUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(null);
+    }
+
+    @GetMapping("/verify")
+    public ResponseEntity<userDto> fetchLink(@RequestParam String linkHash, @RequestParam String oldEmail, @RequestParam String newEmail){
+        if (userService.verifyToken(linkHash, oldEmail, newEmail)){
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 }

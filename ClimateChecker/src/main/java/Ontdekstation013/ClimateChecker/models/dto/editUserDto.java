@@ -6,10 +6,8 @@ import lombok.Setter;
 @Getter
 @Setter
 public class editUserDto extends Dto{
-
-    int id;
+    Long id;
     String firstName;
-    String namePreposition;
     String lastName;
     String userName;
     String mailAddress;

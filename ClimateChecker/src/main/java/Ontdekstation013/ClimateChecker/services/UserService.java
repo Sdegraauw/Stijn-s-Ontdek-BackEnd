@@ -1,6 +1,4 @@
 package Ontdekstation013.ClimateChecker.services;
-import Ontdekstation013.ClimateChecker.models.Station;
-import Ontdekstation013.ClimateChecker.models.Location;
 import Ontdekstation013.ClimateChecker.models.Token;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
@@ -12,10 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.server.handler.ResponseStatusExceptionHandler;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,11 +22,13 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
+    private final EmailSenderService emailService;
 
     @Autowired
-    public UserService(UserRepository userRepository, TokenRepository tokenRepository) {
+    public UserService(UserRepository userRepository, TokenRepository tokenRepository, EmailSenderService emailService) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
+        this.emailService = emailService;
     }
 
     public userDto findUserById(long id) {
@@ -79,23 +77,80 @@ public class UserService {
         return newDtoList;
     }
 
+    public userDto editUser(editUserDto editUserDto) throws Exception {
+        List<String> errorList = new ArrayList<>();
+        User user = userRepository.findById(editUserDto.getId()).orElseThrow();
 
+        if (editUserDto.getFirstName().length() < 256)
+            user.setFirstName(editUserDto.getFirstName());
+        else
+            errorList.add("First name can't be longer than 256 characters");
 
-    public void deleteUser(long Id) {
+        if (editUserDto.getLastName().length() < 256)
+            user.setLastName(editUserDto.getLastName());
+        else
+            errorList.add("Last name can't be longer than 256 characters");
 
+        if (editUserDto.getUserName().length() < 256) {
+            if (!editUserDto.getUserName().equals(user.getUserName())) {
+                if (!userRepository.existsUserByUserName(editUserDto.getUserName())) {
+                    user.setUserName(editUserDto.getUserName());
+                } else {
+                    errorList.add("Username already in use");
+                }
+            }
+        } else {
+            errorList.add("Last name can't be longer than 256 characters");
+        }
+
+        editUserDto.setMailAddress(editUserDto.getMailAddress().toLowerCase());
+        if (!user.getMailAddress().equals(editUserDto.getMailAddress())) {
+            if (editUserDto.getMailAddress().contains("@")) {
+                if (!userRepository.existsUserByMailAddress(editUserDto.getMailAddress())) {
+                    if (errorList.size() == 0) {
+                        String mail = user.getMailAddress();
+                        user.setMailAddress(editUserDto.getMailAddress());
+                        Token token = createToken(user);
+                        user.setMailAddress(mail);
+                        token.setUser(user);
+                        saveToken(token);
+                        emailService.sendEmailEditMail(editUserDto.getMailAddress(), user.getFirstName(), user.getLastName(), createLink(token, editUserDto.getMailAddress()));
+                    }
+                } else {
+                    errorList.add("Email address already in use");
+                }
+            } else {
+                errorList.add("Invalid email address");
+            }
+        }
+
+        if (errorList.size() != 0){
+            StringBuilder errorResponse = new StringBuilder();
+            for(String error : errorList){
+                errorResponse.append(error).append("\n");
+            }
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorResponse.toString());
+        }
+
+        return userToUserDto(userRepository.save(user));
+    }
+
+    public void deleteUser(long id) {
+        User user = userRepository.getById(id);
+        emailService.deleteUserMail(user.getMailAddress(), user.getFirstName(), user.getLastName());
+        userRepository.deleteById(id);
     }
 
     public User createNewUser(registerDto registerDto) {
         if (registerDto.getFirstName().length() < 256 && registerDto.getLastName().length() < 256 && registerDto.getUserName().length() < 256) {
+            registerDto.setMailAddress(registerDto.getMailAddress().toLowerCase());
             if (registerDto.getMailAddress().contains("@")) {
                 if (!userRepository.existsUserByUserNameOrMailAddress(registerDto.getUserName(), registerDto.getMailAddress())) {
                     User user = new User(registerDto.getMailAddress(), registerDto.getFirstName(), registerDto.getLastName(), registerDto.getUserName());
                     return userRepository.save(user);
-                    //gelukt
                 }
             }
         }
-        //niet gelukt
         return null;
     }
 
@@ -103,19 +158,16 @@ public class UserService {
         return userRepository.findByMailAddress(loginDto.getMailAddress());
     }
 
-    public void editUser(editUserDto registerDto) {
-        System.out.println("Test edituser");
-    }
-
 
     PasswordEncoder encoder = new BCryptPasswordEncoder();
 
-    public Token createToken(User user){
+    public Token createToken(User user) {
         Token token = new Token();
 
         token.setUser(user);
         token.setCreationTime(LocalDateTime.now());
         token.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
+
 
         return token;
     }
@@ -132,8 +184,24 @@ public class UserService {
         User user = userRepository.findByMailAddress(email);
         Token officialToken = tokenRepository.findByUser(user);
         if (officialToken != null){
-            if (officialToken.getLinkHash().equals(linkHash)) {
+            if (officialToken.getLinkHash().equals(linkHash) && encoder.matches(user.getMailAddress() + user.getUserID(), officialToken.getLinkHash())) {
                 if (officialToken.getCreationTime().isBefore(LocalDateTime.now().plusMinutes(5))) {
+                    tokenRepository.delete(officialToken);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean verifyToken(String linkHash, String oldEmail, String newEmail) {
+        User user = userRepository.findByMailAddress(oldEmail);
+        Token officialToken = tokenRepository.findByUser(user);
+        if (officialToken != null){
+            if (officialToken.getLinkHash().equals(linkHash) && encoder.matches(newEmail + user.getUserID(), officialToken.getLinkHash())) {
+                if (officialToken.getCreationTime().isBefore(LocalDateTime.now().plusMinutes(5))) {
+                    user.setMailAddress(newEmail);
+                    userRepository.save(user);
                     tokenRepository.delete(officialToken);
                     return true;
                 }
@@ -145,5 +213,10 @@ public class UserService {
     public String createLink(Token token){
         String domain = "http://localhost:8082/";
         return (domain + "api/Authentication/verify" + "?linkHash=" + token.getLinkHash() + "&email=" + token.getUser().getMailAddress());
+    }
+
+    public String createLink(Token token, String newEmail){
+        String domain = "http://localhost:8082/";
+        return (domain + "api/User/verify" + "?linkHash=" + token.getLinkHash() + "&oldEmail=" + token.getUser().getMailAddress() + "&newEmail=" + newEmail);
     }
 }
