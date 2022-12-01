@@ -42,6 +42,7 @@ public class UserService {
     public userDataDto userToUserDataDto (User user){
         userDataDto newdto = new userDataDto();
         newdto.setId(user.getUserID());
+        newdto.setUserName(user.getUserName());
         newdto.setMailAddress(user.getMailAddress());
         newdto.setFirstName(user.getFirstName());
         newdto.setLastName(user.getLastName());
@@ -120,11 +121,11 @@ public class UserService {
     }
 
     public void saveToken(Token token){
-            if (tokenRepository.existsByUser(token.getUser())) {
-                token.setUser(token.getUser());
-            }
-            token.setId(token.getUser().getUserID());
-            tokenRepository.save(token);
+        if (tokenRepository.existsByUser(token.getUser())) {
+            token.setUser(token.getUser());
+        }
+        token.setId(token.getUser().getUserID());
+        tokenRepository.save(token);
     }
 
     public boolean verifyToken(String linkHash, String email) {

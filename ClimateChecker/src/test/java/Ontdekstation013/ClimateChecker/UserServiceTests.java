@@ -1,9 +1,11 @@
 package Ontdekstation013.ClimateChecker;
 
+import Ontdekstation013.ClimateChecker.Mocks.MockTokenRepo;
 import Ontdekstation013.ClimateChecker.Mocks.MockUserRepo;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.services.UserService;
+import org.aspectj.weaver.ast.Var;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,14 +17,17 @@ import java.util.List;
 @SpringBootTest
 class UserServiceTests {
 	private UserService userService;
-	private MockUserRepo mockRepo;
+	private MockUserRepo mockUserRepo;
+	private MockTokenRepo mockTokenRepo;
 
 
 
 	@BeforeEach
 	void setup() throws Exception{
-		this.mockRepo = new MockUserRepo();
-		this.userService = new UserService(mockRepo);
+		this.mockUserRepo = new MockUserRepo();
+		this.mockTokenRepo = new MockTokenRepo();
+
+		this.userService = new UserService(mockUserRepo, mockTokenRepo);
 
 		List<User> userList = new ArrayList<>();
 
@@ -44,7 +49,7 @@ class UserServiceTests {
 
 		userList.add(user);
 
-		mockRepo.FillDatabase(userList);
+		mockUserRepo.FillDatabase(userList);
 	}
 
 	// No functionality in UserService
@@ -52,7 +57,7 @@ class UserServiceTests {
 	void findUserByIdTest() {
 		userDto newDto = userService.findUserById(2);
 
-		Assertions.assertEquals("name2",newDto.getUsername());
+		Assertions.assertEquals("name2",newDto.getUserName());
 		Assertions.assertEquals("mail2",newDto.getMailAddress());
 	}
 
@@ -68,7 +73,7 @@ class UserServiceTests {
 
 		userDto newDto = userService.userToUserDto(user);
 
-		Assertions.assertEquals(user.getUserName(),newDto.getUsername());
+		Assertions.assertEquals(user.getUserName(),newDto.getUserName());
 		Assertions.assertEquals(user.getMailAddress(),newDto.getMailAddress());
 		Assertions.assertEquals(user.getUserID(),newDto.getId());
 
@@ -80,13 +85,12 @@ class UserServiceTests {
 	void getAllUsersTest() {
 		List<userDataDto> userList = userService.getAllUsers();
 
-
-		Assertions.assertEquals("name1",userList.get(0).getUsername());
+		Assertions.assertEquals("name1",userList.get(0).getUserName());
 		Assertions.assertEquals("mail1",userList.get(0).getMailAddress());
 		Assertions.assertEquals(1,userList.get(0).getId());
 
 
-		Assertions.assertEquals("name2",userList.get(1).getUsername());
+		Assertions.assertEquals("name2",userList.get(1).getUserName());
 		Assertions.assertEquals("mail2",userList.get(1).getMailAddress());
 		Assertions.assertEquals(2,userList.get(1).getId());
 	}
@@ -112,15 +116,16 @@ class UserServiceTests {
 		Assertions.assertTrue(true);
 	}
 
-
 	// No functionality in UserService
+
 	@Test
 	void createNewUserTest() {
 		registerDto dto = new registerDto();
 
-		dto.setUsername("Jan");
-		dto.setPassword("fuckingpassword");
-		dto.setEmail("Jan@home.nl");
+		dto.setUserName("Janpieterman");
+		dto.setFirstName("Jan");
+		dto.setLastName("Pieter");
+		dto.setMailAddress("Jan@home.nl");
 		userService.createNewUser(dto);
 
 		Assertions.assertTrue(true);
@@ -134,8 +139,7 @@ class UserServiceTests {
 
 		editUserDto dto2 = new editUserDto();
 		dto2.setId(1);
-		dto2.setUsername("Piet");
-		dto2.setPassword("qwerty1234567890");
+		dto2.setUserName("Piet");
 		dto2.setMailAddress("Piet@home.nl");
 
 		userService.editUser(dto2);
