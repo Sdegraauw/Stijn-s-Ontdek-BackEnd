@@ -9,11 +9,8 @@ import java.util.List;
 public class RegionInfoDto {
 
 
-    //TODO info over Region naar frontend voor popup
-
     public Region region;
-
-    public RegionAverageDto averageData;
+    public List<RegionAverageDto> averageData;
     public List<double[]> cordsList;
 
     public RegionInfoDto(Region region, List<RegionCords> regionCordsList)

@@ -3,12 +3,14 @@ package Ontdekstation013.ClimateChecker.services;
 import Ontdekstation013.ClimateChecker.models.Location;
 import Ontdekstation013.ClimateChecker.models.RegionCords;
 import Ontdekstation013.ClimateChecker.models.Sensor;
+import Ontdekstation013.ClimateChecker.models.SensorType;
 import Ontdekstation013.ClimateChecker.models.dto.RegionAverageDto;
 import Ontdekstation013.ClimateChecker.models.dto.RegionInfoDto;
 import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
 import Ontdekstation013.ClimateChecker.models.dto.stationDto;
 import Ontdekstation013.ClimateChecker.models.logic.RegionSurface;
 import Ontdekstation013.ClimateChecker.repositories.RegionCordsRepository;
+import Ontdekstation013.ClimateChecker.repositories.TypeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -22,12 +24,14 @@ public class RegionCordsService {
     private final RegionService regionService;
     private final LocationService locationService;
     private final StationService stationService;
+    private final TypeRepository typeRepository;
 
     public List<RegionInfoDto> getAll()
     {
         List<RegionCords> cords = regionCordsRepository.findAll();
         List<RegionInfoDto> dtos = new ArrayList<>();
 
+        //Used for splitting data into Regions. (RegionCords contains multiple lines of cords per region).
         long currentID = 0;
 
         for(RegionCords cord : cords)
@@ -58,9 +62,8 @@ public class RegionCordsService {
         return new RegionInfoDto(regionService.getById(regionId), retval);
     }
 
-    public RegionAverageDto getAverageRegionData(RegionInfoDto info)
+    public List<stationDto> getStationsInRegion(RegionInfoDto info)
     {
-        RegionAverageDto regionAverage = new RegionAverageDto();
         List<stationDto> stations = stationService.getAllStations();
         List<stationDto> stationInRegion = new ArrayList<stationDto>();
 
@@ -76,38 +79,54 @@ public class RegionCordsService {
             }
         }
 
-        double avgTemp = 0;
-        int tempCount = 0;
+        return stationInRegion;
+    }
 
-        //Found all stations in region, now determine averages
-        //TODO Implement all data types
 
-        for(stationDto station : stationInRegion)
+    public List<RegionAverageDto> getAverageRegionData(RegionInfoDto info)
+    {
+        List<RegionAverageDto> returnvalue = new ArrayList<>();
+
+        List<stationDto> stationInRegion = getStationsInRegion(info);
+
+        Iterable<SensorType> sensorTypes = typeRepository.findAll();
+
+        for(SensorType type : sensorTypes)
         {
-            for(sensorDto sensor : station.getSensors())
+            double avgData = 0;
+            double count = 0;
+
+            for(stationDto station : stationInRegion)
             {
-                if(sensor.getTypeId() == 1)             //temperature
+                for(sensorDto sensor : station.getSensors())
                 {
-                    avgTemp+= sensor.getData();
-                    tempCount++;
+                    if(sensor.getTypeId() == type.getTypeID())             //temperature
+                    {
+                        avgData+= sensor.getData();
+                        count++;
+                    }
                 }
+            }
+
+            if(count > 0)
+            {
+                avgData = SensorService.avgformat(avgData/count);
+
+                returnvalue.add(new RegionAverageDto((int)type.getTypeID(), type.getTypeName(), avgData));
             }
         }
 
-        avgTemp = avgTemp/tempCount;
-
-        regionAverage.setTemperature(avgTemp);
-
-        return regionAverage;
+        return returnvalue;
     }
 
     @Autowired
     public RegionCordsService(RegionCordsRepository regionCordsRepository, RegionService regionService, StationService stationService
-    , LocationService locationService)
+    , LocationService locationService, TypeRepository typeRepository)
     {
         this.regionCordsRepository = regionCordsRepository;
         this.regionService = regionService;
         this.stationService = stationService;
         this.locationService = locationService;
+        this.typeRepository = typeRepository;
     }
 }

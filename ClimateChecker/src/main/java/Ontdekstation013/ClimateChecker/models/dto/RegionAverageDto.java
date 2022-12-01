@@ -7,11 +7,16 @@ import lombok.Setter;
 @Setter
 public class RegionAverageDto {
 
-    double temperature;
-    double nitrogen;
-    double carbonDioxide;
-    double particulateMatter;
-    double humidity;
-    double windSpeed;
+    public int id;
+    public String name;
+    public double data;
+
+    public RegionAverageDto(int Id, String name, double data)
+    {
+        this.id = Id;
+        this.name = name;
+        this.data = data;
+    }
+
 
 }
