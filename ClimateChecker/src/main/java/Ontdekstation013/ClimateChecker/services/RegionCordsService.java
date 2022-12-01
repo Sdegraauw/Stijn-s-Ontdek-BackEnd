@@ -100,7 +100,7 @@ public class RegionCordsService {
             {
                 for(sensorDto sensor : station.getSensors())
                 {
-                    if(sensor.getTypeId() == type.getTypeID())             //temperature
+                    if(sensor.getTypeId() == type.getTypeID())             
                     {
                         avgData+= sensor.getData();
                         count++;
