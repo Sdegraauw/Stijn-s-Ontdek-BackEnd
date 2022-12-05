@@ -8,6 +8,7 @@ import Ontdekstation013.ClimateChecker.services.LocationService;
 import Ontdekstation013.ClimateChecker.services.SensorService;
 import Ontdekstation013.ClimateChecker.services.StationService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -33,21 +34,32 @@ public class HeatmapController {
     }
 
     @GetMapping("{typeId}")
-    public List<heatmapPointDto> getDataBySensorType(@PathVariable long typeId)
+    public ResponseEntity<List<heatmapPointDto>> getDataBySensorType(@PathVariable long typeId)
     {
-        List<sensorDto> sensorData = sensorService.getSensorsByType(typeId);
-
-        ArrayList<heatmapPointDto> returnValue = new ArrayList<heatmapPointDto>();
-
-        for(sensorDto dto : sensorData)
+        try
         {
-            stationDto station = stationService.findStationById(dto.getStationId());
-            Location location = locationService.findLocationById(station.getLocationId());
+            List<sensorDto> sensorData = sensorService.getSensorsByType(typeId);
 
-            returnValue.add(new heatmapPointDto(location.getLongitude(), location.getLatitude(), dto.getData()));
+            if(sensorData.size() == 0) return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+
+            ArrayList<heatmapPointDto> returnValue = new ArrayList<heatmapPointDto>();
+
+            for(sensorDto dto : sensorData)
+            {
+                stationDto station = stationService.findStationById(dto.getStationId());
+                Location location = locationService.findLocationById(station.getLocationId());
+
+                returnValue.add(new heatmapPointDto(location.getLongitude(), location.getLatitude(), dto.getData()));
+            }
+
+            return ResponseEntity.status(HttpStatus.OK).body(returnValue);
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
         }
 
-        return returnValue;
+
     }
 
 

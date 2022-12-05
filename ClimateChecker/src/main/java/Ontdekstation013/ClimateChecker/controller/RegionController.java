@@ -5,6 +5,8 @@ import Ontdekstation013.ClimateChecker.models.dto.RegionInfoDto;
 import Ontdekstation013.ClimateChecker.services.RegionCordsService;
 import Ontdekstation013.ClimateChecker.services.RegionService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -27,21 +29,31 @@ public class RegionController {
     }
 
     @GetMapping
-    public List<Region> getAll()
+    public ResponseEntity<List<Region>> getAll()
     {
-        return regionService.getAll();
+        try
+        {
+            List<Region> regions = regionService.getAll();
+            return ResponseEntity.status(HttpStatus.OK).body(regions);
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
     @GetMapping("/regioninfo")
-    public List<RegionInfoDto> getAllRegionCords()
+    public ResponseEntity<List<RegionInfoDto>> getAllRegionCords()
     {
-        return regionCordsService.getAll();
-    }
-
-    @GetMapping("/regioninfo/{id}")
-    public RegionInfoDto getAllRegionCordsByRegion(@PathVariable(value = "id") long id)
-    {
-        return regionCordsService.getAllByRegionId(id);
+        try
+        {
+            List<RegionInfoDto> regionInfoList = regionCordsService.getAll();
+            return ResponseEntity.status(HttpStatus.OK).body(regionInfoList);
+        }
+        catch(Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+        }
     }
 
 }
