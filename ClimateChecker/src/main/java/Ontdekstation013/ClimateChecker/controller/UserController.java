@@ -32,7 +32,6 @@ public class UserController {
     // get all users
     @GetMapping
     public ResponseEntity<List<userDataDto>> getAllUsers(){
-
         List<userDataDto> newDtoList = userService.getAllUsers();
         return ResponseEntity.ok(newDtoList);
     }
@@ -40,7 +39,6 @@ public class UserController {
     // get users by page number
     @GetMapping("page/{pageNumber}")
     public ResponseEntity<List<userDataDto>> getAllUsersByPage(@PathVariable long pageId){
-
         List<userDataDto> newDtoList = userService.getAllByPageId(pageId);
         return ResponseEntity.ok(newDtoList);
     }
@@ -58,7 +56,7 @@ public class UserController {
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
-    @GetMapping("/verify")
+    @GetMapping("verify")
     public ResponseEntity<userDto> fetchLink(@RequestParam String linkHash, @RequestParam String oldEmail, @RequestParam String newEmail){
         if (userService.verifyToken(linkHash, oldEmail, newEmail)){
             return ResponseEntity.status(HttpStatus.OK).body(null);
