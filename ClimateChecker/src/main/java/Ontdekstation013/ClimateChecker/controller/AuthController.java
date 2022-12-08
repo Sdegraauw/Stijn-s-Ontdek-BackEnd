@@ -29,7 +29,6 @@ public class AuthController {
     public AuthController(UserService userService, EmailSenderService emailSenderService, JWTService jwtService)
     {
         this.userService = userService;
-        this.emailSenderService = emailSenderService;
         this.jwtService = jwtService;
         this.emailSenderService = emailSenderService;
     }
