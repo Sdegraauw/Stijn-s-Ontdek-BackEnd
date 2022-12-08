@@ -15,6 +15,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Email;
+
 @RestController
 @RequestMapping("/api/Authentication")
 
@@ -29,6 +31,7 @@ public class AuthController {
         this.userService = userService;
         this.emailSenderService = emailSenderService;
         this.jwtService = jwtService;
+        this.emailSenderService = emailSenderService;
     }
 
     // create new user

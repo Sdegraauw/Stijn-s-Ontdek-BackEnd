@@ -177,7 +177,6 @@ public class UserService {
     }
 
 
-
     public Token createToken(User user) {
         Token token = new Token();
 
