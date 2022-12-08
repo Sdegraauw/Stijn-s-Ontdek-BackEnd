@@ -5,7 +5,6 @@ import Ontdekstation013.ClimateChecker.models.dto.JwsDTO;
 import Ontdekstation013.ClimateChecker.models.dto.userDto;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -46,7 +45,7 @@ public class JWTService {
         calendar = Calendar.getInstance();
         claims.setIssuer(ISSUER);
         claims.setSubject(String.valueOf(user.getId()));
-        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 31);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.get(Calendar.DAY_OF_MONTH) + 7);
         Date date = calendar.getTime();
         claims.setExpiration(date);
         user.setJwsString(Jwts.builder()

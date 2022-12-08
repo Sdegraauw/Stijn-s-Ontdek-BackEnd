@@ -15,18 +15,22 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Email;
+
 @RestController
 @RequestMapping("/api/Authentication")
 
 public class AuthController {
     private final UserService userService;
     private final JWTService jwtService;
+    private final EmailSenderService emailSenderService;
 
     @Autowired
-    public AuthController(UserService userService, JWTService jwtService)
+    public AuthController(UserService userService, EmailSenderService emailSenderService, JWTService jwtService)
     {
         this.userService = userService;
         this.jwtService = jwtService;
+        this.emailSenderService = emailSenderService;
     }
 
     // create new user

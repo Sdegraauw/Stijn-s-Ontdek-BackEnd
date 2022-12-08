@@ -200,13 +200,6 @@ public class UserService {
         mapper.map(userRepository.findByMailAddress(mail), dto);
          return dto;
     }
-    public userDto getUserByMail(String mail) {
-        ModelMapper mapper = new ModelMapper();
-        userDto dto = new userDto();
-        mapper.map(userRepository.findByMailAddress(mail), dto);
-         return dto;
-    }
-
 
 
     public Token createToken(User user) {
@@ -259,8 +252,8 @@ public class UserService {
     }
 
     public String createLink(Token token){
-        String domain = "http://localhost:8082/";
-        return (domain + "api/Authentication/verify" + "?linkHash=" + token.getLinkHash() + "&email=" + token.getUser().getMailAddress());
+        String domain = "http://localhost:3000/";
+        return (domain + "Verify/" + token.getLinkHash() + "/" + token.getUser().getMailAddress());
     }
 
     public String createLink(Token token, String newEmail){ //for changing to new email address
