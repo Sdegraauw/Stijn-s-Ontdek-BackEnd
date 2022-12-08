@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker.services;
 import Ontdekstation013.ClimateChecker.exception.BadRequestException;
 import Ontdekstation013.ClimateChecker.exception.ConflictException;
+import Ontdekstation013.ClimateChecker.exception.NotFoundException;
 import Ontdekstation013.ClimateChecker.models.Token;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
@@ -163,10 +164,7 @@ public class UserService {
     public User verifyMail(loginDto loginDto) throws Exception {
         User user = userRepository.findByMailAddress(loginDto.getMailAddress());
         if (user == null){
-            throw new BadRequestException(null); //user not found
-        } else if (user != null){
-            Token token = createToken(user);
-            saveToken(token);
+            throw new NotFoundException(null); //user not found
         }
         return user;
     }

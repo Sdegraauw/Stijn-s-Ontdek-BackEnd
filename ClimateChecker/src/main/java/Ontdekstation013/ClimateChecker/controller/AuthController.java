@@ -33,21 +33,26 @@ public class AuthController {
     @PostMapping("register")
     public ResponseEntity<userDto> createNewUser(@RequestBody registerDto registerDto) throws Exception {
         User user = userService.createNewUser(registerDto);
-        Token token = userService.createToken(user);
-        userService.saveToken(token);
-        emailSenderService.sendSignupMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
-
-        return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        if (user != null){
+            Token token = userService.createToken(user);
+            userService.saveToken(token);
+            emailSenderService.sendSignupMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
+            return ResponseEntity.status(HttpStatus.CREATED).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
 
     // login user
     @PostMapping("login")
-    public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto) throws Exception {
+    public ResponseEntity<Void> loginUser(@RequestBody loginDto loginDto) throws Exception {
         User user = userService.verifyMail(loginDto);
-        Token token = userService.createToken(user);
-        userService.saveToken(token);
-        emailSenderService.sendLoginMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
-        return ResponseEntity.status(HttpStatus.OK).body(null);
+        if (user != null) {
+            Token token = userService.createToken(user);
+            userService.saveToken(token);
+            emailSenderService.sendLoginMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
+            return ResponseEntity.status(HttpStatus.OK).body(null);
+        }
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
     }
 
     // verify the login / (or first register)

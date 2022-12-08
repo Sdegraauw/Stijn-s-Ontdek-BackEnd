@@ -53,10 +53,12 @@ public class UserController {
     @PutMapping
     public ResponseEntity<userDto> editUser(@RequestBody editUserDto editUserDto) throws Exception {
         User user = userService.editUser(editUserDto);
-        Token token = userService.createToken(user);
-        token.setUser(user);
-        userService.saveToken(token);
-        emailSenderService.sendEmailEditMail(editUserDto.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token, editUserDto.getMailAddress()));
+        if (user != null) {
+            Token token = userService.createToken(user);
+            token.setUser(user);
+            userService.saveToken(token);
+            emailSenderService.sendEmailEditMail(editUserDto.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token, editUserDto.getMailAddress()));
+        }
 
         return ResponseEntity.status(HttpStatus.OK).body(userService.userToUserDto(user));
     }
