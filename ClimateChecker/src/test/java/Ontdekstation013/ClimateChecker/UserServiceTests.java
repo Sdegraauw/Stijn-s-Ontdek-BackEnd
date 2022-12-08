@@ -21,7 +21,6 @@ class UserServiceTests {
 	private MockTokenRepo mockTokenRepo;
 
 
-
 	@BeforeEach
 	void setup() throws Exception{
 		this.mockUserRepo = new MockUserRepo();

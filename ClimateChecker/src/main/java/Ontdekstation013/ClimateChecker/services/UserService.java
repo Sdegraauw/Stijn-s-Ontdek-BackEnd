@@ -7,6 +7,7 @@ import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.repositories.TokenRepository;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -167,6 +168,12 @@ public class UserService {
             throw new NotFoundException(null); //user not found
         }
         return user;
+    }
+    public userDto getUserByMail(String mail) {
+        ModelMapper mapper = new ModelMapper();
+        userDto dto = new userDto();
+        mapper.map(userRepository.findByMailAddress(mail), dto);
+         return dto;
     }
 
 
