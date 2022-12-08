@@ -34,8 +34,8 @@ public class EmailSenderService {
         MimeMessage message = mailSender.createMimeMessage();
         MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
-        File file = new File(".\\ClimateChecker\\src\\main\\resources\\images\\ontdekstation013-logo.png");
-        helper.addAttachment("logo.png", file);
+//        File file = new File(".\\ClimateChecker\\src\\main\\resources\\images\\ontdekstation013-logo.png");
+//        helper.addAttachment("logo.png", file);
 
         String body = "Je hebt net je account aangemaakt bij Ontdekstation 013,"
                 + "<br>"
