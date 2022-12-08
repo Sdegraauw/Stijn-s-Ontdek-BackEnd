@@ -20,23 +20,33 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
     private final UserService userService;
 
+    private final EmailSenderService emailSenderService;
+
     @Autowired
-    public AuthController(UserService userService)
+    public AuthController(UserService userService, EmailSenderService emailSenderService)
     {
         this.userService = userService;
+        this.emailSenderService = emailSenderService;
     }
 
     // create new user
     @PostMapping("register")
     public ResponseEntity<userDto> createNewUser(@RequestBody registerDto registerDto) throws Exception {
         User user = userService.createNewUser(registerDto);
+        Token token = userService.createToken(user);
+        userService.saveToken(token);
+        emailSenderService.sendSignupMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
+
         return ResponseEntity.status(HttpStatus.CREATED).body(null);
     }
 
     // login user
     @PostMapping("login")
     public ResponseEntity<userDto> loginUser(@RequestBody loginDto loginDto) throws Exception {
-        userService.verifyMail(loginDto);
+        User user = userService.verifyMail(loginDto);
+        Token token = userService.createToken(user);
+        userService.saveToken(token);
+        emailSenderService.sendLoginMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token));
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 
