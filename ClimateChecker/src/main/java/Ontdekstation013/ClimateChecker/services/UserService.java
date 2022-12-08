@@ -200,6 +200,12 @@ public class UserService {
         mapper.map(userRepository.findByMailAddress(mail), dto);
          return dto;
     }
+    public userDto getUserByMail(String mail) {
+        ModelMapper mapper = new ModelMapper();
+        userDto dto = new userDto();
+        mapper.map(userRepository.findByMailAddress(mail), dto);
+         return dto;
+    }
 
 
 
