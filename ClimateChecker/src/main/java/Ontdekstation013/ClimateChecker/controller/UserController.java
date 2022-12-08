@@ -1,6 +1,9 @@
 package Ontdekstation013.ClimateChecker.controller;
 
 
+import Ontdekstation013.ClimateChecker.models.Token;
+import Ontdekstation013.ClimateChecker.models.User;
+import Ontdekstation013.ClimateChecker.services.EmailSenderService;
 import Ontdekstation013.ClimateChecker.services.StationService;
 import Ontdekstation013.ClimateChecker.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,9 +20,12 @@ import Ontdekstation013.ClimateChecker.models.dto.*;
 public class UserController {
 
     private final UserService userService;
+
+    private final EmailSenderService emailSenderService;
     @Autowired
-    public UserController(UserService userService){
+    public UserController(UserService userService, EmailSenderService emailSEnderService){
         this.userService = userService;
+        this.emailSenderService = emailSEnderService;
     }
 
     // get user by id
@@ -46,13 +52,22 @@ public class UserController {
     // edit user
     @PutMapping
     public ResponseEntity<userDto> editUser(@RequestBody editUserDto editUserDto) throws Exception {
-        return ResponseEntity.status(HttpStatus.OK).body(userService.editUser(editUserDto));
+        User user = userService.editUser(editUserDto);
+        if (user != null) {
+            Token token = userService.createToken(user);
+            token.setUser(user);
+            userService.saveToken(token);
+            emailSenderService.sendEmailEditMail(editUserDto.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token, editUserDto.getMailAddress()));
+        }
+
+        return ResponseEntity.status(HttpStatus.OK).body(userService.userToUserDto(user));
     }
 
     // delete user
     @DeleteMapping("{userId}")
     public ResponseEntity<userDto> deleteUser(@PathVariable long userId){
-        userService.deleteUser(userId);
+        userDto user = userService.deleteUser(userId);
+        emailSenderService.deleteUserMail(user.getMailAddress(), user.getFirstName(), user.getLastName());
         return ResponseEntity.status(HttpStatus.OK).body(null);
     }
 

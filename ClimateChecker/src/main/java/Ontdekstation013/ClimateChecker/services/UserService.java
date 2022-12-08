@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker.services;
 import Ontdekstation013.ClimateChecker.exception.BadRequestException;
 import Ontdekstation013.ClimateChecker.exception.ConflictException;
+import Ontdekstation013.ClimateChecker.exception.NotFoundException;
 import Ontdekstation013.ClimateChecker.models.Token;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
@@ -11,24 +12,22 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.mail.SendFailedException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 @Service
 public class UserService {
 
     private final UserRepository userRepository;
     private final TokenRepository tokenRepository;
-    private final EmailSenderService emailSenderService;
     private PasswordEncoder encoder = new BCryptPasswordEncoder();
 
     @Autowired
-    public UserService(UserRepository userRepository, TokenRepository tokenRepository, EmailSenderService emailSenderService) {
+    public UserService(UserRepository userRepository, TokenRepository tokenRepository) {
         this.userRepository = userRepository;
         this.tokenRepository = tokenRepository;
-        this.emailSenderService = emailSenderService;
     }
 
     public userDto findUserById(long id) {
@@ -77,7 +76,7 @@ public class UserService {
         return newDtoList;
     }
 
-    public userDto editUser(editUserDto editUserDto) throws Exception {
+    public User editUser(editUserDto editUserDto) throws Exception {
         User user = userRepository.findById(editUserDto.getId()).orElseThrow();
 
         if (editUserDto.getFirstName().length() < 256)
@@ -109,15 +108,8 @@ public class UserService {
                 if (!userRepository.existsUserByMailAddress(editUserDto.getMailAddress())) {
                     String mail = user.getMailAddress();
                     user.setMailAddress(editUserDto.getMailAddress());
-                    Token token = createToken(user);
+                    userRepository.save(user);
                     user.setMailAddress(mail);
-                    token.setUser(user);
-                    saveToken(token);
-                    try {
-                        emailSenderService.sendEmailEditMail(editUserDto.getMailAddress(), user.getFirstName(), user.getLastName(), createLink(token, editUserDto.getMailAddress()));
-                    } catch(SendFailedException e) {
-                        throw new BadRequestException(null); //email failed to send
-                    }
                 } else {
                     throw new ConflictException(2); //Email already previously used
                 }
@@ -126,13 +118,13 @@ public class UserService {
             }
         }
 
-        return userToUserDto(userRepository.save(user));
+        return user;
     }
 
-    public void deleteUser(long id) {
+    public userDto deleteUser(long id) {
         User user = userRepository.getById(id);
-        emailSenderService.deleteUserMail(user.getMailAddress(), user.getFirstName(), user.getLastName());
         userRepository.deleteById(id);
+        return (userToUserDto(user));
     }
 
     public User createNewUser(registerDto registerDto) throws Exception {
@@ -166,30 +158,13 @@ public class UserService {
         }
 
         user = userRepository.save(user);
-        Token token = createToken(user);
-        saveToken(token);
-
-        try {
-            emailSenderService.sendSignupMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), createLink(token));
-        } catch(SendFailedException e) {
-            throw new BadRequestException(null); //email failed to send
-        }
-
         return user;
     }
 
     public User verifyMail(loginDto loginDto) throws Exception {
         User user = userRepository.findByMailAddress(loginDto.getMailAddress());
         if (user == null){
-            throw new BadRequestException(null); //user not found
-        } else if (user != null){
-            Token token = createToken(user);
-            saveToken(token);
-            try {
-                emailSenderService.sendLoginMail(user.getMailAddress(), user.getFirstName(), user.getLastName(), createLink(token));
-            } catch(SendFailedException e) {
-                throw new BadRequestException(null); //email failed to send
-            }
+            throw new NotFoundException(null); //user not found
         }
         return user;
     }
@@ -201,9 +176,25 @@ public class UserService {
 
         token.setUser(user);
         token.setCreationTime(LocalDateTime.now());
-        token.setLinkHash(encoder.encode(user.getMailAddress() + user.getUserID()));
+
+        token.setLinkHash(randomString(32));
 
         return token;
+    }
+
+    private String randomString(int length) {
+        char[] ALPHANUMERIC ="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789".toCharArray();
+
+        StringBuilder string = new StringBuilder();
+
+        Random random = new Random();
+
+        for(int i = 0; i < length; i++) {
+            int index = random.nextInt(ALPHANUMERIC.length);
+
+            string.append(ALPHANUMERIC[index]);
+        }
+        return string.toString();
     }
 
     public void saveToken(Token token){
@@ -218,7 +209,7 @@ public class UserService {
         User user = userRepository.findByMailAddress(email);
         Token officialToken = tokenRepository.findByUser(user);
         if (officialToken != null){
-            if (officialToken.getLinkHash().equals(linkHash) && encoder.matches(user.getMailAddress() + user.getUserID(), officialToken.getLinkHash())) {
+            if (officialToken.getLinkHash().equals(linkHash)) {
                 if (officialToken.getCreationTime().isBefore(LocalDateTime.now().plusMinutes(5))) {
                     tokenRepository.delete(officialToken);
                     return true;
@@ -246,8 +237,8 @@ public class UserService {
     }
 
     public String createLink(Token token){
-        String domain = "http://localhost:8082/";
-        return (domain + "api/Authentication/verify" + "?linkHash=" + token.getLinkHash() + "&email=" + token.getUser().getMailAddress());
+        String domain = "http://localhost:3000/";
+        return (domain + "Verify/" + token.getLinkHash() + "/" + token.getUser().getMailAddress());
     }
 
     public String createLink(Token token, String newEmail){ //for changing to new email address
