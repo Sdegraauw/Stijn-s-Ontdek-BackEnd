@@ -49,19 +49,6 @@ public class RegionCordsService {
         return dtos;
     }
 
-    public RegionInfoDto getAllByRegionId(long regionId)
-    {
-        List<RegionCords> all = regionCordsRepository.findAll();
-        List<RegionCords> retval = new ArrayList<RegionCords>();
-
-        for(RegionCords cords : all)
-        {
-            if(cords.getRegion().getId() == regionId) retval.add(cords);
-        }
-
-        return new RegionInfoDto(regionService.getById(regionId), retval);
-    }
-
     public List<stationDto> getStationsInRegion(RegionInfoDto info)
     {
         List<stationDto> stations = stationService.getAllStations();
