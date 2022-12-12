@@ -1,6 +1,8 @@
 package Ontdekstation013.ClimateChecker.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
@@ -8,6 +10,8 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class Region {
 
     @Id
@@ -16,5 +20,7 @@ public class Region {
     private Long id;
 
     private String name;
+
+
 
 }
