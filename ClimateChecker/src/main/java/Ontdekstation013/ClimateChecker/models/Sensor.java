@@ -34,4 +34,11 @@ public class Sensor {
         this.sensorData = sensorData;
         this.sensorType = sensorType;
     }
+
+    public Sensor(long id, int sensorData, SensorType sensorType, Station station){
+        this.SensorID = id;
+        this.station = station;
+        this.sensorData = sensorData;
+        this.sensorType = sensorType;
+    }
 }

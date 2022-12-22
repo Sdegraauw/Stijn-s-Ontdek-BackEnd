@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -52,6 +53,16 @@ public class User {
         this.mailAddress = mailAddress;
         this.Admin = Admin;
     }
+
+    public User(long id, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
+        this.UserID = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
+        this.mailAddress = mailAddress;
+        this.Admin = Admin;
+    }
+
 
     //register
     public User(String mailAddress, String firstName, String lastName, String userName) {

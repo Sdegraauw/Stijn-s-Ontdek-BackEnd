@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,7 +13,6 @@ import java.util.List;
 @Getter
 @Setter
 @NoArgsConstructor
-
 public class SensorType {
 
     @Id
@@ -35,5 +35,11 @@ public class SensorType {
         this.TypeID = id;
         this.TypeName = typeName;
         this.sensors = sensors;
+    }
+
+
+    public SensorType(long id, String typeName){
+        this.TypeID = id;
+        this.TypeName = typeName;
     }
 }
