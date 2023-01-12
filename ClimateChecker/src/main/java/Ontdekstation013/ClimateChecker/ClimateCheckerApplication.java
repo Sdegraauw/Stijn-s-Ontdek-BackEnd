@@ -168,7 +168,6 @@ public class ClimateCheckerApplication {
 			sensorRepository.save(new Sensor(15L, 4, sensorTypes.get(5), stations.get(2)));
 			sensorRepository.save(new Sensor(16L, 6, sensorTypes.get(5), stations.get(0)));
 			sensorRepository.save(new Sensor(17L, 5, sensorTypes.get(5), stations.get(1)));
-			sensorRepository.save(new Sensor(18L, 3, sensorTypes.get(5), stations.get(2)));
 
 			sensorRepository.save(new Sensor(19L, 12, sensorTypes.get(0), stations.get(3)));
 			sensorRepository.save(new Sensor(20L, 13, sensorTypes.get(0), stations.get(4)));
