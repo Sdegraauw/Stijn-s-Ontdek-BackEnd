@@ -35,11 +35,13 @@ class SensorServiceTests {
 
 		//sensor type 1
 		SensorType sensorType = new SensorType();
+		sensorType.setTypeName("Type1");
 		sensorType.setTypeID(4);
 		sensorTypes.add(sensorType);
 
 		//sensor type 2
 		SensorType sensorType1 = new SensorType();
+		sensorType1.setTypeName("Type2");
 		sensorType1.setTypeID(6);
 		sensorTypes.add(sensorType1);
 		mockTypeRepo.FillDatabase(sensorTypes);
@@ -136,15 +138,15 @@ class SensorServiceTests {
 	// No functionality in SensorService
 	@Test
 	void getAllSensorTypesTest() {
-		/*
+
 		List<sensorTypeDto> TypeList = sensorService.getAllSensorTypes();
 
-		Assertions.assertEquals( , TypeList.get(0).getName());
-		Assertions.assertEquals(dto1.getId(), TypeList.get(0).getId());
-		Assertions.assertEquals(dto2.getId(), TypeList.get(1).getId());
-		Assertions.assertEquals(dto2.getName(), TypeList.get(1).getName());
+		Assertions.assertEquals("Type1"  , TypeList.get(0).getName());
+		Assertions.assertEquals(4, TypeList.get(0).getId());
+		Assertions.assertEquals(6, TypeList.get(1).getId());
+		Assertions.assertEquals("Type2", TypeList.get(1).getName());
 
-		 */
+
 	}
 
 	// Has functionality

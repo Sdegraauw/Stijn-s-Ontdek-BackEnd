@@ -179,4 +179,13 @@ public class MockUserRepo implements UserRepository {
     public void FillDatabase(List<User> userList) {
         this.userList = userList;
     }
+
+    @Override
+    public boolean existsUserByUserNameOrMailAddress(String Username, String MailAddress) {
+        return false;
+    }
+
+    public User findByMailAddress(String mail) {
+        return null;
+    }
 }

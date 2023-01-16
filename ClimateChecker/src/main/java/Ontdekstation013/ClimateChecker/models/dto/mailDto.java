@@ -5,6 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class loginDto extends Dto{
-    String mailAddress;
+
+public class mailDto extends Dto {
+    Long id;
+    String header;
+    String body;
+    String footer;
 }

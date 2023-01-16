@@ -20,9 +20,12 @@ public class StationService {
 
     private final StationRepository stationRepository;
 
+    private final SensorService sensorService;
+
     @Autowired
-    public StationService(StationRepository stationRepository) {
+    public StationService(StationRepository stationRepository, SensorService sensorService) {
         this.stationRepository = stationRepository;
+        this.sensorService = sensorService;
     }
 
     public stationDto findStationById(long id) {
@@ -51,8 +54,7 @@ public class StationService {
         newdto.setLatitude(station.getLocation().getLatitude());
         newdto.setLongitude(station.getLocation().getLongitude());
         newdto.setIspublic(station.isPublic());
-        //newdto.setSensors(station.getSensors());
-
+        newdto.setSensors(sensorService.getSensorsByStation(station.getStationID()));
 
         return newdto;
     }
@@ -89,8 +91,8 @@ public class StationService {
     public List<stationDto> getAllStations() {
         Iterable<Station> StationList = stationRepository.findAll();
         List<stationDto> newDtoList = new ArrayList<>();
-        for (Station station: StationList
-        ) {
+        for (Station station: StationList)
+        {
             newDtoList.add(stationToStationDTO(station));
         }
         return newDtoList;
