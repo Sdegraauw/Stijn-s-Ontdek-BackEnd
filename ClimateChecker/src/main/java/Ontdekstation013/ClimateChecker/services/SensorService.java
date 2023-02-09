@@ -154,8 +154,7 @@ public class SensorService {
         Iterable<Sensor> sensorList = sensorRepository.findAllByStation(stationId);
 
         List<sensorDto> newDtoList = new ArrayList<>();
-        for (Sensor sensor: sensorList
-        ) {
+        for (Sensor sensor: sensorList) {
 
             if (sensor.getStation().getStationID() == stationId)
             newDtoList.add(sensorToSensorDTO(sensor));

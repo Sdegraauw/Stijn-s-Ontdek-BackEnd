@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.models;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -7,6 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -28,42 +30,51 @@ public class User {
     private List<Station> stations = new LinkedList<>();
 
     @NotBlank
+    private String firstName;
+
+    @NotBlank
+    private String lastName;
+
     private String userName;
 
     @NotBlank
     @Email
     private String mailAddress;
 
-    private Byte passwordHash;
-
-    private Byte passwordSalt;
-
-    private byte Admin;
+    private boolean Admin;
 
 
-
-
-    public User(long id, List<Station> stations, String userName, String mailAddress, Byte passwordHash, Byte passwordSalt, byte Admin) {
+    public User(long id, List<Station> stations, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
         this.UserID = id;
         this.stations = stations;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.userName = userName;
         this.mailAddress = mailAddress;
-        this.passwordHash = passwordHash;
-        this.passwordSalt = passwordSalt;
         this.Admin = Admin;
     }
 
-    public User(String userName, String mailAddress, Byte passwordHash, Byte passwordSalt) {
+    public User(long id, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
+        this.UserID = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
         this.userName = userName;
         this.mailAddress = mailAddress;
-        this.passwordHash =passwordHash;
-        this.passwordSalt = passwordSalt;
+        this.Admin = Admin;
     }
 
-    public User(String mailAddress, Byte passwordHash, Byte passwordSalt) {
+
+    //register
+    public User(String mailAddress, String firstName, String lastName, String userName) {
         this.mailAddress = mailAddress;
-        this.passwordHash = passwordHash;
-        this.passwordSalt = passwordSalt;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.userName = userName;
     }
 
+
+    public User(String mailAddress, Long id) {
+        this.UserID = id;
+        this.mailAddress = mailAddress;
+    }
 }
