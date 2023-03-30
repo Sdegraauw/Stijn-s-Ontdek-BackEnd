@@ -13,6 +13,10 @@ public class Translation {
 
     @Id
     private int ID;
-    private String LanguageID;
-    private String PageID;
+    private String BoksID;
+    private String Text;
+
+    public Translation() {
+
+    }
 }

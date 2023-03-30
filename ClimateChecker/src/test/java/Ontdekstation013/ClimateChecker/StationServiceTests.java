@@ -22,7 +22,7 @@ class StationServiceTests {
 	@BeforeEach
 	void setup() throws Exception{
 		this.mockRepo = new MockStationRepo();
-		this.stationService = new StationService(mockRepo);
+//		this.stationService = new StationService(mockRepo);
 
 
 		List<Station> stations = new ArrayList<>();

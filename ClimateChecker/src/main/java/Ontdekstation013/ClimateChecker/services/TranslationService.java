@@ -1,14 +1,28 @@
 package Ontdekstation013.ClimateChecker.services;
 
+import Ontdekstation013.ClimateChecker.models.Translation;
+import Ontdekstation013.ClimateChecker.models.TranslationPage;
 import Ontdekstation013.ClimateChecker.repositories.TranslationRepository;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.core.json.JsonReadContext;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+
+import java.io.FileNotFoundException;
 import java.io.FileReader;
+import java.util.Iterator;
+
 
 
 @Service
@@ -17,53 +31,39 @@ public class TranslationService {
 
     String jsonFile = "./Ontdekstation013/ClimateChecker/TranslationFile.Json";
 
-    @Autowired
-    public TranslationService(TranslationRepository _translationRepository){
-        this.translationRepository = _translationRepository;
-    }
+//    @Autowired
+//    public TranslationService(TranslationRepository _translationRepository){
+//        this.translationRepository = _translationRepository;
+//    }
 
-    public JsonFormat getNederlandsPage(String PageID){
-        // parsing file "JSONExample.json"
-        Object obj = new JSONParser(new FileReader("TranslationFile.Json"));
+    public TranslationPage getTranslationPage(String _language, String _pageID){
+        TranslationPage _translationPage = new TranslationPage();
+        _translationPage.setLanguageID(_language);
 
-        // typecasting obj to JSONObject
-        JSONObject jo = (JSONObject) obj;
+        ObjectMapper mapper = new ObjectMapper();
 
-        // getting firstName and lastName
-        String firstName = (String) jo.get("firstName");
-        String lastName = (String) jo.get("lastName");
+        try {
+            // Laad het JSON-bestand
+            File jsonFile = new File("src/main/java/Ontdekstation013/ClimateChecker/TranslationFile.Json");
+            Map<String, List<Map<String, Map<String, String>>>> data = mapper.readValue(jsonFile, Map.class);
 
-        System.out.println(firstName);
-        System.out.println(lastName);
+            // Haal de gewenste tekst uit de JSON
+            Map page = data.get(_translationPage.getLanguageID()).get(0).get(_pageID);
 
-        // getting age
-        long age = (long) jo.get("age");
-        System.out.println(age);
-
-        // getting address
-        Map address = ((Map)jo.get("address"));
-
-        // iterating address Map
-        Iterator<Map.Entry> itr1 = address.entrySet().iterator();
-        while (itr1.hasNext()) {
-            Map.Entry pair = itr1.next();
-            System.out.println(pair.getKey() + " : " + pair.getValue());
-        }
-
-        // getting phoneNumbers
-        JSONArray ja = (JSONArray) jo.get("phoneNumbers");
-
-        // iterating phoneNumbers
-        Iterator itr2 = ja.iterator();
-
-        while (itr2.hasNext())
-        {
-            itr1 = ((Map) itr2.next()).entrySet().iterator();
+            Iterator<Map.Entry> itr1 = page.entrySet().iterator();
             while (itr1.hasNext()) {
                 Map.Entry pair = itr1.next();
-                System.out.println(pair.getKey() + " : " + pair.getValue());
+                Translation _translation = new Translation();
+                _translation.setBoksID((String)pair.getKey());
+                _translation.setText((String)pair.getValue());
+                _translationPage.Bloks.add(_translation);
             }
+
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+
+        return _translationPage;
     }
 
 
