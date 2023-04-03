@@ -2,39 +2,25 @@ package Ontdekstation013.ClimateChecker.services;
 
 import Ontdekstation013.ClimateChecker.models.Translation;
 import Ontdekstation013.ClimateChecker.models.TranslationPage;
-import Ontdekstation013.ClimateChecker.repositories.TranslationRepository;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.json.JsonMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
-import org.apache.tomcat.util.json.JSONParser;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.util.Iterator;
 
 
 
 @Service
 public class TranslationService {
-    private TranslationRepository translationRepository;
 
     String jsonFile = "./Ontdekstation013/ClimateChecker/TranslationFile.Json";
 
-//    @Autowired
-//    public TranslationService(TranslationRepository _translationRepository){
-//        this.translationRepository = _translationRepository;
-//    }
 
     public TranslationPage getTranslationPage(String _language, String _pageID){
         TranslationPage _translationPage = new TranslationPage();

@@ -22,5 +22,10 @@ class TranslationServiceTests {
 
         //assert
         Assertions.assertEquals(3, translationPage.Bloks.stream().count());
+        for(int i = 0; i < 3; i++){
+            System.out.println(translationPage.Bloks.get(i).getBoksID());
+            System.out.println(translationPage.Bloks.get(i).getText());
+        }
+
     }
 }
