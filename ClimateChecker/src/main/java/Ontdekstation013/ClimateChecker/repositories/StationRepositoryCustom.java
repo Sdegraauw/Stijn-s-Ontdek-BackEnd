@@ -1,13 +1,16 @@
 package Ontdekstation013.ClimateChecker.repositories;
 
 import Ontdekstation013.ClimateChecker.models.Station;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface StationRepositoryCustom {
+@Repository
+public interface StationRepositoryCustom extends StationRepository{
 
-    @Query(value = "SELECT * FROM STATION WHERE USERID = ?1", nativeQuery = true)
-    List<Station> findAllByUserId(long userId);
+    List<Station> findAllByOwner_UserID(long userId);
+
+    Optional<Station> findByRegistrationCodeAndDatabaseTag(long registrationCode, String databaseTag);
 
 }

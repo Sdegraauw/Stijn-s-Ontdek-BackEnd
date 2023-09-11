@@ -9,28 +9,38 @@ import java.util.List;
 
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
-import Ontdekstation013.ClimateChecker.repositories.StationRepository;
+import Ontdekstation013.ClimateChecker.repositories.StationRepositoryCustom;
+import Ontdekstation013.ClimateChecker.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
 public class StationService {
 
-    private final StationRepository stationRepository;
-
+    private final StationRepositoryCustom stationRepository;
     private final SensorService sensorService;
 
+    private final UserRepository userRepository;
+
     @Autowired
-    public StationService(StationRepository stationRepository, SensorService sensorService) {
+    public StationService(StationRepositoryCustom stationRepository, SensorService sensorService, UserRepository userRepository) {
         this.stationRepository = stationRepository;
         this.sensorService = sensorService;
+        this.userRepository = userRepository;
     }
 
     public stationDto findStationById(long id) {
         Station station = stationRepository.findById(id).get();
         stationDto newdto = stationToStationDTO(station);
+        return newdto;
+    }
+
+    public stationDto findStationByRegistrationCode(long registrationCode, String databaseTag) {
+        Station station = stationRepository.findByRegistrationCodeAndDatabaseTag(registrationCode, databaseTag). orElse(null);
+        stationDto newdto = null;
+        if(station != null){
+            newdto = stationToStationDTO(station);
+        }
         return newdto;
     }
 
@@ -48,19 +58,20 @@ public class StationService {
         stationDto newdto = new stationDto();
         newdto.setId(station.getStationID());
         newdto.setName(station.getName());
-        newdto.setHeight(station.getHeight());
+        newdto.setHeight(station.getLocation().getHeight());
+        newdto.setDirection(station.getLocation().getDirection());
         newdto.setLocationId(station.getLocation().getLocationID());
-        newdto.setLocationName(station.getLocation().getLocationName());
         newdto.setLatitude(station.getLocation().getLatitude());
         newdto.setLongitude(station.getLocation().getLongitude());
         newdto.setIspublic(station.isPublic());
-        newdto.setSensors(sensorService.getSensorsByStation(station.getStationID()));
+        newdto.setIsoutside(station.getLocation().isOutside());
+        newdto.setSensors(sensorService.getSensorsByStationId(station.getStationID()));
 
         return newdto;
     }
 
     public List<stationTitleDto> getAllByUserId(long userId) {
-        Iterable<Station> stationList = stationRepository.findAllByUserId(userId);
+        Iterable<Station> stationList = stationRepository.findAllByOwner_UserID(userId);
 
         List<stationTitleDto> newDtoList = new ArrayList<>();
         for (Station station: stationList
@@ -98,6 +109,7 @@ public class StationService {
         return newDtoList;
     }
 
+
     // not yet functional
     public List<stationTitleDto> getAllByPageId(long pageId) {
         List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
@@ -107,26 +119,26 @@ public class StationService {
     }
 
 
-    // Returns false if not all information is filled in
-    // Returns true if successful
-    public boolean createStation(registerStationDto stationDto) {
+    // Koppel een gebruiker aan bestaand station
+    public boolean registerStation(registerStationDto stationDto) {
+        Station station = stationRepository.findByRegistrationCodeAndDatabaseTag(stationDto.getRegisterCode(), stationDto.getDatabaseTag()).orElse(null);
+        User owner = userRepository.findById(stationDto.getUserId()).orElse(null);
+        boolean succes = false;
 
-        if (stationDto.getUserId() < 1 || stationDto.getStationname().equals("")
-                || stationDto.getAddress().equals("")) {
-            return false;
+        if (station != null && owner != null){
+            station.setOwner(owner);
+            station.setPublic(stationDto.isPublicInfo());
+            station.setName(stationDto.getStationName());
+
+            station.getLocation().setHeight(stationDto.getHeight());
+            station.getLocation().setDirection(stationDto.getDirection());
+            station.getLocation().setOutside(stationDto.isOutside());
+
+            stationRepository.save(station);
+            succes = true;
         }
 
-
-        User owner = new User();
-        owner.setUserID(stationDto.getUserId());
-
-        Location location = new Location(stationDto.getAddress(), stationDto.getLatitude(), stationDto.getLongitude());
-
-        Station station = new Station(owner, stationDto.getStationname(), stationDto.getHeight(), location, stationDto.isIspublic());
-
-        stationRepository.save(station);
-
-        return true;
+        return succes;
     }
 
     public void deleteStation(long id) {
@@ -136,14 +148,59 @@ public class StationService {
 
     public void editStation(editStationDto stationDto) {
         Station currentStation = stationRepository.findById(stationDto.getId()).get();
-
         currentStation.setName(stationDto.getName());
-        currentStation.setHeight(stationDto.getHeight());
-        currentStation.setPublic(stationDto.isIspublic());
-
-        Location location = new Location(stationDto.getAddress(), stationDto.getLatitude(), stationDto.getLongitude());
-        currentStation.setLocation(location);
+        currentStation.setPublic(stationDto.isPublic());
 
         stationRepository.save(currentStation);
     }
+
+    public boolean findByRegistrationCode(String databaseTag, long registrationCode){
+        boolean available = false;
+        Station station = stationRepository.findByRegistrationCodeAndDatabaseTag(registrationCode, databaseTag).orElse(null);
+        if(station != null) {
+            if(station.getName() == null) {
+                available = true;
+            }
+        }
+        return available;
+    }
+
+
+
+
+    // Zet meetjestad station in de database
+    public boolean createStation(createStationDto createStationDto){
+        boolean succes = false;
+
+        Location location = new Location();
+        location.setLocationID(createStationDto.getLocationId());
+        location.setLongitude(createStationDto.longitude);
+        location.setLatitude(createStationDto.latitude);
+        Station station = new Station();
+        station.setRegistrationCode((createStationDto.registrationCode));
+        station.setDatabaseTag(createStationDto.databaseTag);
+        station.setLocation(location);
+        Station check = stationRepository.save(station);
+        if (check != null){
+            succes = true;
+        }
+
+        return succes;
+    }
+
+
+    public List<Long> getAllRegistrationCode(){
+        Iterable<Station> StationList = stationRepository.findAll();
+        List<Long> registrationCodeList = new ArrayList<>();
+        for (Station station: StationList)
+        {
+            registrationCodeList.add(station.getRegistrationCode());
+        }
+        return registrationCodeList;
+    }
+
+
+
+
+
 }

@@ -4,8 +4,8 @@ package Ontdekstation013.ClimateChecker.controller;
 import Ontdekstation013.ClimateChecker.models.Token;
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.services.EmailSenderService;
-import Ontdekstation013.ClimateChecker.services.StationService;
 import Ontdekstation013.ClimateChecker.services.UserService;
+import Ontdekstation013.ClimateChecker.services.converters.UserConverter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,11 +20,13 @@ import Ontdekstation013.ClimateChecker.models.dto.*;
 public class UserController {
 
     private final UserService userService;
+    private final UserConverter userConverter;
 
     private final EmailSenderService emailSenderService;
     @Autowired
-    public UserController(UserService userService, EmailSenderService emailSEnderService){
+    public UserController(UserService userService, UserConverter userConverter , EmailSenderService emailSEnderService){
         this.userService = userService;
+        this.userConverter = userConverter;
         this.emailSenderService = emailSEnderService;
     }
 
@@ -60,7 +62,7 @@ public class UserController {
             emailSenderService.sendEmailEditMail(editUserDto.getMailAddress(), user.getFirstName(), user.getLastName(), userService.createLink(token, editUserDto.getMailAddress()));
         }
 
-        return ResponseEntity.status(HttpStatus.OK).body(userService.userToUserDto(user));
+        return ResponseEntity.status(HttpStatus.OK).body(userConverter.userToUserDto(user));
     }
 
     // delete user
@@ -78,4 +80,7 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
     }
+
+
+
 }

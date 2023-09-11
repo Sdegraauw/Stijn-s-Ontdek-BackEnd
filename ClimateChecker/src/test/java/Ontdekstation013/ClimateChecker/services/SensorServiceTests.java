@@ -1,6 +1,7 @@
-package Ontdekstation013.ClimateChecker;
+package Ontdekstation013.ClimateChecker.services;
 
 import Ontdekstation013.ClimateChecker.Mocks.MockSensorRepo;
+import Ontdekstation013.ClimateChecker.Mocks.MockStationRepo;
 import Ontdekstation013.ClimateChecker.Mocks.MockTypeRepo;
 import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.SensorType;
@@ -8,7 +9,9 @@ import Ontdekstation013.ClimateChecker.models.Station;
 import Ontdekstation013.ClimateChecker.models.dto.sensorAverageDto;
 import Ontdekstation013.ClimateChecker.models.dto.sensorDto;
 import Ontdekstation013.ClimateChecker.models.dto.sensorTypeDto;
-import Ontdekstation013.ClimateChecker.services.SensorService;
+import Ontdekstation013.ClimateChecker.repositories.StationRepositoryCustom;
+import Ontdekstation013.ClimateChecker.services.converters.SensorConverter;
+import Ontdekstation013.ClimateChecker.services.converters.StationConverter;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +25,8 @@ class SensorServiceTests {
 	private SensorService sensorService;
 	private MockSensorRepo mockRepo;
 	private MockTypeRepo mockTypeRepo;
+	private SensorConverter sensorConverter;
+	private MockStationRepo stationRepo;
 
 
 
@@ -29,7 +34,10 @@ class SensorServiceTests {
 	void setup() throws Exception{
 		this.mockRepo = new MockSensorRepo();
 		this.mockTypeRepo = new MockTypeRepo();
-		this.sensorService = new SensorService(mockRepo, mockTypeRepo);
+		this.stationRepo = new MockStationRepo();
+		this.sensorConverter = new SensorConverter();
+		this.sensorService = new SensorService(mockRepo, mockTypeRepo, sensorConverter, stationRepo);
+
 
 		List<SensorType> sensorTypes = new ArrayList<>();
 
@@ -54,6 +62,7 @@ class SensorServiceTests {
 		// sensor 1
 		sensor.setSensorID(1);
 		sensor.setSensorData(2);
+		sensor.setActiveData(true);
 
 		Station station = new Station();
 		station.setStationID(5);
@@ -71,6 +80,7 @@ class SensorServiceTests {
 		type = new SensorType();
 		sensor.setSensorID(2);
 		sensor.setSensorData(1);
+		sensor.setActiveData(true);
 
 		station.setStationID(7);
 		sensor.setStation(station);
@@ -86,6 +96,8 @@ class SensorServiceTests {
 		type = new SensorType();
 		sensor.setSensorID(3);
 		sensor.setSensorData(4);
+		sensor.setActiveData(true);
+
 
 		station.setStationID(5);
 		sensor.setStation(station);
@@ -109,7 +121,7 @@ class SensorServiceTests {
 		sensor.setStation(new Station());
 		sensor.getStation().setStationID(3);
 
-		sensorDto newDto = sensorService.sensorToSensorDTO(sensor);
+		sensorDto newDto = sensorConverter.sensorToSensorDTO(sensor);
 
 		Assertions.assertEquals(0,newDto.getId());
 		Assertions.assertEquals(1,newDto.getData());
@@ -229,7 +241,7 @@ class SensorServiceTests {
 	@Test
 	void getSensorByStation(){
 
-		List<sensorDto> newDtoList = sensorService.getSensorsByStation(5);
+		List<sensorDto> newDtoList = sensorService.getSensorsByStationId(5);
 
 		Assertions.assertEquals(newDtoList.get(0).getId() ,1);
 		Assertions.assertEquals(newDtoList.get(0).getTypeId() ,4);
