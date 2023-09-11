@@ -2,7 +2,6 @@ package Ontdekstation013.ClimateChecker.services;
 
 import Ontdekstation013.ClimateChecker.models.Location;
 import Ontdekstation013.ClimateChecker.models.RegionCords;
-import Ontdekstation013.ClimateChecker.models.Sensor;
 import Ontdekstation013.ClimateChecker.models.SensorType;
 import Ontdekstation013.ClimateChecker.models.dto.RegionAverageDto;
 import Ontdekstation013.ClimateChecker.models.dto.RegionInfoDto;

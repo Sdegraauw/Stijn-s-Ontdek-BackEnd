@@ -1,16 +1,17 @@
 package Ontdekstation013.ClimateChecker.repositories;
 
 import Ontdekstation013.ClimateChecker.models.Sensor;
-import Ontdekstation013.ClimateChecker.models.SensorType;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
-public interface SensorRepositoryCustom {
+@Repository
+public interface SensorRepositoryCustom extends SensorRepository{
 
-    @Query(value = "SELECT * FROM SENSOR WHERE SENSOR_TYPE = ?1", nativeQuery = true)
-    List<Sensor> findAllByType(long typeId);
+    List<Sensor> findAllBySensorType_TypeID(long typeId);
+    List<Sensor> findByStation_StationID(long stationId);
 
-    @Query(value = "SELECT * FROM SENSOR WHERE STATIONID = ?1", nativeQuery = true)
-    List<Sensor> findAllByStation(long stationId);
+    Optional<List<Sensor>> findAllByActiveData(boolean activeDataInput);
+
 }
