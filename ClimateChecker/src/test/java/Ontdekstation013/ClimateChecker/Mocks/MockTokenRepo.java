@@ -1,8 +1,9 @@
 package Ontdekstation013.ClimateChecker.Mocks;
 
-import Ontdekstation013.ClimateChecker.models.Token;
-import Ontdekstation013.ClimateChecker.models.User;
-import Ontdekstation013.ClimateChecker.repositories.TokenRepository;
+import Ontdekstation013.ClimateChecker.features.authentication.Token;
+import Ontdekstation013.ClimateChecker.features.authentication.TokenRepository;
+import Ontdekstation013.ClimateChecker.features.user.User;
+
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

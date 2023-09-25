@@ -1,9 +1,10 @@
 package Ontdekstation013.ClimateChecker.Mocks;
 
-import Ontdekstation013.ClimateChecker.models.Sensor;
-import Ontdekstation013.ClimateChecker.models.Station;
-import Ontdekstation013.ClimateChecker.repositories.StationRepository;
-import Ontdekstation013.ClimateChecker.repositories.StationRepositoryCustom;
+import Ontdekstation013.ClimateChecker.features.sensor.Sensor;
+import Ontdekstation013.ClimateChecker.features.sensor.StationRepository;
+import Ontdekstation013.ClimateChecker.features.sensor.StationRepositoryCustom;
+import Ontdekstation013.ClimateChecker.features.station.Station;
+
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
