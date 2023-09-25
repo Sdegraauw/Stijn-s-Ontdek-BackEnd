@@ -1,9 +1,11 @@
 package Ontdekstation013.ClimateChecker.services;
 
-import Ontdekstation013.ClimateChecker.models.dto.MeetJeStadDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import Ontdekstation013.ClimateChecker.features.databasepolling.MJSValidationService;
+import Ontdekstation013.ClimateChecker.features.station.endpoint.MeetJeStadDto;
 
 import java.util.ArrayList;
 import java.util.List;
