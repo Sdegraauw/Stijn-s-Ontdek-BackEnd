@@ -7,12 +7,10 @@ import Ontdekstation013.ClimateChecker.features.sensor.Sensor;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorConverter;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorType;
-import Ontdekstation013.ClimateChecker.features.sensor.StationRepositoryCustom;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorAverageDto;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorDto;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorTypeDto;
-import Ontdekstation013.ClimateChecker.features.station.Station;
-import Ontdekstation013.ClimateChecker.features.station.StationConverter;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -66,7 +64,7 @@ class SensorServiceTests {
 		sensor.setSensorData(2);
 		sensor.setActiveData(true);
 
-		Station station = new Station();
+		StationOld station = new StationOld();
 		station.setStationID(5);
 		sensor.setStation(station);
 
@@ -78,7 +76,7 @@ class SensorServiceTests {
 
 		// sensor 2
 		sensor = new Sensor();
-		station = new Station();
+		station = new StationOld();
 		type = new SensorType();
 		sensor.setSensorID(2);
 		sensor.setSensorData(1);
@@ -94,7 +92,7 @@ class SensorServiceTests {
 
 		// sensor 3
 		sensor = new Sensor();
-		station = new Station();
+		station = new StationOld();
 		type = new SensorType();
 		sensor.setSensorID(3);
 		sensor.setSensorData(4);
@@ -120,7 +118,7 @@ class SensorServiceTests {
 		sensor.setSensorData(1);
 		sensor.setSensorType(new SensorType());
 		sensor.getSensorType().setTypeID(2);
-		sensor.setStation(new Station());
+		sensor.setStation(new StationOld());
 		sensor.getStation().setStationID(3);
 
 		sensorDto newDto = sensorConverter.sensorToSensorDTO(sensor);

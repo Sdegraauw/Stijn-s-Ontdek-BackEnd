@@ -3,7 +3,7 @@ package Ontdekstation013.ClimateChecker.services;
 import Ontdekstation013.ClimateChecker.Mocks.MockLocationRepo;
 import Ontdekstation013.ClimateChecker.features.location.Location;
 import Ontdekstation013.ClimateChecker.features.location.LocationService;
-import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -33,7 +33,7 @@ class LocationServiceTests {
 		location.setLatitude(10);
 		location.setLongitude(100);
 
-		Station station = new Station();
+		StationOld station = new StationOld();
 		station.setStationID(1000);
 		location.setStation(station);
 
@@ -46,7 +46,7 @@ class LocationServiceTests {
 		location.setLatitude(20);
 		location.setLongitude(200);
 
-		station = new Station();
+		station = new StationOld();
 		station.setStationID(2000);
 		location.setStation(station);
 

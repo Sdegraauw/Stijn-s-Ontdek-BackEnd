@@ -7,9 +7,9 @@ import Ontdekstation013.ClimateChecker.Mocks.MockUserRepo;
 import Ontdekstation013.ClimateChecker.features.location.Location;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorConverter;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
-import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 import Ontdekstation013.ClimateChecker.features.station.StationConverter;
-import Ontdekstation013.ClimateChecker.features.station.StationService;
+import Ontdekstation013.ClimateChecker.features.station.StationServiceOld;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.editStationDto;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.registerStationDto;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.stationDto;
@@ -26,7 +26,7 @@ import java.util.List;
 
 @SpringBootTest
 class StationServiceTests {
-	private StationService stationService;
+	private StationServiceOld stationService;
 	private SensorService sensorService;
 	private MockStationRepo mockRepo;
 	private MockSensorRepo mockSensorRepo;
@@ -47,12 +47,12 @@ class StationServiceTests {
 		this.sensorConverter = new SensorConverter();
 		this.stationConverter = new StationConverter();
 		this.sensorService = new SensorService(mockSensorRepo, mockTypeRepo, sensorConverter, mockRepo);
-		this.stationService = new StationService(mockRepo, sensorService, mockUserRepo);
+		this.stationService = new StationServiceOld(mockRepo, sensorService, mockUserRepo);
 
 
-		List<Station> stations = new ArrayList<>();
+		List<StationOld> stations = new ArrayList<>();
 
-		Station station = new Station();
+		StationOld station = new StationOld();
 
 
 		// station 1
@@ -72,7 +72,7 @@ class StationServiceTests {
 
 
 		// station 2
-		station = new Station();
+		station = new StationOld();
 		station.setStationID(2);
 		station.setName("name2");
 		station.setPublic(false);
@@ -89,7 +89,7 @@ class StationServiceTests {
 
 
 		// station 3
-		station = new Station();
+		station = new StationOld();
 		station.setStationID(3);
 		station.setName("name3");
 		station.setPublic(true);
@@ -106,7 +106,7 @@ class StationServiceTests {
 
 
 		// station 4
-		station = new Station();
+		station = new StationOld();
 		station.setStationID(4);
 		station.setName("name4");
 		station.setPublic(true);
@@ -149,7 +149,7 @@ class StationServiceTests {
 	// No functionality in StationService
 	@Test
 	void stationToStationDTOTest() {
-		Station station = new Station();
+		StationOld station = new StationOld();
 		station.setStationID(1);
 		station.setLocation(new Location());
 		station.setOwner(new User());
@@ -229,7 +229,7 @@ class StationServiceTests {
 
 		Assertions.assertTrue(stationService.registerStation(dto));
 
-		Station result = mockRepo.stations.get(3);
+		StationOld result = mockRepo.stations.get(3);
 
 		Assertions.assertEquals(dto.getStationName(), result.getName());
 		Assertions.assertEquals(dto.getHeight(), result.getLocation().getHeight());
@@ -270,7 +270,7 @@ class StationServiceTests {
 
 		stationService.editStation(dto2);
 
-		Station result = mockRepo.stations.get(2);
+		StationOld result = mockRepo.stations.get(2);
 
 		Assertions.assertEquals(dto2.getName(), result.getName());
 		Assertions.assertEquals(dto2.isPublic(), result.isPublic());

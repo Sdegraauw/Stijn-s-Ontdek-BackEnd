@@ -8,7 +8,7 @@ import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorType;
 import Ontdekstation013.ClimateChecker.features.sensor.TypeRepository;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorDto;
-import Ontdekstation013.ClimateChecker.features.station.StationService;
+import Ontdekstation013.ClimateChecker.features.station.StationServiceOld;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.stationDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +23,7 @@ public class RegionCordsService {
     private final RegionCordsRepository regionCordsRepository;
     private final RegionService regionService;
     private final LocationService locationService;
-    private final StationService stationService;
+    private final StationServiceOld stationService;
     private final TypeRepository typeRepository;
 
     public List<RegionInfoDto> getAll()
@@ -107,7 +107,7 @@ public class RegionCordsService {
     }
 
     @Autowired
-    public RegionCordsService(RegionCordsRepository regionCordsRepository, RegionService regionService, StationService stationService
+    public RegionCordsService(RegionCordsRepository regionCordsRepository, RegionService regionService, StationServiceOld stationService
     , LocationService locationService, TypeRepository typeRepository)
     {
         this.regionCordsRepository = regionCordsRepository;

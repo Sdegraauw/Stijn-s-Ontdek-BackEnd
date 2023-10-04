@@ -8,7 +8,7 @@ import lombok.Setter;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
-import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 
 @Entity
 @Getter
@@ -32,11 +32,11 @@ public class Location {
     private boolean isOutside;
 
     @OneToOne(mappedBy = "location")
-    private Station station;
+    private StationOld station;
 
 
 
-    public Location(long id, float latitude, float longitude, Station station) {
+    public Location(long id, float latitude, float longitude, StationOld station) {
         this.LocationID = id;
         this.latitude = latitude;
         this.longitude = longitude;
