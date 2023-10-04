@@ -3,7 +3,7 @@ package Ontdekstation013.ClimateChecker.features.sensor;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorAverageDto;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorDto;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorTypeDto;
-import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.MeetJeStadDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -175,7 +175,7 @@ public class SensorService {
 
     public boolean addSensorData(MeetJeStadDto meetJeStadDto){
 
-        Station station = stationRepository.findByRegistrationCodeAndDatabaseTag(meetJeStadDto.id, "MJS").orElse(null);
+        StationOld station = stationRepository.findByRegistrationCodeAndDatabaseTag(meetJeStadDto.id, "MJS").orElse(null);
 
         boolean succes = false;
         try{

@@ -1,9 +1,7 @@
 package Ontdekstation013.ClimateChecker.Mocks;
 
-import Ontdekstation013.ClimateChecker.features.sensor.Sensor;
-import Ontdekstation013.ClimateChecker.features.sensor.StationRepository;
 import Ontdekstation013.ClimateChecker.features.sensor.StationRepositoryCustom;
-import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -11,40 +9,39 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.repository.query.FluentQuery;
 
-import javax.swing.text.html.parser.Entity;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
 
 public class MockStationRepo implements StationRepositoryCustom {
-    public List<Station> stations;
+    public List<StationOld> stations;
 
     public MockStationRepo() {
         this.stations = new ArrayList<>();
     }
 
-    public void FillDataBase(List<Station> stations) {
+    public void FillDataBase(List<StationOld> stations) {
         this.stations = stations;
     }
 
     @Override
-    public List<Station> findAll() {
+    public List<StationOld> findAll() {
         return stations;
     }
 
     @Override
-    public List<Station> findAll(Sort sort) {
+    public List<StationOld> findAll(Sort sort) {
         return null;
     }
 
     @Override
-    public Page<Station> findAll(Pageable pageable) {
+    public Page<StationOld> findAll(Pageable pageable) {
         return null;
     }
 
     @Override
-    public List<Station> findAllById(Iterable<Long> longs) {
+    public List<StationOld> findAllById(Iterable<Long> longs) {
         return null;
     }
 
@@ -59,7 +56,7 @@ public class MockStationRepo implements StationRepositoryCustom {
     }
 
     @Override
-    public void delete(Station entity) {
+    public void delete(StationOld entity) {
 
     }
 
@@ -69,7 +66,7 @@ public class MockStationRepo implements StationRepositoryCustom {
     }
 
     @Override
-    public void deleteAll(Iterable<? extends Station> entities) {
+    public void deleteAll(Iterable<? extends StationOld> entities) {
 
     }
 
@@ -79,20 +76,20 @@ public class MockStationRepo implements StationRepositoryCustom {
     }
 
     @Override
-    public <S extends Station> S save(S entity) {
+    public <S extends StationOld> S save(S entity) {
         stations.add(entity);
         return null;
     }
 
     @Override
-    public <S extends Station> List<S> saveAll(Iterable<S> entities) {
+    public <S extends StationOld> List<S> saveAll(Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public Optional<Station> findById(Long aLong) {
+    public Optional<StationOld> findById(Long aLong) {
 
-        for (Station station: stations
+        for (StationOld station: stations
         ) {
 
             if (station.getStationID() == aLong){
@@ -114,17 +111,17 @@ public class MockStationRepo implements StationRepositoryCustom {
     }
 
     @Override
-    public <S extends Station> S saveAndFlush(S entity) {
+    public <S extends StationOld> S saveAndFlush(S entity) {
         return null;
     }
 
     @Override
-    public <S extends Station> List<S> saveAllAndFlush(Iterable<S> entities) {
+    public <S extends StationOld> List<S> saveAllAndFlush(Iterable<S> entities) {
         return null;
     }
 
     @Override
-    public void deleteAllInBatch(Iterable<Station> entities) {
+    public void deleteAllInBatch(Iterable<StationOld> entities) {
 
     }
 
@@ -139,55 +136,55 @@ public class MockStationRepo implements StationRepositoryCustom {
     }
 
     @Override
-    public Station getOne(Long aLong) {
+    public StationOld getOne(Long aLong) {
         return null;
     }
 
     @Override
-    public Station getById(Long aLong) {
+    public StationOld getById(Long aLong) {
         return null;
     }
 
     @Override
-    public <S extends Station> Optional<S> findOne(Example<S> example) {
+    public <S extends StationOld> Optional<S> findOne(Example<S> example) {
         return Optional.empty();
     }
 
     @Override
-    public <S extends Station> List<S> findAll(Example<S> example) {
+    public <S extends StationOld> List<S> findAll(Example<S> example) {
         return null;
     }
 
     @Override
-    public <S extends Station> List<S> findAll(Example<S> example, Sort sort) {
+    public <S extends StationOld> List<S> findAll(Example<S> example, Sort sort) {
         return null;
     }
 
     @Override
-    public <S extends Station> Page<S> findAll(Example<S> example, Pageable pageable) {
+    public <S extends StationOld> Page<S> findAll(Example<S> example, Pageable pageable) {
         return null;
     }
 
     @Override
-    public <S extends Station> long count(Example<S> example) {
+    public <S extends StationOld> long count(Example<S> example) {
         return 0;
     }
 
     @Override
-    public <S extends Station> boolean exists(Example<S> example) {
+    public <S extends StationOld> boolean exists(Example<S> example) {
         return false;
     }
 
     @Override
-    public <S extends Station, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
+    public <S extends StationOld, R> R findBy(Example<S> example, Function<FluentQuery.FetchableFluentQuery<S>, R> queryFunction) {
         return null;
     }
 
 
     @Override
-    public List<Station> findAllByOwner_UserID(long userId) {
-        List<Station> stationList = new ArrayList<>();
-        for (Station station: stations
+    public List<StationOld> findAllByOwner_UserID(long userId) {
+        List<StationOld> stationList = new ArrayList<>();
+        for (StationOld station: stations
         ) {
             if (station.getOwner().getUserID() == userId){
                 stationList.add(station);
@@ -197,13 +194,13 @@ public class MockStationRepo implements StationRepositoryCustom {
     }
 
     @Override
-    public Optional<Station> findByRegistrationCodeAndDatabaseTag(long registrationCode, String databaseTag) {
-        List<Station> stationList = new ArrayList<>();
-        for (Station station: stations) {
+    public Optional<StationOld> findByRegistrationCodeAndDatabaseTag(long registrationCode, String databaseTag) {
+        List<StationOld> stationList = new ArrayList<>();
+        for (StationOld station: stations) {
             if (station.getRegistrationCode() == registrationCode && station.getDatabaseTag().equals(databaseTag)){
                 return Optional.of(station);
             }
         }
-        return Optional.of(new Station());
+        return Optional.of(new StationOld());
     }
 }
