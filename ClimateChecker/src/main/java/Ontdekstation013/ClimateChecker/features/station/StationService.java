@@ -12,10 +12,11 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class StationService {
-    public String GetLastStationsData() {
+    public List<Station> GetLastStationsData() {
         Instant currentTimeUTC = Instant.now();
         Duration timeSpan = Duration.ofMinutes(35);
         Instant startTime = currentTimeUTC.minus(timeSpan);
@@ -36,7 +37,5 @@ public class StationService {
 
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(uri, String.class);
-
-        return result;
     }
 }
