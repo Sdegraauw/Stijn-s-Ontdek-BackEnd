@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Service
 public class StationService {
-    public Station[] GetlastStationsData() {
+    public Station[] GetLastStationsData() {
         Instant currentTimeUTC = Instant.now();
         Duration timeSpan = Duration.ofMinutes(35);
         Instant startTime = currentTimeUTC.minus(timeSpan);
@@ -34,6 +34,7 @@ public class StationService {
                 startTimeString+ "&end="+currentTimeString+"&format=json&limit=100";
 
         RestTemplate restTemplate = new RestTemplate();
-        restTemplate.exchange()
+        String result = restTemplate.getForObject(uri, String.class);
+
     }
 }
