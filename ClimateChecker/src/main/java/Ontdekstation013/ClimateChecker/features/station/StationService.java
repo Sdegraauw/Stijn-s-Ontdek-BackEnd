@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.station;
 
 import jdk.jfr.Timespan;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -14,7 +15,7 @@ import java.util.Date;
 
 @Service
 public class StationService {
-    public Station[] GetLastStationsData() {
+    public String GetLastStationsData() {
         Instant currentTimeUTC = Instant.now();
         Duration timeSpan = Duration.ofMinutes(35);
         Instant startTime = currentTimeUTC.minus(timeSpan);
@@ -36,5 +37,6 @@ public class StationService {
         RestTemplate restTemplate = new RestTemplate();
         String result = restTemplate.getForObject(uri, String.class);
 
+        return result;
     }
 }
