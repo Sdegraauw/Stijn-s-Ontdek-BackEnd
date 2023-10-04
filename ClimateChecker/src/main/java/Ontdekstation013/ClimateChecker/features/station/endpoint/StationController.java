@@ -1,8 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.station.endpoint;
 
 import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
-import Ontdekstation013.ClimateChecker.features.station.Station;
-import Ontdekstation013.ClimateChecker.features.station.StationService;
+import Ontdekstation013.ClimateChecker.features.station.StationServiceOld;
 import Ontdekstation013.ClimateChecker.features.station.ValidationService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,13 +16,13 @@ import java.util.List;
 @RequestMapping("/api/Station")
 public class StationController {
 
-    private final StationService stationService;
+    private final StationServiceOld stationService;
     private final SensorService sensorService;
     private final ValidationService validationService;
 
 
     @Autowired
-    public StationController(StationService stationService, SensorService sensorService, ValidationService validationService){
+    public StationController(StationServiceOld stationService, SensorService sensorService, ValidationService validationService){
         this.stationService = stationService;
         this.sensorService = sensorService;
         this.validationService = validationService;

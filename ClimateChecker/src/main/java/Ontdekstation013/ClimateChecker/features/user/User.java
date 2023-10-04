@@ -8,7 +8,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -28,7 +28,7 @@ public class User {
             fetch = FetchType.LAZY,
             orphanRemoval = true,
             cascade = CascadeType.ALL)
-    private List<Station> stations = new LinkedList<>();
+    private List<StationOld> stations = new LinkedList<>();
 
     @NotBlank
     private String firstName;
@@ -45,7 +45,7 @@ public class User {
     private boolean Admin;
 
 
-    public User(long id, List<Station> stations, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
+    public User(long id, List<StationOld> stations, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
         this.userID = id;
         this.stations = stations;
         this.firstName = firstName;

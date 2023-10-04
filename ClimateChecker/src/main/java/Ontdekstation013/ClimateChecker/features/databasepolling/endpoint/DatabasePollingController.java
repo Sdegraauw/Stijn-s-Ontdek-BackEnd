@@ -5,7 +5,7 @@ import Ontdekstation013.ClimateChecker.features.databasepolling.MJSValidationSer
 import Ontdekstation013.ClimateChecker.features.location.LocationService;
 import Ontdekstation013.ClimateChecker.features.location.endpoint.createLocationDto;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
-import Ontdekstation013.ClimateChecker.features.station.StationService;
+import Ontdekstation013.ClimateChecker.features.station.StationServiceOld;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.MeetJeStadDto;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.createStationDto;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.stationDto;
@@ -21,13 +21,13 @@ import java.util.List;
 public class DatabasePollingController {
 
     private final SensorService sensorService;
-    private final StationService stationService;
+    private final StationServiceOld stationService;
     private final LocationService locationService;
     private final DatabasePollingService databasePollingService;
     private final MJSValidationService MJSvalidationService;
 
     @Autowired
-    public DatabasePollingController(SensorService sensorService, StationService stationService, LocationService locationService, DatabasePollingService databasePollingService, MJSValidationService MJSvalidationService) {
+    public DatabasePollingController(SensorService sensorService, StationServiceOld stationService, LocationService locationService, DatabasePollingService databasePollingService, MJSValidationService MJSvalidationService) {
         this.sensorService = sensorService;
         this.stationService = stationService;
         this.locationService = locationService;

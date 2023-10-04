@@ -1,8 +1,10 @@
 package Ontdekstation013.ClimateChecker.features.region.endpoint;
 
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import Ontdekstation013.ClimateChecker.features.location.Location;
 import Ontdekstation013.ClimateChecker.features.region.Region;
 import Ontdekstation013.ClimateChecker.features.region.RegionCords;
 

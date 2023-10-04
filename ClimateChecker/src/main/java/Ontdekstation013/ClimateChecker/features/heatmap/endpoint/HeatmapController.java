@@ -4,7 +4,7 @@ import Ontdekstation013.ClimateChecker.features.location.Location;
 import Ontdekstation013.ClimateChecker.features.location.LocationService;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorDto;
-import Ontdekstation013.ClimateChecker.features.station.StationService;
+import Ontdekstation013.ClimateChecker.features.station.StationServiceOld;
 import Ontdekstation013.ClimateChecker.features.station.endpoint.stationDto;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,11 +22,11 @@ import java.util.*;
 public class HeatmapController {
 
     private final SensorService sensorService;
-    private final StationService stationService;
+    private final StationServiceOld stationService;
     private final LocationService locationService;
 
     @Autowired
-    public HeatmapController(SensorService sensorService, StationService stationService, LocationService locationService )
+    public HeatmapController(SensorService sensorService, StationServiceOld stationService, LocationService locationService )
     {
         this.sensorService = sensorService;
         this.stationService = stationService;
