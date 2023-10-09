@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,14 +53,34 @@ public class MeetJeStadService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        TypeReference<List<Measurement>> typeReference = new TypeReference<List<Measurement>>() {};
+        TypeReference<List<MeasurementDto>> typeReference = new TypeReference<List<MeasurementDto>>() {};
 
-        List<Measurement> measurements = new ArrayList<>();
+        List<MeasurementDto> measurementsDto = new ArrayList<>();
 
         try {
-            measurements = mapper.readValue(responseBody, typeReference);
+            measurementsDto = mapper.readValue(responseBody, typeReference);
         } catch (JsonProcessingException ignored)
         {}
+
+        // Convert dto's to measurements for use in service
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+        List<Measurement> measurements = new ArrayList<>();
+        for (MeasurementDto dto : measurementsDto) {
+            Measurement measurement = new Measurement();
+            measurement.setId(dto.getId());
+            measurement.setLongitude(dto.getLongitude());
+            measurement.setLatitude(dto.getLatitude());
+            measurement.setTemperature(dto.getTemperature());
+
+            // Convert date from string to date object
+            try {
+                measurement.setTimestamp(formatter.parse(dto.getTimestamp()));
+            } catch (ParseException ignored)
+            {}
+
+            measurements.add(measurement);
+        }
 
         return measurements;
     }

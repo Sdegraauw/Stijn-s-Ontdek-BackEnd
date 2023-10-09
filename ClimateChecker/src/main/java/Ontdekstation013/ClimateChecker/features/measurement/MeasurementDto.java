@@ -2,16 +2,17 @@ package Ontdekstation013.ClimateChecker.features.measurement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
-import lombok.Setter;
-
-import java.util.Date;
 
 @Getter
-@Setter
-public class Measurement {
+public class MeasurementDto {
+    @JsonProperty("id")
     private int id;
-    private Date timestamp;
+    @JsonProperty("timestamp")
+    private String timestamp;
+    @JsonProperty("longitude")
     private float longitude;
+    @JsonProperty("latitude")
     private float latitude;
+    @JsonProperty("temperature")
     private float temperature;
 }
