@@ -1,7 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDto;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
@@ -58,9 +57,9 @@ public class MeetJeStadService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        TypeReference<List<MeasurementDto>> typeReference = new TypeReference<List<MeasurementDto>>() {};
+        TypeReference<List<MeasurementDTO>> typeReference = new TypeReference<List<MeasurementDTO>>() {};
 
-        List<MeasurementDto> measurementsDto = new ArrayList<>();
+        List<MeasurementDTO> measurementsDto = new ArrayList<>();
 
         try {
             measurementsDto = mapper.readValue(responseBody, typeReference);
@@ -71,7 +70,7 @@ public class MeetJeStadService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         List<Measurement> measurements = new ArrayList<>();
-        for (MeasurementDto dto : measurementsDto) {
+        for (MeasurementDTO dto : measurementsDto) {
             Measurement measurement = new Measurement();
             measurement.setId(dto.getId());
             measurement.setLongitude(dto.getLongitude());
