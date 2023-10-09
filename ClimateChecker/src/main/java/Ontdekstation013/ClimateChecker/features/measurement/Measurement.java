@@ -1,7 +1,10 @@
 package Ontdekstation013.ClimateChecker.features.measurement;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
+import lombok.*;
 
+import java.util.stream.DoubleStream;
+@Getter
 public class Measurement {
 
     @JsonProperty("id")
@@ -18,5 +21,4 @@ public class Measurement {
 
     @JsonProperty("timestamp")
     private String timestamp;
-
 }
