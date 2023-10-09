@@ -6,7 +6,7 @@ import lombok.Setter;
 
 import javax.persistence.*;
 
-import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationOld;
 
 @Entity
 @Getter
@@ -19,7 +19,7 @@ public class Sensor {
 
     @ManyToOne
     @JoinColumn(name= "stationID")
-    private Station station;
+    private StationOld station;
 
     private int sensorData;
 
@@ -30,13 +30,13 @@ public class Sensor {
     private boolean activeData;
 
 
-    public Sensor(long id, int sensorData, SensorType sensorType, Station station){
+    public Sensor(long id, int sensorData, SensorType sensorType, StationOld station){
         this.SensorID = id;
         this.station = station;
         this.sensorData = sensorData;
         this.sensorType = sensorType;
     }
-    public Sensor(long id, int sensorData, SensorType sensorType, Station station, boolean activeData){
+    public Sensor(long id, int sensorData, SensorType sensorType, StationOld station, boolean activeData){
         this.SensorID = id;
         this.station = station;
         this.sensorData = sensorData;
@@ -44,12 +44,12 @@ public class Sensor {
         this.activeData = activeData;
     }
 
-    public Sensor(int sensorData, SensorType sensorType, Station station){
+    public Sensor(int sensorData, SensorType sensorType, StationOld station){
         this.station = station;
         this.sensorData = sensorData;
         this.sensorType = sensorType;
     }
-    public Sensor(int sensorData, SensorType sensorType, Station station, boolean activeData){
+    public Sensor(int sensorData, SensorType sensorType, StationOld station, boolean activeData){
         this.station = station;
         this.sensorData = sensorData;
         this.sensorType = sensorType;

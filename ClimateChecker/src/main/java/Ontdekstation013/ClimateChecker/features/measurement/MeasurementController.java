@@ -20,16 +20,14 @@ public class MeasurementController {
     private final MeasurementService measurementService;
     private Logger LOG = LoggerFactory.getLogger(MeasurementController.class);
 
-    @GetMapping("/all")
-    public ResponseEntity<List<Measurement>> getFilterMeasurements(@RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate) {
+    @GetMapping("/current")
+    public ResponseEntity<List<Measurement>> getLatestMeasurements(@RequestParam(required = false, defaultValue = "35", value = "minuteLimit") int minuteLimit) {
         try {
-            List<Measurement> measurements = measurementService.getFilterMeasurements(startDate, endDate);
+            List<Measurement> measurements = measurementService.getLatestMeasurements(minuteLimit);
             return ResponseEntity.ok(measurements);
-
         } catch (Exception e) {
             LOG.error(e.getMessage());
             return ResponseEntity.badRequest().build();
         }
     }
-
 }

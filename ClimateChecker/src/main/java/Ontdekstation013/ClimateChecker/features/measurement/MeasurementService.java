@@ -2,6 +2,11 @@ package Ontdekstation013.ClimateChecker.features.measurement;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.util.*;
+
+import com.fasterxml.jackson.core.JsonProcessingException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -19,50 +24,54 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import static java.util.Comparator.comparingInt;
+import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toCollection;
+
 @Service
 @RequiredArgsConstructor
 public class MeasurementService {
     private final MeetJeStadService meetJeStadService;
-    RestTemplate restTemplate = new RestTemplate();
-    private Logger LOG = LoggerFactory.getLogger(MeasurementService.class);
-    private String BASE_URL = "https://meetjestad.net/data/?type=sensors&format=json&limit=100";
 
-    public List<Measurement> getFilterMeasurements(String startDate, String endDate) {
+    public List<Measurement> getLatestMeasurements(int minuteLimit) {
          //Voorbeeld voor meetjestad service
-                Calendar calendarStart = Calendar.getInstance();
-                calendarStart.set(Calendar.YEAR, 2023);
-                calendarStart.set(Calendar.MONTH, Calendar.OCTOBER);
-                calendarStart.set(Calendar.DATE, 4);
+        Calendar calendarStart = Calendar.getInstance();
+        calendarStart.set(Calendar.YEAR, 2023);
+        calendarStart.set(Calendar.MONTH, Calendar.OCTOBER);
+        calendarStart.set(Calendar.DATE, 4);
 
-                Calendar calendarEnd = Calendar.getInstance();
-                calendarEnd.set(Calendar.YEAR, 2023);
-                calendarEnd.set(Calendar.MONTH, Calendar.OCTOBER);
-                calendarEnd.set(Calendar.DATE, 5);
+        Calendar calendarEnd = Calendar.getInstance();
+        calendarEnd.set(Calendar.YEAR, 2023);
+        calendarEnd.set(Calendar.MONTH, Calendar.OCTOBER);
+        calendarEnd.set(Calendar.DATE, 5);
 
-                MeetJeStadParameters params = new MeetJeStadParameters();
-                params.StartDate = calendarStart.getTime();
-                params.EndDate = calendarEnd.getTime();
+        MeetJeStadParameters params = new MeetJeStadParameters();
+        params.StartDate = calendarStart.getTime();
+        params.EndDate = calendarEnd.getTime();
 
-                meetJeStadService.getMeasurements(params);
-
-        try {
-
-            if (startDate != null && endDate != null) {
-                BASE_URL += "&start=" + startDate + "&end=" + endDate;
+        // get measurements from MeetJeStadAPI
+        List<Measurement> latestMeasurements = meetJeStadService.getMeasurements(params);
+        // filter out older readings of same stationId
+        Map<Integer, Measurement> uniqueLatestMeasurements = new LinkedHashMap<>();
+        for (Measurement measurement : latestMeasurements) {
+            int id = measurement.getId();
+            // Check if this id is already in the map
+            if (!uniqueLatestMeasurements.containsKey(id)) {
+                uniqueLatestMeasurements.put(id, measurement);
             }
-
-            ResponseEntity<String> response = restTemplate.getForEntity(BASE_URL, String.class);
-            String responseBody = response.getBody();
-
-            ObjectMapper mapper = new ObjectMapper();
-            mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-            TypeReference<List<Measurement>> typeReference = new TypeReference<List<Measurement>>() {};
-            List<Measurement> measurements = mapper.readValue(responseBody, typeReference);
-
-            return measurements;
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            throw new RuntimeException();
         }
+        List<Measurement> temp = new ArrayList<>(uniqueLatestMeasurements.values());
+        return temp;
     }
+//    private String meetJeStadDateTimeConverter(Instant instant) throws ParseException {
+//        String shortDateTime = instant
+//                .toString()
+//                .split("\\.")[0];
+//
+//        SimpleDateFormat instantFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+//        SimpleDateFormat meetJeStadFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+//
+//        Date date = instantFormat.parse(shortDateTime);
+//        return meetJeStadFormat.format(date);
+//    }
 }

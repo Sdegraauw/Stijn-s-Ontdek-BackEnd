@@ -1,210 +1,64 @@
 package Ontdekstation013.ClimateChecker.features.station;
 
-import Ontdekstation013.ClimateChecker.features.location.Location;
-import Ontdekstation013.ClimateChecker.features.sensor.Sensor;
-import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
-import Ontdekstation013.ClimateChecker.features.sensor.StationRepositoryCustom;
-import Ontdekstation013.ClimateChecker.features.station.endpoint.createStationDto;
-import Ontdekstation013.ClimateChecker.features.station.endpoint.editStationDto;
-import Ontdekstation013.ClimateChecker.features.station.endpoint.registerStationDto;
-import Ontdekstation013.ClimateChecker.features.station.endpoint.stationDto;
-import Ontdekstation013.ClimateChecker.features.station.endpoint.stationTitleDto;
-import Ontdekstation013.ClimateChecker.features.user.User;
-import Ontdekstation013.ClimateChecker.features.user.UserRepository;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.springframework.beans.factory.annotation.Autowired;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.Version;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.module.SimpleModule;
+import jdk.jfr.Timespan;
+import net.bytebuddy.asm.Advice;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.Duration;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.util.Date;
+import java.util.List;
 
 @Service
 public class StationService {
+    public List<Measurement> GetLastStationsData() throws JsonProcessingException {
+        Instant currentTimeUTC = Instant.now();
+        Duration timeSpan = Duration.ofMinutes(35);
+        Instant startTime = currentTimeUTC.minus(timeSpan);
 
-    private final StationRepositoryCustom stationRepository;
-    private final SensorService sensorService;
+        SimpleDateFormat inputFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+        SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        String currentTimeString = null;
+        String startTimeString = null;
+        try {
+            String[] currentTemp = currentTimeUTC.toString().split("\\.");
+            String currentTempFinish = currentTemp[0];
+            Date date = inputFormat.parse(currentTempFinish);
+            currentTimeString = outputFormat.format(date);
 
-    private final UserRepository userRepository;
-
-    @Autowired
-    public StationService(StationRepositoryCustom stationRepository, SensorService sensorService, UserRepository userRepository) {
-        this.stationRepository = stationRepository;
-        this.sensorService = sensorService;
-        this.userRepository = userRepository;
-    }
-
-    public stationDto findStationById(long id) {
-        Station station = stationRepository.findById(id).get();
-        stationDto newdto = stationToStationDTO(station);
-        return newdto;
-    }
-
-    public stationDto findStationByRegistrationCode(long registrationCode, String databaseTag) {
-        Station station = stationRepository.findByRegistrationCodeAndDatabaseTag(registrationCode, databaseTag). orElse(null);
-        stationDto newdto = null;
-        if(station != null){
-            newdto = stationToStationDTO(station);
-        }
-        return newdto;
-    }
-
-    public stationTitleDto stationToStationTitleDTo (Station station){
-        stationTitleDto newdto = new stationTitleDto();
-        newdto.setId(station.getStationID());
-        newdto.setName(station.getName());
-
-
-        return newdto;
-    }
-
-
-    public stationDto stationToStationDTO (Station station){
-        stationDto newdto = new stationDto();
-        newdto.setId(station.getStationID());
-        newdto.setName(station.getName());
-        newdto.setHeight(station.getLocation().getHeight());
-        newdto.setDirection(station.getLocation().getDirection());
-        newdto.setLocationId(station.getLocation().getLocationID());
-        newdto.setLatitude(station.getLocation().getLatitude());
-        newdto.setLongitude(station.getLocation().getLongitude());
-        newdto.setIspublic(station.isPublic());
-        newdto.setIsoutside(station.getLocation().isOutside());
-        newdto.setSensors(sensorService.getSensorsByStationId(station.getStationID()));
-
-        return newdto;
-    }
-
-    public List<stationTitleDto> getAllByUserId(long userId) {
-        Iterable<Station> stationList = stationRepository.findAllByOwner_UserID(userId);
-
-        List<stationTitleDto> newDtoList = new ArrayList<>();
-        for (Station station: stationList
-        ) {
-
-            newDtoList.add(stationToStationTitleDTo(station));
+            String[] startTemp = startTime.toString().split("\\.");
+            String startTempFinish = startTemp[0];
+            Date date2 = inputFormat.parse(startTempFinish);
+            startTimeString = outputFormat.format(date2);
+        } catch (ParseException e) {
 
         }
 
-        return newDtoList;
+        String uri = "https://meetjestad.net/data/?type=sensors&begin=" +
+                startTimeString + "&end=" + currentTimeString + "&format=json&limit=100";
+
+        RestTemplate restTemplate = new RestTemplate();
+        String result = restTemplate.getForObject(uri, String.class);
+
+        ObjectMapper mapper = new ObjectMapper();
+        SimpleModule module =
+                new SimpleModule("CustomMeasurementDeserializer", new Version(1, 0, 0, null, null, null));
+        module.addDeserializer(Measurement.class, new CustomMeasurementDeserializer());
+        mapper.registerModule(module);
+        List<Measurement> measurementList = mapper.readValue(result, new TypeReference<List<Measurement>>(){});
+        ObjectMapper objectMapper = new ObjectMapper();
+        return measurementList;
+
     }
-
-    // not yet functional
-    public List<stationTitleDto> getAll() {
-        Iterable<Station> StationList = stationRepository.findAll();
-        List<stationTitleDto> newDtoList = new ArrayList<>();
-        for (Station station: StationList
-        ) {
-
-            newDtoList.add(stationToStationTitleDTo(station));
-
-        }
-
-
-        return newDtoList;
-    }
-
-    public List<stationDto> getAllStations() {
-        Iterable<Station> StationList = stationRepository.findAll();
-        List<stationDto> newDtoList = new ArrayList<>();
-        for (Station station: StationList)
-        {
-            newDtoList.add(stationToStationDTO(station));
-        }
-        return newDtoList;
-    }
-
-
-    // not yet functional
-    public List<stationTitleDto> getAllByPageId(long pageId) {
-        List<stationTitleDto> newDtoList = new ArrayList<stationTitleDto>();
-
-
-        return newDtoList;
-    }
-
-
-    // Koppel een gebruiker aan bestaand station
-    public boolean registerStation(registerStationDto stationDto) {
-        Station station = stationRepository.findByRegistrationCodeAndDatabaseTag(stationDto.getRegisterCode(), stationDto.getDatabaseTag()).orElse(null);
-        User owner = userRepository.findById(stationDto.getUserId()).orElse(null);
-        boolean succes = false;
-
-        if (station != null && owner != null){
-            station.setOwner(owner);
-            station.setPublic(stationDto.isPublicInfo());
-            station.setName(stationDto.getStationName());
-
-            station.getLocation().setHeight(stationDto.getHeight());
-            station.getLocation().setDirection(stationDto.getDirection());
-            station.getLocation().setOutside(stationDto.isOutside());
-
-            stationRepository.save(station);
-            succes = true;
-        }
-
-        return succes;
-    }
-
-    public void deleteStation(long id) {
-
-        stationRepository.deleteById(id);
-    }
-
-    public void editStation(editStationDto stationDto) {
-        Station currentStation = stationRepository.findById(stationDto.getId()).get();
-        currentStation.setName(stationDto.getName());
-        currentStation.setPublic(stationDto.isPublic());
-
-        stationRepository.save(currentStation);
-    }
-
-    public boolean findByRegistrationCode(String databaseTag, long registrationCode){
-        boolean available = false;
-        Station station = stationRepository.findByRegistrationCodeAndDatabaseTag(registrationCode, databaseTag).orElse(null);
-        if(station != null) {
-            if(station.getName() == null) {
-                available = true;
-            }
-        }
-        return available;
-    }
-
-
-
-
-    // Zet meetjestad station in de database
-    public boolean createStation(createStationDto createStationDto){
-        boolean succes = false;
-
-        Location location = new Location();
-        location.setLocationID(createStationDto.getLocationId());
-        location.setLongitude(createStationDto.longitude);
-        location.setLatitude(createStationDto.latitude);
-        Station station = new Station();
-        station.setRegistrationCode((createStationDto.registrationCode));
-        station.setDatabaseTag(createStationDto.databaseTag);
-        station.setLocation(location);
-        Station check = stationRepository.save(station);
-        if (check != null){
-            succes = true;
-        }
-
-        return succes;
-    }
-
-
-    public List<Long> getAllRegistrationCode(){
-        Iterable<Station> StationList = stationRepository.findAll();
-        List<Long> registrationCodeList = new ArrayList<>();
-        for (Station station: StationList)
-        {
-            registrationCodeList.add(station.getRegistrationCode());
-        }
-        return registrationCodeList;
-    }
-
-
-
-
-
 }
