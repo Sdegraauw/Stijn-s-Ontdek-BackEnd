@@ -14,6 +14,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
+import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,15 +27,15 @@ public class MeetJeStadService {
         StringBuilder url = new StringBuilder(baseUrl);
 
         if (params.StartDate != null) {
-            //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
-            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneId.)
-            Instant instant = Instant.parse("yyyy-MM-dd,HH:mm");
-            url.append("&begin=").append();
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
+            String dateFormat = formatter.format(Instant.parse(params.StartDate.toString()));
+            url.append("&begin=").append(dateFormat);
         }
 
         if (params.EndDate != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
-            url.append("&end=").append(formatter.format(params.EndDate));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
+            String dateFormat = formatter.format(Instant.parse(params.EndDate.toString()));
+            url.append("&end=").append(dateFormat);
         }
 
         // Do we limit the amount of measurements
