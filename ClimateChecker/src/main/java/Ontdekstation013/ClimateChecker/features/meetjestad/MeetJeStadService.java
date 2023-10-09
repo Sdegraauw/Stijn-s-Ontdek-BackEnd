@@ -13,6 +13,8 @@ import org.springframework.web.client.RestTemplate;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,8 +26,10 @@ public class MeetJeStadService {
         StringBuilder url = new StringBuilder(baseUrl);
 
         if (params.StartDate != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
-            url.append("&begin=").append(formatter.format(params.StartDate));
+            //SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneId.)
+            Instant instant = Instant.parse("yyyy-MM-dd,HH:mm");
+            url.append("&begin=").append();
         }
 
         if (params.EndDate != null) {

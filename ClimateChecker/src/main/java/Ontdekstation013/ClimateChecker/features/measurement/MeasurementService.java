@@ -35,19 +35,21 @@ public class MeasurementService {
 
     public List<Measurement> getLatestMeasurements(int minuteLimit) {
          //Voorbeeld voor meetjestad service
-        Calendar calendarStart = Calendar.getInstance();
-        calendarStart.set(Calendar.YEAR, 2023);
-        calendarStart.set(Calendar.MONTH, Calendar.OCTOBER);
-        calendarStart.set(Calendar.DATE, 4);
+//        Calendar calendarStart = Calendar.getInstance();
+//        calendarStart.set(Calendar.YEAR, 2023);
+//        calendarStart.set(Calendar.MONTH, Calendar.OCTOBER);
+//        calendarStart.set(Calendar.DATE, 4);
+//
+//        Calendar calendarEnd = Calendar.getInstance();
+//        calendarEnd.set(Calendar.YEAR, 2023);
+//        calendarEnd.set(Calendar.MONTH, Calendar.OCTOBER);
+//        calendarEnd.set(Calendar.DATE, 5);
 
-        Calendar calendarEnd = Calendar.getInstance();
-        calendarEnd.set(Calendar.YEAR, 2023);
-        calendarEnd.set(Calendar.MONTH, Calendar.OCTOBER);
-        calendarEnd.set(Calendar.DATE, 5);
-
+        Instant endMoment = Instant.now();
+        Instant startMoment = endMoment.minus(Duration.ofMinutes(minuteLimit));
         MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = calendarStart.getTime();
-        params.EndDate = calendarEnd.getTime();
+        params.StartDate = startMoment;
+        params.EndDate = endMoment;
 
         // get measurements from MeetJeStadAPI
         List<Measurement> latestMeasurements = meetJeStadService.getMeasurements(params);
