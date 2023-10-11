@@ -14,6 +14,7 @@ import java.util.LinkedList;
 import java.util.List;
 
 @Entity
+@Table(name = "station")
 @Getter
 @Setter
 @NoArgsConstructor
