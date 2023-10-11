@@ -20,6 +20,7 @@ public class MeasurementService {
         // define start and end times
         Instant endMoment = Instant.now();
         Instant startMoment = endMoment.minus(Duration.ofMinutes(minuteLimit));
+        
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = startMoment;
         params.EndDate = endMoment;
