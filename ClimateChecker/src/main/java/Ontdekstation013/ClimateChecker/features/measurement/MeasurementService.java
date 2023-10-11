@@ -48,6 +48,7 @@ public class MeasurementService {
             measurementDto.setLongitude(measurement.getLongitude());
             measurementDto.setLatitude(measurement.getLatitude());
             measurementDto.setTemperature(measurement.getTemperature());
+            measurementDto.setHumidity(measurement.getHumidity());
 
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
             String formattedDate = simpleDateFormat.format(measurement.getTimestamp());
