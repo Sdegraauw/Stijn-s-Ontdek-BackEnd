@@ -1,7 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDto;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -10,9 +10,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.Instant;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -24,13 +26,15 @@ public class MeetJeStadService {
         StringBuilder url = new StringBuilder(baseUrl);
 
         if (params.StartDate != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
-            url.append("&begin=").append(formatter.format(params.StartDate));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
+            String dateFormat = formatter.format(Instant.parse(params.StartDate.toString()));
+            url.append("&begin=").append(dateFormat);
         }
 
         if (params.EndDate != null) {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd,HH:mm");
-            url.append("&end=").append(formatter.format(params.EndDate));
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
+            String dateFormat = formatter.format(Instant.parse(params.EndDate.toString()));
+            url.append("&end=").append(dateFormat);
         }
 
         // Do we limit the amount of measurements
@@ -53,9 +57,9 @@ public class MeetJeStadService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        TypeReference<List<MeasurementDto>> typeReference = new TypeReference<List<MeasurementDto>>() {};
+        TypeReference<List<MeasurementDTO>> typeReference = new TypeReference<List<MeasurementDTO>>() {};
 
-        List<MeasurementDto> measurementsDto = new ArrayList<>();
+        List<MeasurementDTO> measurementsDto = new ArrayList<>();
 
         try {
             measurementsDto = mapper.readValue(responseBody, typeReference);
@@ -66,7 +70,7 @@ public class MeetJeStadService {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
         List<Measurement> measurements = new ArrayList<>();
-        for (MeasurementDto dto : measurementsDto) {
+        for (MeasurementDTO dto : measurementsDto) {
             Measurement measurement = new Measurement();
             measurement.setId(dto.getId());
             measurement.setLongitude(dto.getLongitude());
