@@ -1,3 +1,4 @@
+/*
 package Ontdekstation013.ClimateChecker.features.region;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,3 +27,4 @@ public class RegionService {
 
 
 }
+*/

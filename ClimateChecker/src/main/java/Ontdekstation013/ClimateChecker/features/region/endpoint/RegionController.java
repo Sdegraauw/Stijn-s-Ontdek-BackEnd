@@ -1,3 +1,4 @@
+/*
 package Ontdekstation013.ClimateChecker.features.region.endpoint;
 
 import Ontdekstation013.ClimateChecker.features.region.Region;
@@ -56,3 +57,4 @@ public class RegionController {
     }
 
 }
+*/

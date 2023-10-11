@@ -1,43 +1,88 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
-import Ontdekstation013.ClimateChecker.features.station.StationService;
-import lombok.AllArgsConstructor;
+import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
+import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
+import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
+import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @RequiredArgsConstructor
 public class NeighbourhoodService {
-    private final MeasurementService measurementService;
+    private final MeetJeStadService meetJeStadService;
+    private final NeighbourhoodRepository neighbourhoodRepository;
+    private final NeighbourhoodCoordsRepository neighbourhoodCoordsRepository;
 
-    public List<Neighbourhood> GetNeighbourhoodData()
-    {
-        List<Neighbourhood> neighbourhoods = new ArrayList<>();
+    public List<NeighbourhoodDTO> getNeighbourhoodData() {
+        List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
+        List<NeighbourhoodCoords> neighbourhoodCoords = neighbourhoodCoordsRepository.findAll();
+        List<NeighbourhoodDTO> neighbourhoodDTOS = new ArrayList<>();
 
-        var data = measurementService.getFilterMeasurements()
-        // todo: temporary
-        int limit = 5000;
-        String begin = "2023-10-04,00:00";
-        String end = "2023-10-04,23:59";
+        List<Measurement> measurements = meetJeStadService.getLatestMeasurements();
 
-        StringBuilder stringBuilder = new StringBuilder("https://meetjestad.net/data/?type=sensors&format=sensors");
-        stringBuilder.append("&limit=").append(limit);
-        stringBuilder.append("&begin=").append(begin);
-        stringBuilder.append("&end=").append(end);
+        for (Neighbourhood neighbourhood : neighbourhoods) {
+            NeighbourhoodDTO dto = new NeighbourhoodDTO();
+            dto.setId(neighbourhood.getId());
+            dto.setName(neighbourhood.getName());
 
-        RestTemplate restTemplate = new RestTemplate();
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(stringBuilder.toString(), String.class);
-        String responseBody = responseEntity.getBody();
+            List<Coordinate> tempCoords = new ArrayList<>();
+            for (NeighbourhoodCoords coords : neighbourhoodCoords) {
+                if (neighbourhood.getId() == coords.getRegionId())
+                    tempCoords.add(new Coordinate(coords.getLatitude(), coords.getLongitude()));
+            }
+            dto.setCoordinates(tempCoords);
 
-        System.out.println(responseBody);
+            List<Measurement> tempMeasurements = new ArrayList<>();
+            for (Measurement measurement : measurements) {
+                List<Coordinate> coords = dto.getCoordinates();
 
-        return neighbourhoods;
+                boolean odd = false;
+                for (int i = 0, j = coords.size() - 1; i < coords.size(); i++) {
+                    Coordinate coordinateI = coords.get(i);
+                    Coordinate coordinateJ = coords.get(j);
+
+                    if (((coordinateI.getLatitude() > measurement.getLatitude()) != (coordinateI.getLatitude() > measurement.getLatitude()))
+                            && (measurement.getLongitude() < ((coordinateJ.getLongitude() - coordinateI.getLongitude())
+                            * (measurement.getLatitude() - coordinateI.getLatitude())
+                            / (coordinateJ.getLatitude() - coordinateI.getLatitude()) + coordinateI.getLongitude()))) {
+                        odd = !odd;
+                    }
+                    j = i;
+                }
+
+                /*function pointInPolygon(polygon, point) {
+                    let odd = false;
+                    for (let i = 0, j = polygon.length - 1; i < polygon.length; i++) {
+                        if (((polygon[i][1] > point[1]) !== (polygon[j][1] > point[1]))
+                                && (point[0] < ((polygon[j][0] - polygon[i][0])
+                                * (point[1] - polygon[i][1]) / (polygon[j][1] - polygon[i][1]) + polygon[i][0]))) {
+                            odd = !odd;
+                        }
+                        j = i;
+                    }
+                    return odd;
+                };*/
+
+                if (odd) {
+                    tempMeasurements.add(measurement);
+                }
+            }
+
+            float totalTemp = 0.0f;
+            for (Measurement measurement : tempMeasurements)
+                totalTemp += measurement.getTemperature();
+
+            dto.setAvgTemp(totalTemp / tempMeasurements.size());
+
+            neighbourhoodDTOS.add(dto);
+        }
+
+        return neighbourhoodDTOS;
     }
 }

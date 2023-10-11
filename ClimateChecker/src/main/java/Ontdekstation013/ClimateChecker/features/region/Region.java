@@ -1,3 +1,4 @@
+/*
 package Ontdekstation013.ClimateChecker.features.region;
 
 import lombok.AllArgsConstructor;
@@ -24,3 +25,4 @@ public class Region {
 
 
 }
+*/

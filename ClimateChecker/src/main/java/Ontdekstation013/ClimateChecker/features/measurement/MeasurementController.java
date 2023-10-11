@@ -21,9 +21,9 @@ public class MeasurementController {
     private Logger LOG = LoggerFactory.getLogger(MeasurementController.class);
 
     @GetMapping("/latest")
-    public ResponseEntity<List<MeasurementDTO>> getLatestMeasurements(@RequestParam(required = false, defaultValue = "35", value = "minuteLimit") int minuteLimit) {
+    public ResponseEntity<List<MeasurementDTO>> getLatestMeasurements() {
         try {
-            List<MeasurementDTO> measurements = measurementService.getLatestMeasurements(minuteLimit);
+            List<MeasurementDTO> measurements = measurementService.getLatestMeasurements();
             return ResponseEntity.ok(measurements);
         } catch (Exception e) {
             LOG.error(e.getMessage());

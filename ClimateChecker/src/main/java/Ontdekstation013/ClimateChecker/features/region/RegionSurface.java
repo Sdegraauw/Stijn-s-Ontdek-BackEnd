@@ -1,3 +1,4 @@
+/*
 package Ontdekstation013.ClimateChecker.features.region;
 
 import java.awt.*;
@@ -47,3 +48,4 @@ public class RegionSurface {
 
 
 }
+*/

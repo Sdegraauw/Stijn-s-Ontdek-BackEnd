@@ -1,3 +1,4 @@
+/*
 package Ontdekstation013.ClimateChecker.features.region;
 
 import Ontdekstation013.ClimateChecker.features.location.Location;
@@ -117,3 +118,4 @@ public class RegionCordsService {
         this.typeRepository = typeRepository;
     }
 }
+*/

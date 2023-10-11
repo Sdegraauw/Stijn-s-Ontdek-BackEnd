@@ -1,3 +1,4 @@
+/*
 package Ontdekstation013.ClimateChecker.features.region.endpoint;
 
 import java.awt.*;
@@ -31,3 +32,4 @@ public class RegionInfoDto {
     }
 
 }
+*/

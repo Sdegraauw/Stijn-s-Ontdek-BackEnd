@@ -1,3 +1,4 @@
+/*
 package Ontdekstation013.ClimateChecker.features.region;
 
 import lombok.AllArgsConstructor;
@@ -25,3 +26,4 @@ public class RegionCords {
     private double X_cord;
     private double Y_cord;
 }
+*/
