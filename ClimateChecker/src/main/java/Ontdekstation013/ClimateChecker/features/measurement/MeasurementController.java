@@ -20,7 +20,7 @@ public class MeasurementController {
     private final MeasurementService measurementService;
     private Logger LOG = LoggerFactory.getLogger(MeasurementController.class);
 
-    @GetMapping("/current")
+    @GetMapping("/latest")
     public ResponseEntity<List<MeasurementDTO>> getLatestMeasurements(@RequestParam(required = false, defaultValue = "35", value = "minuteLimit") int minuteLimit) {
         try {
             List<MeasurementDTO> measurements = measurementService.getLatestMeasurements(minuteLimit);
