@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.features.station.endpoint;
 
+import Ontdekstation013.ClimateChecker.features.neighbourhood.Neighbourhood;
 import Ontdekstation013.ClimateChecker.features.sensor.SensorService;
 import Ontdekstation013.ClimateChecker.features.station.StationServiceOld;
 import Ontdekstation013.ClimateChecker.features.station.ValidationService;
