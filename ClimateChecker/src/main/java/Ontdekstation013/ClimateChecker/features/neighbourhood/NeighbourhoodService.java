@@ -13,6 +13,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+
 import org.slf4j.Logger;
 
 @Service
@@ -23,9 +24,9 @@ public class NeighbourhoodService {
     private final NeighbourhoodCoordsRepository neighbourhoodCoordsRepository;
     private final Logger LOG = LoggerFactory.getLogger(NeighbourhoodService.class);
 
-    // Longitude = X
     // Latitude = Y
-    // Gets neighbourhood data including average temperature
+    // Longitude = X
+    // Gets neighbourhood data with average temperature
     public List<NeighbourhoodDTO> getNeighbourhoodData() {
         List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
         List<NeighbourhoodCoords> neighbourhoodCoords = neighbourhoodCoordsRepository.findAll();
@@ -35,6 +36,7 @@ public class NeighbourhoodService {
 
         for (Neighbourhood neighbourhood : neighbourhoods) {
             NeighbourhoodDTO dto = new NeighbourhoodDTO();
+
             dto.setId(neighbourhood.getId());
             dto.setName(neighbourhood.getName());
 
@@ -44,37 +46,29 @@ public class NeighbourhoodService {
                 if (neighbourhood.getId() == coords.getRegionId())
                     tempCoords.add(new Coordinate(coords.getLatitude(), coords.getLongitude()));
             }
-
-            boolean validNeighbourhood = true;
-
-            if (tempCoords.isEmpty())
-                validNeighbourhood = false;
-
-            if (validNeighbourhood) {
-                dto.setCoordinates(convertToFloatArray(tempCoords, false));
-
-                // Get all measurements within this neighbourhood
-                List<Measurement> tempMeasurements = new ArrayList<>();
-                for (Measurement measurement : measurements) {
-                    float[] point = {measurement.getLatitude(), measurement.getLongitude()};
-                    if (pointInPolygon(convertToFloatArray(tempCoords, false), point)) {
-                        tempMeasurements.add(measurement);
-                    }
-                }
-
-                // Calculate average temperature of the measurements in this neighbourhood
-                float totalTemp = 0.0f;
-                for (Measurement measurement : tempMeasurements)
-                    totalTemp += measurement.getTemperature();
-
-                dto.setAvgTemp(totalTemp / tempMeasurements.size());
-
-                neighbourhoodDTOS.add(dto);
-            } else {
+            // Skip neighbourhoods that have no coords
+            if (tempCoords.isEmpty()) {
                 LOG.error("Neighbourhood coordinates are invalid");
+                continue;
             }
-        }
+            dto.setCoordinates(convertToFloatArray(tempCoords));
 
+            // Get all measurements within this neighbourhood
+            List<Measurement> tempMeasurements = new ArrayList<>();
+            for (Measurement measurement : measurements) {
+                float[] point = {measurement.getLatitude(), measurement.getLongitude()};
+                if (pointInPolygon(dto.getCoordinates(), point)) {
+                    tempMeasurements.add(measurement);
+                }
+            }
+            // Calculate average temperature of the measurements in this neighbourhood
+            float totalTemp = 0.0f;
+            for (Measurement measurement : tempMeasurements)
+                totalTemp += measurement.getTemperature();
+            dto.setAvgTemp(totalTemp / tempMeasurements.size());
+
+            neighbourhoodDTOS.add(dto);
+        }
         return neighbourhoodDTOS;
     }
 
@@ -92,18 +86,10 @@ public class NeighbourhoodService {
         return odd;
     }
 
-    // Converting a list of coordinates to a two dimensional float array
-    private float[][] convertToFloatArray(List<Coordinate> coordinates, boolean flipXandY)
-    {
-        if (flipXandY) {
-            return coordinates.stream()
-                    .map(coord -> new float[] { coord.getLongitude(), coord.getLatitude() })
-                    .toArray(float[][]::new);
-        } else {
-            return coordinates.stream()
-                    .map(coord -> new float[] { coord.getLatitude(), coord.getLongitude() })
-                    .toArray(float[][]::new);
-        }
-
+    // Converting a list of coordinates to a two-dimensional float array
+    private float[][] convertToFloatArray(List<Coordinate> coordinates) {
+        return coordinates.stream()
+                .map(coord -> new float[]{coord.getLatitude(), coord.getLongitude()})
+                .toArray(float[][]::new);
     }
 }

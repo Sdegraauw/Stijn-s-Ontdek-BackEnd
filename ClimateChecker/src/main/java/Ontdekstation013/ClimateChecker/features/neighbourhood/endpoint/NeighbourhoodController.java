@@ -22,18 +22,4 @@ public class NeighbourhoodController {
     public List<NeighbourhoodDTO> getNeighbourhoodData() {
         return neighbourhoodService.getNeighbourhoodData();
     }
-
-//    @GetMapping("/regioninfo")
-//    public ResponseEntity<List<RegionInfoDto>> getAllRegionCords()
-//    {
-//        try
-//        {
-//            List<RegionInfoDto> regionInfoList = regionCordsService.getAll();
-//            return ResponseEntity.status(HttpStatus.OK).body(regionInfoList);
-//        }
-//        catch(Exception e)
-//        {
-//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
-//        }
-//    }
 }
