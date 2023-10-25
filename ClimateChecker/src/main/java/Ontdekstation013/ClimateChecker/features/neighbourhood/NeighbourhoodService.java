@@ -1,16 +1,19 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementController;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
 
 @Service
 @RequiredArgsConstructor
@@ -18,7 +21,11 @@ public class NeighbourhoodService {
     private final MeetJeStadService meetJeStadService;
     private final NeighbourhoodRepository neighbourhoodRepository;
     private final NeighbourhoodCoordsRepository neighbourhoodCoordsRepository;
+    private final Logger LOG = LoggerFactory.getLogger(NeighbourhoodService.class);
 
+    // Longitude = X
+    // Latitude = Y
+    // Gets neighbourhood data including average temperature
     public List<NeighbourhoodDTO> getNeighbourhoodData() {
         List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
         List<NeighbourhoodCoords> neighbourhoodCoords = neighbourhoodCoordsRepository.findAll();
@@ -27,90 +34,51 @@ public class NeighbourhoodService {
         List<Measurement> measurements = meetJeStadService.getLatestMeasurements();
 
         for (Neighbourhood neighbourhood : neighbourhoods) {
-            if (neighbourhood.getId() != 41)
-                continue;
-
             NeighbourhoodDTO dto = new NeighbourhoodDTO();
             dto.setId(neighbourhood.getId());
             dto.setName(neighbourhood.getName());
 
+            // Get coordinates that belong to this neighbourhood
             List<Coordinate> tempCoords = new ArrayList<>();
             for (NeighbourhoodCoords coords : neighbourhoodCoords) {
                 if (neighbourhood.getId() == coords.getRegionId())
                     tempCoords.add(new Coordinate(coords.getLatitude(), coords.getLongitude()));
             }
-            float[][] coordsInNeighbourhoud = new float[tempCoords.size()][2];
-            for (int i = 0; i < tempCoords.size(); i++) {
-                coordsInNeighbourhoud[i][1] = tempCoords.get(i).getLongitude();
-                coordsInNeighbourhoud[i][0] = tempCoords.get(i).getLatitude();
-            }
-            dto.setCoordinates(coordsInNeighbourhoud);
 
-            List<Measurement> tempMeasurements = new ArrayList<>();
-            for (Measurement measurement : measurements) {
-                float[] point = {measurement.getLongitude(), measurement.getLatitude()};
-                if (pointInPolygon(dto.getCoordinates(), point)) {
-                    tempMeasurements.add(measurement);
+            boolean validNeighbourhood = true;
+
+            if (tempCoords.isEmpty())
+                validNeighbourhood = false;
+
+            if (validNeighbourhood) {
+                dto.setCoordinates(convertToFloatArray(tempCoords, false));
+
+                // Get all measurements within this neighbourhood
+                List<Measurement> tempMeasurements = new ArrayList<>();
+                for (Measurement measurement : measurements) {
+                    float[] point = {measurement.getLongitude(), measurement.getLatitude()};
+                    if (pointInPolygon(convertToFloatArray(tempCoords, true), point)) {
+                        tempMeasurements.add(measurement);
+                    }
                 }
+
+                // Calculate average temperature of the measurements in this neighbourhood
+                float totalTemp = 0.0f;
+                for (Measurement measurement : tempMeasurements)
+                    totalTemp += measurement.getTemperature();
+
+                dto.setAvgTemp(totalTemp / tempMeasurements.size());
+
+                neighbourhoodDTOS.add(dto);
+            } else {
+                LOG.error("Neighbourhood coordinates are invalid");
             }
-
-            float totalTemp = 0.0f;
-            for (Measurement measurement : tempMeasurements)
-                totalTemp += measurement.getTemperature();
-
-            dto.setAvgTemp(totalTemp / tempMeasurements.size());
-            neighbourhoodDTOS.add(dto);
         }
 
         return neighbourhoodDTOS;
-
-//        for (Neighbourhood neighbourhood : neighbourhoods) {
-//            NeighbourhoodDTO dto = new NeighbourhoodDTO();
-//            dto.setId(neighbourhood.getId());
-//            dto.setName(neighbourhood.getName());
-//
-//            List<Coordinate> tempCoords = new ArrayList<>();
-//            for (NeighbourhoodCoords coords : neighbourhoodCoords) {
-//                if (neighbourhood.getId() == coords.getRegionId())
-//                    tempCoords.add(new Coordinate(coords.getLatitude(), coords.getLongitude()));
-//            }
-//            dto.setCoordinates(tempCoords);
-//
-//            List<Measurement> tempMeasurements = new ArrayList<>();
-//            for (Measurement measurement : measurements) {
-//                List<Coordinate> coords = dto.getCoordinates();
-//
-//
-////                boolean odd = false;
-////                for (int i = 0, j = coords.size() - 1; i < coords.size(); i++) {
-////                    Coordinate coordinateI = coords.get(i);
-////                    Coordinate coordinateJ = coords.get(j);
-////
-////                    if (((coordinateI.getLatitude() > measurement.getLatitude()) != (coordinateI.getLatitude() > measurement.getLatitude()))
-////                            && (measurement.getLongitude() < ((coordinateJ.getLongitude() - coordinateI.getLongitude())
-////                            * (measurement.getLatitude() - coordinateI.getLatitude())
-////                            / (coordinateJ.getLatitude() - coordinateI.getLatitude()) + coordinateI.getLongitude()))) {
-////                        odd = !odd;
-////                    }
-////                    j = i;
-////                }
-//
-//
-//                if (odd) {
-//                    tempMeasurements.add(measurement);
-//                }
-//            }
-//
-//            float totalTemp = 0.0f;
-//            for (Measurement measurement : tempMeasurements)
-//                totalTemp += measurement.getTemperature();
-//
-//            dto.setAvgTemp(totalTemp / tempMeasurements.size());
-//
-//            neighbourhoodDTOS.add(dto);
-//        }
     }
 
+    // Algorithm for finding a gps point inside an area
     private boolean pointInPolygon(float[][] polygon, float[] point) {
         boolean odd = false;
         for (int i = 0, j = polygon.length - 1; i < polygon.length; i++) {
@@ -122,5 +90,20 @@ public class NeighbourhoodService {
             j = i;
         }
         return odd;
+    }
+
+    // Converting a list of coordinates to a two dimensional float array
+    private float[][] convertToFloatArray(List<Coordinate> coordinates, boolean flipXandY)
+    {
+        if (flipXandY) {
+            return coordinates.stream()
+                    .map(coord -> new float[] { coord.getLongitude(), coord.getLatitude() })
+                    .toArray(float[][]::new);
+        } else {
+            return coordinates.stream()
+                    .map(coord -> new float[] { coord.getLatitude(), coord.getLongitude() })
+                    .toArray(float[][]::new);
+        }
+
     }
 }

@@ -13,15 +13,27 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/test")
+@RequestMapping("/api/neighbourhood")
 @RequiredArgsConstructor
 public class NeighbourhoodController {
     private final NeighbourhoodService neighbourhoodService;
 
-    @GetMapping("/neighbourhood")
-    public String getNeighbourhoodData() {
-        List<NeighbourhoodDTO> neighbourhoods = neighbourhoodService.getNeighbourhoodData();
-
-        return "HallO!";
+    @GetMapping("/all")
+    public List<NeighbourhoodDTO> getNeighbourhoodData() {
+        return neighbourhoodService.getNeighbourhoodData();
     }
+
+//    @GetMapping("/regioninfo")
+//    public ResponseEntity<List<RegionInfoDto>> getAllRegionCords()
+//    {
+//        try
+//        {
+//            List<RegionInfoDto> regionInfoList = regionCordsService.getAll();
+//            return ResponseEntity.status(HttpStatus.OK).body(regionInfoList);
+//        }
+//        catch(Exception e)
+//        {
+//            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(null);
+//        }
+//    }
 }
