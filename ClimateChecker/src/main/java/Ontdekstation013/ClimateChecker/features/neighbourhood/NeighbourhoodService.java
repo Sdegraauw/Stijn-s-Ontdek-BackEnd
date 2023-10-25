@@ -27,6 +27,9 @@ public class NeighbourhoodService {
         List<Measurement> measurements = meetJeStadService.getLatestMeasurements();
 
         for (Neighbourhood neighbourhood : neighbourhoods) {
+            if (neighbourhood.getId() != 41)
+                continue;
+
             NeighbourhoodDTO dto = new NeighbourhoodDTO();
             dto.setId(neighbourhood.getId());
             dto.setName(neighbourhood.getName());
@@ -36,40 +39,17 @@ public class NeighbourhoodService {
                 if (neighbourhood.getId() == coords.getRegionId())
                     tempCoords.add(new Coordinate(coords.getLatitude(), coords.getLongitude()));
             }
-            dto.setCoordinates(tempCoords);
+            float[][] coordsInNeighbourhoud = new float[tempCoords.size()][2];
+            for (int i = 0; i < tempCoords.size(); i++) {
+                coordsInNeighbourhoud[i][1] = tempCoords.get(i).getLongitude();
+                coordsInNeighbourhoud[i][0] = tempCoords.get(i).getLatitude();
+            }
+            dto.setCoordinates(coordsInNeighbourhoud);
 
             List<Measurement> tempMeasurements = new ArrayList<>();
             for (Measurement measurement : measurements) {
-                List<Coordinate> coords = dto.getCoordinates();
-
-                boolean odd = false;
-                for (int i = 0, j = coords.size() - 1; i < coords.size(); i++) {
-                    Coordinate coordinateI = coords.get(i);
-                    Coordinate coordinateJ = coords.get(j);
-
-                    if (((coordinateI.getLatitude() > measurement.getLatitude()) != (coordinateI.getLatitude() > measurement.getLatitude()))
-                            && (measurement.getLongitude() < ((coordinateJ.getLongitude() - coordinateI.getLongitude())
-                            * (measurement.getLatitude() - coordinateI.getLatitude())
-                            / (coordinateJ.getLatitude() - coordinateI.getLatitude()) + coordinateI.getLongitude()))) {
-                        odd = !odd;
-                    }
-                    j = i;
-                }
-
-                /*function pointInPolygon(polygon, point) {
-                    let odd = false;
-                    for (let i = 0, j = polygon.length - 1; i < polygon.length; i++) {
-                        if (((polygon[i][1] > point[1]) !== (polygon[j][1] > point[1]))
-                                && (point[0] < ((polygon[j][0] - polygon[i][0])
-                                * (point[1] - polygon[i][1]) / (polygon[j][1] - polygon[i][1]) + polygon[i][0]))) {
-                            odd = !odd;
-                        }
-                        j = i;
-                    }
-                    return odd;
-                };*/
-
-                if (odd) {
+                float[] point = {measurement.getLongitude(), measurement.getLatitude()};
+                if (pointInPolygon(dto.getCoordinates(), point)) {
                     tempMeasurements.add(measurement);
                 }
             }
@@ -79,10 +59,68 @@ public class NeighbourhoodService {
                 totalTemp += measurement.getTemperature();
 
             dto.setAvgTemp(totalTemp / tempMeasurements.size());
-
             neighbourhoodDTOS.add(dto);
         }
 
         return neighbourhoodDTOS;
+
+//        for (Neighbourhood neighbourhood : neighbourhoods) {
+//            NeighbourhoodDTO dto = new NeighbourhoodDTO();
+//            dto.setId(neighbourhood.getId());
+//            dto.setName(neighbourhood.getName());
+//
+//            List<Coordinate> tempCoords = new ArrayList<>();
+//            for (NeighbourhoodCoords coords : neighbourhoodCoords) {
+//                if (neighbourhood.getId() == coords.getRegionId())
+//                    tempCoords.add(new Coordinate(coords.getLatitude(), coords.getLongitude()));
+//            }
+//            dto.setCoordinates(tempCoords);
+//
+//            List<Measurement> tempMeasurements = new ArrayList<>();
+//            for (Measurement measurement : measurements) {
+//                List<Coordinate> coords = dto.getCoordinates();
+//
+//
+////                boolean odd = false;
+////                for (int i = 0, j = coords.size() - 1; i < coords.size(); i++) {
+////                    Coordinate coordinateI = coords.get(i);
+////                    Coordinate coordinateJ = coords.get(j);
+////
+////                    if (((coordinateI.getLatitude() > measurement.getLatitude()) != (coordinateI.getLatitude() > measurement.getLatitude()))
+////                            && (measurement.getLongitude() < ((coordinateJ.getLongitude() - coordinateI.getLongitude())
+////                            * (measurement.getLatitude() - coordinateI.getLatitude())
+////                            / (coordinateJ.getLatitude() - coordinateI.getLatitude()) + coordinateI.getLongitude()))) {
+////                        odd = !odd;
+////                    }
+////                    j = i;
+////                }
+//
+//
+//                if (odd) {
+//                    tempMeasurements.add(measurement);
+//                }
+//            }
+//
+//            float totalTemp = 0.0f;
+//            for (Measurement measurement : tempMeasurements)
+//                totalTemp += measurement.getTemperature();
+//
+//            dto.setAvgTemp(totalTemp / tempMeasurements.size());
+//
+//            neighbourhoodDTOS.add(dto);
+//        }
+    }
+
+    private boolean pointInPolygon(float[][] polygon, float[] point) {
+        boolean odd = false;
+        for (int i = 0, j = polygon.length - 1; i < polygon.length; i++) {
+            if (((polygon[i][1] > point[1]) != (polygon[j][1] > point[1]))
+                    && (point[0] < ((polygon[j][0] - polygon[i][0])
+                    * (point[1] - polygon[i][1]) / (polygon[j][1] - polygon[i][1]) + polygon[i][0]))) {
+                odd = !odd;
+            }
+            j = i;
+        }
+        return odd;
     }
 }

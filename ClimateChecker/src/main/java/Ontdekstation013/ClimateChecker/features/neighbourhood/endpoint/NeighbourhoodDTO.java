@@ -16,7 +16,7 @@ public class NeighbourhoodDTO {
     @JsonProperty("name")
     private String name;
     @JsonProperty("coordinates")
-    private List<Coordinate> coordinates = new ArrayList<>();
+    private float[][] coordinates;
     @JsonProperty("avgTemp")
     private float avgTemp;
 }
