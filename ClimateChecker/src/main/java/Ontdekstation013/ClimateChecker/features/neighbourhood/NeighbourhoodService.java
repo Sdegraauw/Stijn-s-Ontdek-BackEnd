@@ -56,8 +56,8 @@ public class NeighbourhoodService {
                 // Get all measurements within this neighbourhood
                 List<Measurement> tempMeasurements = new ArrayList<>();
                 for (Measurement measurement : measurements) {
-                    float[] point = {measurement.getLongitude(), measurement.getLatitude()};
-                    if (pointInPolygon(convertToFloatArray(tempCoords, true), point)) {
+                    float[] point = {measurement.getLatitude(), measurement.getLongitude()};
+                    if (pointInPolygon(convertToFloatArray(tempCoords, false), point)) {
                         tempMeasurements.add(measurement);
                     }
                 }
@@ -82,9 +82,9 @@ public class NeighbourhoodService {
     private boolean pointInPolygon(float[][] polygon, float[] point) {
         boolean odd = false;
         for (int i = 0, j = polygon.length - 1; i < polygon.length; i++) {
-            if (((polygon[i][1] > point[1]) != (polygon[j][1] > point[1]))
-                    && (point[0] < ((polygon[j][0] - polygon[i][0])
-                    * (point[1] - polygon[i][1]) / (polygon[j][1] - polygon[i][1]) + polygon[i][0]))) {
+            if (((polygon[i][0] > point[0]) != (polygon[j][0] > point[0]))
+                    && (point[1] < ((polygon[j][1] - polygon[i][1])
+                    * (point[0] - polygon[i][0]) / (polygon[j][0] - polygon[i][0]) + polygon[i][1]))) {
                 odd = !odd;
             }
             j = i;
