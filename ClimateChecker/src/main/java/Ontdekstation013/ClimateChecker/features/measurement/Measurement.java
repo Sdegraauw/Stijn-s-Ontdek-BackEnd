@@ -14,4 +14,5 @@ public class Measurement {
     private float longitude;
     private float latitude;
     private float temperature;
+    private float humidity;
 }
