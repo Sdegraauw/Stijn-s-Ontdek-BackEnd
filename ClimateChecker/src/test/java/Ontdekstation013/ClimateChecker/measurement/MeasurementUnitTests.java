@@ -46,9 +46,9 @@ public class MeasurementUnitTests {
         List<MeasurementDTO> measurementDTOList = new ArrayList<>();
         measurementDTOList.add(measurementDTO);
 
-        when(measurementService.getLatestMeasurements(60)).thenReturn(measurementDTOList);
+        when(measurementService.getLatestMeasurements()).thenReturn(measurementDTOList);
 
-        ResponseEntity<List<MeasurementDTO>> response = measurementController.getLatestMeasurements(60);
+        ResponseEntity<List<MeasurementDTO>> response = measurementController.getLatestMeasurements();
         
         LOG.info(response.getBody().get(0).toString());
 
