@@ -80,6 +80,7 @@ public class MeetJeStadService {
             measurement.setLongitude(dto.getLongitude());
             measurement.setLatitude(dto.getLatitude());
             measurement.setTemperature(dto.getTemperature());
+            measurement.setHumidity(dto.getHumidity());
 
             // Convert date from string to date object
             try {
