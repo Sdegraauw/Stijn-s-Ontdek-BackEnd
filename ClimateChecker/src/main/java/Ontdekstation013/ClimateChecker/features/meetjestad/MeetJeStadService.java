@@ -1,11 +1,12 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDTO;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -24,6 +25,7 @@ import java.util.Map;
 @Service
 public class MeetJeStadService {
     private String baseUrl = "https://meetjestad.net/data/?type=sensors&format=json";
+    @Getter
     private int minuteLimit = 35;
     public List<Measurement> getMeasurements(MeetJeStadParameters params)
     {

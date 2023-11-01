@@ -1,16 +1,12 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementController;
-import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
-import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 

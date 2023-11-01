@@ -1,7 +1,11 @@
-package Ontdekstation013.ClimateChecker.features.measurement;
+package Ontdekstation013.ClimateChecker.features.measurement.endpoint;
 
+import java.time.Instant;
+import java.time.format.*;
 import java.util.List;
 
+import Ontdekstation013.ClimateChecker.exception.InvalidArgumentException;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -28,6 +32,18 @@ public class MeasurementController {
         } catch (Exception e) {
             LOG.error(e.getMessage());
             return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @GetMapping("/history")
+    public List<MeasurementDTO> getAt(
+            @RequestParam(value = "datetime") String utcDateTimeISO) {
+        try {
+            Instant utcDateTime = Instant.parse(utcDateTimeISO);
+            List<MeasurementDTO> measurements = measurementService.getMeasurementsAt(utcDateTime);
+            return measurements;
+        } catch (DateTimeParseException e) {
+            throw new InvalidArgumentException("DateTime must be in ISO 8601 format");
         }
     }
 }
