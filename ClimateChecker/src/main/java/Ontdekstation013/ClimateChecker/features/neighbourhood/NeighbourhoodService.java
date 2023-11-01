@@ -44,7 +44,7 @@ public class NeighbourhoodService {
             }
             // Skip neighbourhoods that have no coords
             if (tempCoords.isEmpty()) {
-                LOG.error("Neighbourhood coordinates are invalid");
+                LOG.warn("Neighbourhood " + neighbourhood.getId() + " " + neighbourhood.getName() + " has no coordinates and cannot be processed");
                 continue;
             }
             dto.setCoordinates(convertToFloatArray(tempCoords));
