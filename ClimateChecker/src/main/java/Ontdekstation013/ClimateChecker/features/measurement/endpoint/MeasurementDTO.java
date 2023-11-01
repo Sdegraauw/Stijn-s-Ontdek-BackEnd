@@ -1,4 +1,4 @@
-package Ontdekstation013.ClimateChecker.features.measurement;
+package Ontdekstation013.ClimateChecker.features.measurement.endpoint;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

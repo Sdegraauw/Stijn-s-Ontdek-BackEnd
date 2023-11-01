@@ -1,7 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDTO;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -16,15 +16,13 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MeetJeStadService {
-    private String baseUrl = "https://meetjestad.net/data/?type=sensors&format=json";
-    private int minuteLimit = 35;
+    private final String baseUrl = "https://meetjestad.net/data/?type=sensors&format=json";
+    private final int minuteLimit = 35;
+
     public List<Measurement> getMeasurements(MeetJeStadParameters params)
     {
         StringBuilder url = new StringBuilder(baseUrl);
@@ -118,5 +116,38 @@ public class MeetJeStadService {
 
         latestMeasurements = new ArrayList<>(uniqueLatestMeasurements.values());
         return latestMeasurements;
+    }
+
+    public Measurement getLatestMeasurement(int id) {
+        // define start and end times
+        Instant endMoment = Instant.now();
+        Instant startMoment = endMoment.minus(Duration.ofMinutes(minuteLimit));
+
+        MeetJeStadParameters params = new MeetJeStadParameters();
+        params.StartDate = startMoment;
+        params.EndDate = endMoment;
+        params.StationIds.add(id);
+
+        // get measurements from MeetJeStadAPI
+        List<Measurement> latestMeasurements = getMeasurements(params);
+        Measurement latestMeasurement = new Measurement();
+        latestMeasurement.setTimestamp(new Date(Long.MIN_VALUE));
+
+        // filter out older readings of same stationId
+        for (Measurement measurement : latestMeasurements) {
+            if (measurement.getTimestamp().after(latestMeasurement.getTimestamp()))
+                latestMeasurement = measurement;
+        }
+
+        return latestMeasurement;
+    }
+
+    public List<Measurement> getMeasurements(int id, Instant startDate, Instant endDate) {
+        MeetJeStadParameters params = new MeetJeStadParameters();
+        params.StartDate = startDate;
+        params.EndDate = endDate;
+        params.StationIds.add(id);
+
+        return getMeasurements(params);
     }
 }
