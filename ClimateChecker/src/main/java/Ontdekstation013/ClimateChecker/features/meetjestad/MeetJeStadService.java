@@ -29,8 +29,8 @@ public class MeetJeStadService {
     private float[][] cityLimits = {
             { 51.65156373065635f, 5.217787919413907f },
             { 51.51818572766462f, 5.227145728754213f },
-            { 51.65077670571181f, 4.957086656750303f },
-            { 51.52666590649518f, 4.911805911309284f }
+            { 51.52666590649518f, 4.911805911309284f },
+            { 51.65077670571181f, 4.957086656750303f }
     };
     public List<Measurement> getMeasurements(MeetJeStadParameters params)
     {
