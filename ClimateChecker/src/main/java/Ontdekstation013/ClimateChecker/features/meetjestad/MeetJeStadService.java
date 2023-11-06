@@ -2,6 +2,7 @@ package Ontdekstation013.ClimateChecker.features.meetjestad;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDTO;
+import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -25,6 +26,12 @@ import java.util.Map;
 public class MeetJeStadService {
     private String baseUrl = "https://meetjestad.net/data/?type=sensors&format=json";
     private int minuteLimit = 35;
+    private float[][] cityLimits = {
+            { 51.629254f, 5.180408f },
+            { 51.521831f, 5.180408f },
+            { 51.521831f, 4.946867f },
+            { 51.629254f, 4.946867f }
+    };
     public List<Measurement> getMeasurements(MeetJeStadParameters params)
     {
         StringBuilder url = new StringBuilder(baseUrl);
@@ -75,6 +82,11 @@ public class MeetJeStadService {
 
         List<Measurement> measurements = new ArrayList<>();
         for (MeasurementDTO dto : measurementsDto) {
+            // Check if measurement is within city bounds
+            float[] point = { dto.getLatitude(), dto.getLongitude() };
+            if (!GpsTriangulation.pointInPolygon(cityLimits, point))
+                continue;
+
             Measurement measurement = new Measurement();
             measurement.setId(dto.getId());
             measurement.setLongitude(dto.getLongitude());
