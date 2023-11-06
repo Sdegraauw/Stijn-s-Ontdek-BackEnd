@@ -27,10 +27,10 @@ public class MeetJeStadService {
     private String baseUrl = "https://meetjestad.net/data/?type=sensors&format=json";
     private int minuteLimit = 35;
     private float[][] cityLimits = {
-            { 51.629254f, 5.180408f },
-            { 51.521831f, 5.180408f },
-            { 51.521831f, 4.946867f },
-            { 51.629254f, 4.946867f }
+            { 51.65156373065635f, 5.217787919413907f },
+            { 51.51818572766462f, 5.227145728754213f },
+            { 51.65077670571181f, 4.957086656750303f },
+            { 51.52666590649518f, 4.911805911309284f }
     };
     public List<Measurement> getMeasurements(MeetJeStadParameters params)
     {
