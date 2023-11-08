@@ -26,14 +26,16 @@ public class MeasurementService {
     }
 
     public List<MeasurementDTO> getMeasurementsAt(Instant dateTime) {
-        // get dateTime in date format for use in logic
-        Date dateTimeDate = Date.from(dateTime);
-
         // get measurements within a certain range of the dateTime
         int minuteMargin = meetJeStadService.getMinuteLimit();
         MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin/2));
-        params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin/2));
+        params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
+        params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
+
+        // convert dateTime to date format for use in logic
+        // this is needed because Measurement uses Date instead of Instant for it's timestamp
+        // todo: adjust after changing Measurement timestamp from Date to Instant
+        Date dateTimeDate = Date.from(dateTime);
 
         // get measurements from MeetJeStadAPI
         List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
