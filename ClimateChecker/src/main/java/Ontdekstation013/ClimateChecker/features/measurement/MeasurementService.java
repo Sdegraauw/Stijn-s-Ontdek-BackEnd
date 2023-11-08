@@ -25,7 +25,7 @@ public class MeasurementService {
                 .toList();
     }
 
-    public List<MeasurementDTO> getMeasurementsAt(Instant dateTime) {
+    public List<MeasurementDTO> getMeasurementsAtTime(Instant dateTime) {
         // get measurements within a certain range of the dateTime
         int minuteMargin = meetJeStadService.getMinuteLimit();
         MeetJeStadParameters params = new MeetJeStadParameters();

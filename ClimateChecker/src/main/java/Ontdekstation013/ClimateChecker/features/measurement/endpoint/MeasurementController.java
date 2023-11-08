@@ -36,11 +36,11 @@ public class MeasurementController {
     }
 
     @GetMapping("/history")
-    public List<MeasurementDTO> getAt(
+    public List<MeasurementDTO> getMeasurementsAtTime(
             @RequestParam(value = "timestamp") String timestamp) {
         try {
             Instant utcDateTime = Instant.parse(timestamp);
-            List<MeasurementDTO> measurements = measurementService.getMeasurementsAt(utcDateTime);
+            List<MeasurementDTO> measurements = measurementService.getMeasurementsAtTime(utcDateTime);
             return measurements;
         } catch (DateTimeParseException e) {
             throw new InvalidArgumentException("Timestamp must be in ISO 8601 format");

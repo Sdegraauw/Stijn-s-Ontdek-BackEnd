@@ -15,7 +15,6 @@ import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
-import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +46,7 @@ public class MeasurementUnitTests {
     }
 
     @Test
-    public void getMeasurementsAt() {
+    public void getMeasurementsAtTime_ClosestToSpecifiedTime() {
         // Arrange
         int minuteMargin = 36;
         when(meetJeStadService.getMinuteLimit()).thenReturn(minuteMargin);
@@ -64,7 +63,7 @@ public class MeasurementUnitTests {
         when(meetJeStadService.getMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
 
         // Act
-        List<MeasurementDTO> dtos = measurementService.getMeasurementsAt(dateTimeInstant);
+        List<MeasurementDTO> dtos = measurementService.getMeasurementsAtTime(dateTimeInstant);
 
         // Assert
         assertEquals(dtos.size(), 2);
