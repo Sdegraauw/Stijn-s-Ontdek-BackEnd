@@ -37,9 +37,9 @@ public class MeasurementController {
 
     @GetMapping("/history")
     public List<MeasurementDTO> getAt(
-            @RequestParam(value = "isoTimestamp") String isoTimestamp) {
+            @RequestParam(value = "timestamp") String timestamp) {
         try {
-            Instant utcDateTime = Instant.parse(isoTimestamp);
+            Instant utcDateTime = Instant.parse(timestamp);
             List<MeasurementDTO> measurements = measurementService.getMeasurementsAt(utcDateTime);
             return measurements;
         } catch (DateTimeParseException e) {
