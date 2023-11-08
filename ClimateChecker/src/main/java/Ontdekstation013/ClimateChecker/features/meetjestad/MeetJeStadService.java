@@ -141,13 +141,4 @@ public class MeetJeStadService {
 
         return latestMeasurement;
     }
-
-    public List<Measurement> getMeasurements(int id, Instant startDate, Instant endDate) {
-        MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = startDate;
-        params.EndDate = endDate;
-        params.StationIds.add(id);
-
-        return getMeasurements(params);
-    }
 }

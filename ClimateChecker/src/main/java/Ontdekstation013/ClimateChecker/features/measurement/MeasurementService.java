@@ -8,6 +8,7 @@ import java.util.List;
 
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
+import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -58,7 +59,12 @@ public class MeasurementService {
     }
 
     public List<MeasurementDTO> getMeasurements(int id, Instant startDate, Instant endDate) {
-        List<Measurement> measurements = meetJeStadService.getMeasurements(id, startDate, endDate);
+        MeetJeStadParameters params = new MeetJeStadParameters();
+        params.StartDate = startDate;
+        params.EndDate = endDate;
+        params.StationIds.add(id);
+
+        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
         // Convert to DTOs
         List<MeasurementDTO> measurementDTOs = new ArrayList<>();
@@ -81,7 +87,12 @@ public class MeasurementService {
     }
 
     public List<MeasurementHistoricalDataResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
-        List<Measurement> measurements = meetJeStadService.getMeasurements(id, startDate, endDate);
+        MeetJeStadParameters params = new MeetJeStadParameters();
+        params.StartDate = startDate;
+        params.EndDate = endDate;
+        params.StationIds.add(id);
+
+        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
         List<MeasurementHistoricalDataResponse> responseList = new ArrayList<>();
         float minTemp = 0, maxTemp = 0, temps = 0;
