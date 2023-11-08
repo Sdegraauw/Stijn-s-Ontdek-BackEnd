@@ -3,6 +3,7 @@ package Ontdekstation013.ClimateChecker.features.neighbourhood;
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
+import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -53,7 +54,7 @@ public class NeighbourhoodService {
             List<Measurement> tempMeasurements = new ArrayList<>();
             for (Measurement measurement : measurements) {
                 float[] point = {measurement.getLatitude(), measurement.getLongitude()};
-                if (pointInPolygon(dto.getCoordinates(), point)) {
+                if (GpsTriangulation.pointInPolygon(dto.getCoordinates(), point)) {
                     tempMeasurements.add(measurement);
                 }
             }
@@ -66,20 +67,6 @@ public class NeighbourhoodService {
             neighbourhoodDTOS.add(dto);
         }
         return neighbourhoodDTOS;
-    }
-
-    // Algorithm for finding a gps point inside an area
-    private boolean pointInPolygon(float[][] polygon, float[] point) {
-        boolean odd = false;
-        for (int i = 0, j = polygon.length - 1; i < polygon.length; i++) {
-            if (((polygon[i][0] > point[0]) != (polygon[j][0] > point[0]))
-                    && (point[1] < ((polygon[j][1] - polygon[i][1])
-                    * (point[0] - polygon[i][0]) / (polygon[j][0] - polygon[i][0]) + polygon[i][1]))) {
-                odd = !odd;
-            }
-            j = i;
-        }
-        return odd;
     }
 
     // Converting a list of coordinates to a two-dimensional float array
