@@ -3,7 +3,6 @@ package Ontdekstation013.ClimateChecker.features.neighbourhood;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

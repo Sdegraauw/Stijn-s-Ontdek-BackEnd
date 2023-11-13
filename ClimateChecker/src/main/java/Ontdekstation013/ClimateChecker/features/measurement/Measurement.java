@@ -1,6 +1,5 @@
 package Ontdekstation013.ClimateChecker.features.measurement;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.util.Date;
