@@ -17,8 +17,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementController;
-import Ontdekstation013.ClimateChecker.features.measurement.MeasurementDTO;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementController;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
 
 @ExtendWith(MockitoExtension.class)
