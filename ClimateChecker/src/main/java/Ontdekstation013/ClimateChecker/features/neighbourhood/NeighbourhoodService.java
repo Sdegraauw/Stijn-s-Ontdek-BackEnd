@@ -72,7 +72,7 @@ public class NeighbourhoodService {
     // Converting a list of coordinates to a two-dimensional float array
     private float[][] convertToFloatArray(List<Coordinate> coordinates) {
         return coordinates.stream()
-                .map(coord -> new float[]{coord.getLatitude(), coord.getLongitude()})
+                .map(coord -> new float[]{coord.getLongitude(),coord.getLatitude()})
                 .toArray(float[][]::new);
     }
 }
