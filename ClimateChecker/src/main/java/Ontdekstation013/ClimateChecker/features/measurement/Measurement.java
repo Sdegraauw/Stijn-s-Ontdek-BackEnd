@@ -11,6 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Measurement {
     private int id;
+    // todo: switch Date to Instant, look up other todos that reference Date and Instant
     private Date timestamp;
     private float latitude;
     private float longitude;

@@ -34,11 +34,7 @@ public class MeasurementUnitTests {
 
     @Mock
     private MeetJeStadService meetJeStadService;
-    private List<MeasurementDTO> measurementList;
-
-    @BeforeEach
-    public void init() {
-        measurementList = new ArrayList<>();
+    private List<Measurement> measurementList;
 
     @BeforeEach
     public void init() {
@@ -50,19 +46,6 @@ public class MeasurementUnitTests {
         measurementList.add(new Measurement(1, new Date(2000, 0, 1, 12, 48, 0), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, new Date(2000, 0, 1, 12, 16, 0), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, new Date(2000, 0, 1, 12, 20, 0), 51.55f, 5f, 20.0f, 50.0f));
-    }
-
-    @Test
-    public void getLatestMeasurements() {
-        // Arrange
-        //when(measurementService.getLatestMeasurements()).thenReturn(measurementList);
-
-        // Act
-        //List<MeasurementDTO> dtos = measurementService.getLatestMeasurements();
-
-        // Assert
-        //assertEquals(dtos.size(), 5);
-        
     }
 
     @Test

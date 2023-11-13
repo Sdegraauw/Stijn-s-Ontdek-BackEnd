@@ -12,6 +12,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Duration;
@@ -78,7 +79,9 @@ public class MeetJeStadService {
         {}
 
         // Convert dto's to measurements for use in service
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        // todo: PAS aan als Date in Measurement wordt omgezet naar Instant
+        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
 
         List<Measurement> measurements = new ArrayList<>();
         for (MeasurementDTO dto : measurementsDto) {
