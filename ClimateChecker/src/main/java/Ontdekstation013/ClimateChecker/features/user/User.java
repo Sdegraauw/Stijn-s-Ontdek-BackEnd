@@ -8,8 +8,6 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-import Ontdekstation013.ClimateChecker.features.station.StationOld;
-
 import java.util.LinkedList;
 import java.util.List;
 
@@ -22,13 +20,6 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long userID;
-
-    @OneToMany(
-            mappedBy = "owner",
-            fetch = FetchType.LAZY,
-            orphanRemoval = true,
-            cascade = CascadeType.ALL)
-    private List<StationOld> stations = new LinkedList<>();
 
     @NotBlank
     private String firstName;
@@ -44,17 +35,6 @@ public class User {
 
     private boolean Admin;
 
-
-    public User(long id, List<StationOld> stations, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
-        this.userID = id;
-        this.stations = stations;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.userName = userName;
-        this.mailAddress = mailAddress;
-        this.Admin = Admin;
-    }
-
     public User(long id, String firstName, String lastName, String mailAddress, String userName, boolean Admin) {
         this.userID = id;
         this.firstName = firstName;
@@ -63,7 +43,6 @@ public class User {
         this.mailAddress = mailAddress;
         this.Admin = Admin;
     }
-
 
     //register
     public User(String mailAddress, String firstName, String lastName, String userName) {

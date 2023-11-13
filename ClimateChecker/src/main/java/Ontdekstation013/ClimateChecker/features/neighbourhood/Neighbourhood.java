@@ -1,7 +1,5 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
-import Ontdekstation013.ClimateChecker.features.location.Location;
-import Ontdekstation013.ClimateChecker.features.station.Measurement;
 import lombok.*;
 
 import javax.persistence.Entity;
