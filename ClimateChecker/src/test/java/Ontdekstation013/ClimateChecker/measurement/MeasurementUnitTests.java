@@ -15,6 +15,9 @@ import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
+import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -26,12 +29,16 @@ import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
 
 @ExtendWith(MockitoExtension.class)
 public class MeasurementUnitTests {
-
     @InjectMocks
     private MeasurementService measurementService;
+
     @Mock
     private MeetJeStadService meetJeStadService;
-    private List<Measurement> measurementList;
+    private List<MeasurementDTO> measurementList;
+
+    @BeforeEach
+    public void init() {
+        measurementList = new ArrayList<>();
 
     @BeforeEach
     public void init() {
@@ -43,6 +50,19 @@ public class MeasurementUnitTests {
         measurementList.add(new Measurement(1, new Date(2000, 0, 1, 12, 48, 0), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, new Date(2000, 0, 1, 12, 16, 0), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, new Date(2000, 0, 1, 12, 20, 0), 51.55f, 5f, 20.0f, 50.0f));
+    }
+
+    @Test
+    public void getLatestMeasurements() {
+        // Arrange
+        //when(measurementService.getLatestMeasurements()).thenReturn(measurementList);
+
+        // Act
+        //List<MeasurementDTO> dtos = measurementService.getLatestMeasurements();
+
+        // Assert
+        //assertEquals(dtos.size(), 5);
+        
     }
 
     @Test

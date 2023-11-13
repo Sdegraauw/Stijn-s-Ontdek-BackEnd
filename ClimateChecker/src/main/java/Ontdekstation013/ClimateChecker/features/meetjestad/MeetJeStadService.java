@@ -18,10 +18,7 @@ import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class MeetJeStadService {
@@ -34,6 +31,7 @@ public class MeetJeStadService {
         { 51.52666590649518f, 4.911805911309284f },
         { 51.65077670571181f, 4.957086656750303f }
     };
+  
     public List<Measurement> getMeasurements(MeetJeStadParameters params)
     {
         StringBuilder url = new StringBuilder(baseUrl);
@@ -132,5 +130,29 @@ public class MeetJeStadService {
 
         latestMeasurements = new ArrayList<>(uniqueLatestMeasurements.values());
         return latestMeasurements;
+    }
+
+    public Measurement getLatestMeasurement(int id) {
+        // define start and end times
+        Instant endMoment = Instant.now();
+        Instant startMoment = endMoment.minus(Duration.ofMinutes(minuteLimit));
+
+        MeetJeStadParameters params = new MeetJeStadParameters();
+        params.StartDate = startMoment;
+        params.EndDate = endMoment;
+        params.StationIds.add(id);
+
+        // get measurements from MeetJeStadAPI
+        List<Measurement> latestMeasurements = getMeasurements(params);
+        Measurement latestMeasurement = new Measurement();
+        latestMeasurement.setTimestamp(new Date(Long.MIN_VALUE));
+
+        // filter out older readings of same stationId
+        for (Measurement measurement : latestMeasurements) {
+            if (measurement.getTimestamp().after(latestMeasurement.getTimestamp()))
+                latestMeasurement = measurement;
+        }
+
+        return latestMeasurement;
     }
 }
