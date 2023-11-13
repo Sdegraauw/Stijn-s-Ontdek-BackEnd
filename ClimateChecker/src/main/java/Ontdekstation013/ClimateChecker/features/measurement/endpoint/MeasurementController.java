@@ -1,9 +1,21 @@
 package Ontdekstation013.ClimateChecker.features.measurement.endpoint;
 
+import java.time.Instant;
+import java.time.format.*;
+import java.util.List;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import java.util.List;
+
+import Ontdekstation013.ClimateChecker.exception.InvalidArgumentException;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
@@ -34,6 +46,18 @@ public class MeasurementController {
         }
     }
 
+    @GetMapping("/history")
+    public List<MeasurementDTO> getMeasurementsAtTime(
+            @RequestParam(value = "timestamp") String timestamp) {
+        try {
+            Instant utcDateTime = Instant.parse(timestamp);
+            List<MeasurementDTO> measurements = measurementService.getMeasurementsAtTime(utcDateTime);
+            return measurements;
+        } catch (DateTimeParseException e) {
+            throw new InvalidArgumentException("Timestamp must be in ISO 8601 format");
+        }
+    }
+    
     @GetMapping("/latest/{id}")
     public MeasurementDTO getLatestMeasurement(@PathVariable int id) {
         return measurementService.getLatestMeasurement(id);

@@ -7,6 +7,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -22,8 +23,9 @@ import java.util.*;
 @Service
 public class MeetJeStadService {
     private final String baseUrl = "https://meetjestad.net/data/?type=sensors&format=json";
+    @Getter
     private final int minuteLimit = 35;
-    private float[][] cityLimits = {
+    private final float[][] cityLimits = {
         { 51.65156373065635f, 5.217787919413907f },
         { 51.51818572766462f, 5.227145728754213f },
         { 51.52666590649518f, 4.911805911309284f },
