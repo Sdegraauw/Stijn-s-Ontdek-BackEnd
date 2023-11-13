@@ -81,40 +81,4 @@ public class MeasurementUnitTests {
             assertEquals("01-01-3900 12:16:00", dto.getTimestamp());
         }
     }
-
-//    @InjectMocks
-//    private MeasurementController measurementController;
-//    @Mock
-//    private MeasurementService measurementService;
-//    private Logger LOG = LogManager.getLogger(MeasurementUnitTests.class);
-//    @Test
-//    public void testGetLatestMeasurementsUnitTest() {
-//
-//        MeasurementDTO measurementDTO = MeasurementDTO.builder()
-//        .id(1)
-//        .timestamp("2020-01-01 00:00:00")
-//        .longitude(35)
-//        .latitude(70)
-//        .temperature(20)
-//        .build();
-//
-//        List<MeasurementDTO> measurementDTOList = new ArrayList<>();
-//        measurementDTOList.add(measurementDTO);
-//
-//        when(measurementService.getLatestMeasurements()).thenReturn(measurementDTOList);
-//
-//        ResponseEntity<List<MeasurementDTO>> response = measurementController.getLatestMeasurements();
-//
-//        LOG.info(response.getBody().get(0).toString());
-//
-//        assertEquals(HttpStatus.OK, response.getStatusCode());
-//        assertNotNull(response.getBody());
-//        assertEquals(measurementDTOList, response.getBody());
-//        assertEquals(measurementDTOList.get(0).getId(), response.getBody().get(0).getId());
-//        assertEquals(measurementDTOList.get(0).getTimestamp(), response.getBody().get(0).getTimestamp());
-//        assertEquals(measurementDTOList.get(0).getLongitude(), response.getBody().get(0).getLongitude());
-//        assertEquals(measurementDTOList.get(0).getLatitude(), response.getBody().get(0).getLatitude());
-//        assertEquals(measurementDTOList.get(0).getTemperature(), response.getBody().get(0).getTemperature());
-//    }
-
 }
