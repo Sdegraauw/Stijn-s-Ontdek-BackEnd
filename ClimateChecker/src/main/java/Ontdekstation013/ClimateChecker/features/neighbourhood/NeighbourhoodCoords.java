@@ -18,10 +18,10 @@ import javax.persistence.Table;
 public class NeighbourhoodCoords {
     @Id
     private long id;
-    @Column(name = "y_cord")
-    private float latitude;
-    @Column(name = "x_cord")
+    @Column(name = "longitude")
     private float longitude;
+    @Column(name = "latitude")
+    private float latitude;
     @Column(name = "region_id")
     private long regionId;
 }
