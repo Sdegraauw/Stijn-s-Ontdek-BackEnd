@@ -18,7 +18,6 @@ public class MeasurementDTO {
     @JsonProperty("id")
     private int id;
     // notation is dd-mm-yyyy hh:mm:ss in CET (12-11-2023 06:57:27 voor 7 uur s'ochtends nederlandse tijd)
-    // todo: update when switching from Date to Instant in Measurement
     @JsonProperty("timestamp")
     private String timestamp;
     @JsonProperty("longitude")
