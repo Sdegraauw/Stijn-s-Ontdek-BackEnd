@@ -1,12 +1,12 @@
 package Ontdekstation013.ClimateChecker.features.measurement;
 
-import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import java.util.List;
 
+import Ontdekstation013.ClimateChecker.exception.NotFoundException;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
@@ -33,26 +33,18 @@ public class MeasurementService {
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
 
-        // convert dateTime to date format for use in logic
-        // this is needed because Measurement uses Date instead of Instant for it's timestamp
-        // todo: adjust after changing Measurement timestamp from Date to Instant
-        Date dateTimeDate = Date.from(dateTime);
-
-        // get measurements from MeetJeStadAPI
         List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
 
-        // get closest measurements to datetime
+        // select closest measurements to datetime
         Map<Integer, Measurement> measurementHashMap = new HashMap<>();
         for (Measurement measurement : allMeasurements) {
             int id = measurement.getId();
-            // check if this station is already in the map
             if (!measurementHashMap.containsKey(id))
                 measurementHashMap.put(id, measurement);
-                // check if the measurement is closer to the datetime
             else {
-                long existingDifference = Math.abs(measurementHashMap.get(id).getTimestamp().getTime() - dateTimeDate.getTime());
-                long newDifference = Math.abs(measurement.getTimestamp().getTime() - dateTimeDate.getTime());
-                if (existingDifference > newDifference)
+                Duration existingDifference = Duration.between(dateTime, measurementHashMap.get(id).getTimestamp()).abs();
+                Duration newDifference = Duration.between(dateTime, measurement.getTimestamp()).abs();
+                if (existingDifference.toSeconds() > newDifference.toSeconds())
                     measurementHashMap.put(id, measurement);
             }
         }
@@ -63,37 +55,13 @@ public class MeasurementService {
                 .toList();
     }
 
-    private MeasurementDTO convertToDTO(Measurement entity) {
-        MeasurementDTO dto = new MeasurementDTO();
-        dto.setId(entity.getId());
-        dto.setLongitude(entity.getLongitude());
-        dto.setLatitude(entity.getLatitude());
-        dto.setTemperature(entity.getTemperature());
-        dto.setHumidity(entity.getHumidity());
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String formattedDate = simpleDateFormat.format(entity.getTimestamp());
-        dto.setTimestamp(formattedDate);
-
-        return dto;
-    }
-
     public MeasurementDTO getLatestMeasurement(int id) {
         Measurement latestMeasurement = meetJeStadService.getLatestMeasurement(id);
 
-        // Convert to DTO
-        MeasurementDTO measurementDto = new MeasurementDTO();
-        measurementDto.setId(latestMeasurement.getId());
-        measurementDto.setLongitude(latestMeasurement.getLongitude());
-        measurementDto.setLatitude(latestMeasurement.getLatitude());
-        measurementDto.setTemperature(latestMeasurement.getTemperature());
-        measurementDto.setHumidity(latestMeasurement.getHumidity());
-
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-        String formattedDate = simpleDateFormat.format(latestMeasurement.getTimestamp());
-        measurementDto.setTimestamp(formattedDate);
-
-        return measurementDto;
+        if (latestMeasurement == null)
+            throw new NotFoundException("Measurement with stationId " + id + "could not be found");
+        else
+            return convertToDTO(latestMeasurement);
     }
 
     public List<MeasurementDTO> getMeasurements(int id, Instant startDate, Instant endDate) {
@@ -103,25 +71,9 @@ public class MeasurementService {
         params.StationIds.add(id);
 
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
-
-        // Convert to DTOs
-        List<MeasurementDTO> measurementDTOs = new ArrayList<>();
-        for (Measurement measurement : measurements) {
-            MeasurementDTO measurementDto = new MeasurementDTO();
-            measurementDto.setId(measurement.getId());
-            measurementDto.setLongitude(measurement.getLongitude());
-            measurementDto.setLatitude(measurement.getLatitude());
-            measurementDto.setTemperature(measurement.getTemperature());
-            measurementDto.setHumidity(measurement.getHumidity());
-
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
-            String formattedDate = simpleDateFormat.format(measurement.getTimestamp());
-            measurementDto.setTimestamp(formattedDate);
-
-            measurementDTOs.add(measurementDto);
-        }
-
-        return measurementDTOs;
+        return measurements.stream()
+                .map(this::convertToDTO)
+                .toList();
     }
 
     public List<MeasurementHistoricalDataResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
@@ -129,49 +81,62 @@ public class MeasurementService {
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds.add(id);
-
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
-        List<MeasurementHistoricalDataResponse> responseList = new ArrayList<>();
-        float minTemp = 0, maxTemp = 0, temps = 0;
-        int measurementCount = 0;
-        Date currentDate = new Date(1970, Calendar.JANUARY, 1);
-
+        HashMap<LocalDate, Set<Measurement>> dayMeasurements = new HashMap<>();
         for (Measurement measurement : measurements) {
-            if (currentDate == new Date(1970, Calendar.JANUARY, 1))
-                currentDate = measurement.getTimestamp();
-
-            if (currentDate.getDay() == measurement.getTimestamp().getDay()) {
-                temps += measurement.getTemperature();
-                measurementCount++;
-
-                if (minTemp > measurement.getTemperature() || minTemp == 0)
-                    minTemp = measurement.getTemperature();
-                if (maxTemp < measurement.getTemperature() || maxTemp == 0)
-                    maxTemp = measurement.getTemperature();
-            } else {
-                if (measurementCount > 0) {
-                    MeasurementHistoricalDataResponse response = new MeasurementHistoricalDataResponse();
-                    response.setMaxTemp(maxTemp);
-                    response.setMinTemp(minTemp);
-                    response.setAvgTemp(temps / measurementCount);
-
-                    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd-MM");
-                    String formattedDate = simpleDateFormat.format(measurement.getTimestamp());
-                    response.setTimestamp(formattedDate);
-
-                    responseList.add(response);
-
-                    measurementCount = 0;
-                    minTemp = 0;
-                    maxTemp = 0;
-                    temps = 0;
-                }
-
-                currentDate = measurement.getTimestamp();
+            LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
+            if (!dayMeasurements.containsKey(date)) {
+                dayMeasurements.put(date, new HashSet<>());
             }
+            dayMeasurements.get(date).add(measurement);
+        }
+
+        List<MeasurementHistoricalDataResponse> responseList = new ArrayList<>();
+
+        for (Map.Entry<LocalDate, Set<Measurement>> entry : dayMeasurements.entrySet()) {
+            LocalDate date = entry.getKey();
+            float minTemp = entry.getValue()
+                    .stream()
+                    .map(Measurement::getTemperature)
+                    .min(Float::compare)
+                    .orElse(Float.NaN);
+            float maxTemp = entry.getValue()
+                    .stream()
+                    .map(Measurement::getTemperature)
+                    .max(Float::compare)
+                    .orElse(Float.NaN);
+            float avgTemp = (float) entry.getValue()
+                    .stream()
+                    .mapToDouble(Measurement::getTemperature)
+                    .average()
+                    .orElse(Double.NaN);
+
+            MeasurementHistoricalDataResponse response = new MeasurementHistoricalDataResponse();
+            response.setMinTemp(minTemp);
+            response.setMaxTemp(maxTemp);
+            response.setAvgTemp(avgTemp);
+            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
+            response.setTimestamp(date.format(pattern));
+            responseList.add(response);
         }
 
         return responseList;
+    }
+
+    private MeasurementDTO convertToDTO(Measurement entity) {
+        MeasurementDTO dto = new MeasurementDTO();
+        dto.setId(entity.getId());
+        dto.setLongitude(entity.getLongitude());
+        dto.setLatitude(entity.getLatitude());
+        dto.setTemperature(entity.getTemperature());
+        dto.setHumidity(entity.getHumidity());
+
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("dd-MM-yyyy HH:mm:ss")
+                .withZone(ZoneId.of("Europe/Amsterdam"));
+        dto.setTimestamp(formatter.format(entity.getTimestamp()));
+
+        return dto;
     }
 }

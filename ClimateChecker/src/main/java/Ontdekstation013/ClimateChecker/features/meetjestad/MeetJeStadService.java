@@ -12,13 +12,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import javax.persistence.criteria.CriteriaBuilder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.Duration;
-import java.time.Instant;
-import java.time.ZoneOffset;
+import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
 @Service
@@ -27,14 +27,13 @@ public class MeetJeStadService {
     @Getter
     private final int minuteLimit = 35;
     private final float[][] cityLimits = {
-        { 51.65156373065635f, 5.217787919413907f },
-        { 51.51818572766462f, 5.227145728754213f },
-        { 51.52666590649518f, 4.911805911309284f },
-        { 51.65077670571181f, 4.957086656750303f }
+            {51.65156373065635f, 5.217787919413907f},
+            {51.51818572766462f, 5.227145728754213f},
+            {51.52666590649518f, 4.911805911309284f},
+            {51.65077670571181f, 4.957086656750303f}
     };
-  
-    public List<Measurement> getMeasurements(MeetJeStadParameters params)
-    {
+
+    public List<Measurement> getMeasurements(MeetJeStadParameters params) {
         StringBuilder url = new StringBuilder(baseUrl);
 
         if (params.StartDate != null) {
@@ -69,24 +68,23 @@ public class MeetJeStadService {
         ObjectMapper mapper = new ObjectMapper();
         mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
-        TypeReference<List<MeasurementDTO>> typeReference = new TypeReference<List<MeasurementDTO>>() {};
+        TypeReference<List<MeasurementDTO>> typeReference = new TypeReference<List<MeasurementDTO>>() {
+        };
 
         List<MeasurementDTO> measurementsDto = new ArrayList<>();
-
         try {
             measurementsDto = mapper.readValue(responseBody, typeReference);
-        } catch (JsonProcessingException ignored)
-        {}
+        } catch (JsonProcessingException ignored) {
+        }
 
-        // Convert dto's to measurements for use in service
-        DateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        // todo: PAS aan als Date in Measurement wordt omgezet naar Instant
-        formatter.setTimeZone(TimeZone.getTimeZone("UTC"));
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd HH:mm:ss")   // input pattern
+                .withZone(ZoneOffset.UTC);          // input timezone
 
         List<Measurement> measurements = new ArrayList<>();
         for (MeasurementDTO dto : measurementsDto) {
             // Check if measurement is within city bounds
-            float[] point = { dto.getLatitude(), dto.getLongitude() };
+            float[] point = {dto.getLatitude(), dto.getLongitude()};
             if (!GpsTriangulation.pointInPolygon(cityLimits, point))
                 continue;
 
@@ -97,15 +95,11 @@ public class MeetJeStadService {
             measurement.setTemperature(dto.getTemperature());
             measurement.setHumidity(dto.getHumidity());
 
-            // Convert date from string to date object
-            try {
-                measurement.setTimestamp(formatter.parse(dto.getTimestamp()));
-            } catch (ParseException ignored)
-            {}
+            TemporalAccessor temp = formatter.parse(dto.getTimestamp());
+            measurement.setTimestamp(Instant.from(temp));
 
             measurements.add(measurement);
         }
-
         return measurements;
     }
 
@@ -126,9 +120,8 @@ public class MeetJeStadService {
             int id = measurement.getId();
             // Check if this id is already in the map and if its more recent
             if (!uniqueLatestMeasurements.containsKey(id) ||
-                    measurement.getTimestamp().after(uniqueLatestMeasurements.get(id).getTimestamp())) {
+                    measurement.getTimestamp().isAfter(uniqueLatestMeasurements.get(id).getTimestamp()))
                 uniqueLatestMeasurements.put(id, measurement);
-            }
         }
 
         latestMeasurements = new ArrayList<>(uniqueLatestMeasurements.values());
@@ -147,12 +140,12 @@ public class MeetJeStadService {
 
         // get measurements from MeetJeStadAPI
         List<Measurement> latestMeasurements = getMeasurements(params);
-        Measurement latestMeasurement = new Measurement();
-        latestMeasurement.setTimestamp(new Date(Long.MIN_VALUE));
+        Measurement latestMeasurement = null;
 
         // filter out older readings of same stationId
         for (Measurement measurement : latestMeasurements) {
-            if (measurement.getTimestamp().after(latestMeasurement.getTimestamp()))
+            if (latestMeasurement == null ||
+                    measurement.getTimestamp().isAfter(latestMeasurement.getTimestamp()))
                 latestMeasurement = measurement;
         }
 
