@@ -7,6 +7,8 @@ import static org.mockito.Mockito.when;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -39,13 +41,12 @@ public class MeasurementUnitTests {
     @BeforeEach
     public void init() {
         measurementList = new ArrayList<>();
-
-        measurementList.add(new Measurement(1, new Date(2000, 0, 1, 12, 0, 0), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(1, new Date(2000, 0, 1, 12, 12, 0), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(1, new Date(2000, 0, 1, 12, 24, 0), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(1, new Date(2000, 0, 1, 12, 48, 0), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(2, new Date(2000, 0, 1, 12, 16, 0), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(2, new Date(2000, 0, 1, 12, 20, 0), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:00:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:12:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:24:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:48:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:16:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:20:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
     }
 
     @Test
@@ -53,20 +54,12 @@ public class MeasurementUnitTests {
         // Arrange
         int minuteMargin = 36;
         when(meetJeStadService.getMinuteLimit()).thenReturn(minuteMargin);
-
-        Date datetime = new Date(2000, 0, 1, 12, 16, 0);
-        Instant dateTimeInstant = datetime.toInstant();
-        Instant startInstant = dateTimeInstant.minus(Duration.ofMinutes(minuteMargin / 2));
-        Instant endInstant = dateTimeInstant.plus(Duration.ofMinutes(minuteMargin / 2));
-
-        MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = startInstant;
-        params.EndDate = endInstant;
-
         when(meetJeStadService.getMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
 
+        Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
+
         // Act
-        List<MeasurementDTO> dtos = measurementService.getMeasurementsAtTime(dateTimeInstant);
+        List<MeasurementDTO> dtos = measurementService.getMeasurementsAtTime(datetime);
 
         // Assert
         assertEquals(dtos.size(), 2);
@@ -75,13 +68,20 @@ public class MeasurementUnitTests {
         // for some reason the constructor of the date class adds 1900 years,
         // the test results correct for this (2000 + 1900 = 3900)
         // in the service logic the constructor is not used, so it's not a problem there.
+
+        // I think this formatter takes summertime offset into account,
+        // meaning the unit tests will only work in wintertime if you expect dd-MM-yyyy HH:mm:ss format,
+        // therefore the formatter must be used in the unit tests as well.
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("dd-MM-yyyy HH:mm:ss")
+                .withZone(ZoneId.of("Europe/Amsterdam"));
         {
             MeasurementDTO dto = dtos.stream().filter(obj -> obj.getId() == 1).toList().get(0);
-            assertEquals("01-01-3900 12:12:00", dto.getTimestamp());
+            assertEquals(formatter.format(Instant.parse("2000-01-01T12:12:00.00Z")) , dto.getTimestamp());
         }
         {
             MeasurementDTO dto = dtos.stream().filter(obj -> obj.getId() == 2).toList().get(0);
-            assertEquals("01-01-3900 12:16:00", dto.getTimestamp());
+            assertEquals(formatter.format(Instant.parse("2000-01-01T12:16:00.00Z")), dto.getTimestamp());
         }
     }
 }

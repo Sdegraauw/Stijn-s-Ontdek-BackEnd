@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -56,8 +57,8 @@ public class NeighbourhoodUnitTest {
         neighbourhoodCoordsList.add(new NeighbourhoodCoords(3, 4.996515f, 51.582497f, 1));
         neighbourhoodCoordsList.add(new NeighbourhoodCoords(4, 4.993423f, 51.573829f, 1));
         neighbourhoodCoordsList.add(new NeighbourhoodCoords(5, 4.986881f, 51.574809f, 1));
-        measurementList.add(new Measurement(1, new Date(), 51.578000f, 4.992980f, 22.0f, 50.0f));
-        measurementList.add(new Measurement(2, new Date(), 51.578000f, 40.992980f, 23.0f, 50.0f));
+        measurementList.add(new Measurement(1, Instant.now(), 51.578000f, 4.992980f, 22.0f, 50.0f));
+        measurementList.add(new Measurement(2, Instant.now(), 51.578000f, 40.992980f, 23.0f, 50.0f));
 
         neighbourhoodList.add(new Neighbourhood(2, "Niels"));
         neighbourhoodCoordsList.add(new NeighbourhoodCoords(6, 4.967818f, 51.603059f, 2));
@@ -75,8 +76,8 @@ public class NeighbourhoodUnitTest {
         neighbourhoodCoordsList.add(new NeighbourhoodCoords(18, 4.997504f, 51.585917f, 2));
         neighbourhoodCoordsList.add(new NeighbourhoodCoords(19, 4.996380f, 51.582597f, 2));
         neighbourhoodCoordsList.add(new NeighbourhoodCoords(20, 4.985841f, 51.583977f, 2));
-        measurementList.add(new Measurement(3, new Date(), 51.5869f, 4.999210f, 23.0f, 50.0f));
-        measurementList.add(new Measurement(4, new Date(), 51.5869f, 4.999210f, 22.0f, 50.0f));
+        measurementList.add(new Measurement(3, Instant.now(), 51.5869f, 4.999210f, 23.0f, 50.0f));
+        measurementList.add(new Measurement(4, Instant.now(), 51.5869f, 4.999210f, 22.0f, 50.0f));
     }
 
     @Test

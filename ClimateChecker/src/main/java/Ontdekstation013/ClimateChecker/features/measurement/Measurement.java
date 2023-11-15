@@ -2,7 +2,7 @@ package Ontdekstation013.ClimateChecker.features.measurement;
 
 import lombok.*;
 
-import java.util.Date;
+import java.time.Instant;
 
 @Getter
 @Setter
@@ -10,8 +10,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class Measurement {
     private int id;
-    // todo: switch Date to Instant, look up other todos that reference Date and Instant
-    private Date timestamp;
+    private Instant timestamp;
     private float latitude;
     private float longitude;
     private float temperature;

@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class MeasurementDTO {
     @JsonProperty("id")
     private int id;
-    // notation is dd-mm-yyyy hh:mm:ss in CET (12-11-2023 06:57:27 voor 7 uur s'ochtends nederlandse tijd)
+    // notation is "dd-mm-yyyy hh:mm:ss" in CET (12-11-2023 06:57:27 voor 7 uur s'ochtends nederlandse tijd)
     @JsonProperty("timestamp")
     private String timestamp;
     @JsonProperty("longitude")
