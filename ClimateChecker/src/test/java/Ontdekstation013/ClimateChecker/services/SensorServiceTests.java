@@ -10,7 +10,6 @@ import Ontdekstation013.ClimateChecker.features.sensor.SensorType;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorAverageDto;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorDto;
 import Ontdekstation013.ClimateChecker.features.sensor.endpoint.sensorTypeDto;
-import Ontdekstation013.ClimateChecker.features.station.StationOld;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;

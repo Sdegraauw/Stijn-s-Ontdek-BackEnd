@@ -2,7 +2,6 @@ package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter

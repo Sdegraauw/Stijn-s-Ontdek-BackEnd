@@ -5,8 +5,6 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
-import java.util.List;
-
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
