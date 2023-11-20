@@ -3,10 +3,6 @@ package Ontdekstation013.ClimateChecker.features.meetjestad;
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
@@ -14,10 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAccessor;
@@ -45,7 +37,7 @@ public class MeetJeStadService {
             url.append("&begin=").append(dateFormat);
         }
 
-        // Get measurements till this date
+        // Get measurements until this date
         if (params.EndDate != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
             String dateFormat = formatter.format(Instant.parse(params.EndDate.toString()));
@@ -56,7 +48,7 @@ public class MeetJeStadService {
         if (params.Limit != 0)
             url.append("&limit=").append(params.Limit);
 
-        // Do we want a specific station or all stations
+        // Do we want a specific set of stations or all stations
         if (!params.StationIds.isEmpty()) {
             url.append("&ids=");
 
@@ -71,20 +63,23 @@ public class MeetJeStadService {
         String responseBody = response.getBody();
 
         // Convert json to list object
-        TypeToken<List<MeasurementDTO>> typeToken = new TypeToken<List<MeasurementDTO>>(){};
+        TypeToken<List<MeasurementDTO>> typeToken = new TypeToken<>() {};
 
-        List<MeasurementDTO> measurementsDto = new ArrayList<>();
         Gson gson = new Gson();
-        measurementsDto = gson.fromJson(responseBody, typeToken);
+        List<MeasurementDTO> measurementsDto = gson.fromJson(responseBody, typeToken);
+        // Set as empty array if null
+        if (measurementsDto == null)
+            measurementsDto = new ArrayList<>();
 
         DateTimeFormatter formatter = DateTimeFormatter
                 .ofPattern("yyyy-MM-dd HH:mm:ss")   // input pattern
                 .withZone(ZoneOffset.UTC);          // input timezone
 
-        // Check if measurement lies within the city limits
+
         List<Measurement> measurements = new ArrayList<>();
+        // Convert MeasurementDTO to Measurement
         for (MeasurementDTO dto : measurementsDto) {
-            // Check if measurement is within city bounds
+            // Filter out measurements which are outside city bounds
             float[] point = {dto.getLatitude(), dto.getLongitude()};
             if (!GpsTriangulation.pointInPolygon(cityLimits, point))
                 continue;
