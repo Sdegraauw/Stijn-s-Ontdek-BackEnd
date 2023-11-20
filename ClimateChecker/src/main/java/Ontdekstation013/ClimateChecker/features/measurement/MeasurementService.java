@@ -83,7 +83,7 @@ public class MeasurementService {
         params.StationIds.add(id);
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
-        HashMap<LocalDate, Set<Measurement>> dayMeasurements = new HashMap<>();
+        SortedMap<LocalDate, Set<Measurement>> dayMeasurements = new TreeMap<>();
         for (Measurement measurement : measurements) {
             LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
             if (!dayMeasurements.containsKey(date)) {

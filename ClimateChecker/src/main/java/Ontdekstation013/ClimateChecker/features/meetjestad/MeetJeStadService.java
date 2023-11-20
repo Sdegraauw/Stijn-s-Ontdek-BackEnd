@@ -7,6 +7,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -36,12 +38,14 @@ public class MeetJeStadService {
     public List<Measurement> getMeasurements(MeetJeStadParameters params) {
         StringBuilder url = new StringBuilder(baseUrl);
 
+        // Get measurements from this date
         if (params.StartDate != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
             String dateFormat = formatter.format(Instant.parse(params.StartDate.toString()));
             url.append("&begin=").append(dateFormat);
         }
 
+        // Get measurements till this date
         if (params.EndDate != null) {
             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
             String dateFormat = formatter.format(Instant.parse(params.EndDate.toString()));
@@ -61,26 +65,23 @@ public class MeetJeStadService {
             }
         }
 
+        // Execute call and convert to json
         RestTemplate restTemplate = new RestTemplate();
         ResponseEntity<String> response = restTemplate.getForEntity(url.toString(), String.class);
         String responseBody = response.getBody();
 
-        ObjectMapper mapper = new ObjectMapper();
-        mapper.configure(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES, false);
-
-        TypeReference<List<MeasurementDTO>> typeReference = new TypeReference<List<MeasurementDTO>>() {
-        };
+        // Convert json to list object
+        TypeToken<List<MeasurementDTO>> typeToken = new TypeToken<List<MeasurementDTO>>(){};
 
         List<MeasurementDTO> measurementsDto = new ArrayList<>();
-        try {
-            measurementsDto = mapper.readValue(responseBody, typeReference);
-        } catch (JsonProcessingException ignored) {
-        }
+        Gson gson = new Gson();
+        measurementsDto = gson.fromJson(responseBody, typeToken);
 
         DateTimeFormatter formatter = DateTimeFormatter
                 .ofPattern("yyyy-MM-dd HH:mm:ss")   // input pattern
                 .withZone(ZoneOffset.UTC);          // input timezone
 
+        // Check if measurement lies within the city limits
         List<Measurement> measurements = new ArrayList<>();
         for (MeasurementDTO dto : measurementsDto) {
             // Check if measurement is within city bounds
@@ -115,7 +116,7 @@ public class MeetJeStadService {
         // get measurements from MeetJeStadAPI
         List<Measurement> latestMeasurements = getMeasurements(params);
         // filter out older readings of same stationId
-        Map<Integer, Measurement> uniqueLatestMeasurements = new HashMap<>();
+        SortedMap<Integer, Measurement> uniqueLatestMeasurements = new TreeMap<>();
         for (Measurement measurement : latestMeasurements) {
             int id = measurement.getId();
             // Check if this id is already in the map and if its more recent
