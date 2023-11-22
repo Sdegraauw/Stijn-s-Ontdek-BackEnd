@@ -112,12 +112,15 @@ public class MeasurementService {
                     .average()
                     .orElse(Double.NaN);
 
-            MeasurementHistoricalDataResponse response = new MeasurementHistoricalDataResponse();
-            response.setMinTemp(minTemp);
-            response.setMaxTemp(maxTemp);
-            response.setAvgTemp(avgTemp);
             DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
-            response.setTimestamp(date.format(pattern));
+
+            MeasurementHistoricalDataResponse response = new MeasurementHistoricalDataResponse(
+                    date.format(pattern),
+                    avgTemp,
+                    minTemp,
+                    maxTemp
+            );
+
             responseList.add(response);
         }
 

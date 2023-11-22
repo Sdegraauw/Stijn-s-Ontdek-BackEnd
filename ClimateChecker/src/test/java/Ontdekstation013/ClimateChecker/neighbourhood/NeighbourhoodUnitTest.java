@@ -3,9 +3,7 @@ package Ontdekstation013.ClimateChecker.neighbourhood;
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.*;
-import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodController;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,9 +16,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.time.Instant;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
@@ -88,7 +84,7 @@ public class NeighbourhoodUnitTest {
         when(meetJeStadService.getLatestMeasurements()).thenReturn(measurementList);
 
         // Act
-        List<NeighbourhoodDTO> dtos = neighbourhoodService.getNeighbourhoodData();
+        List<NeighbourhoodDTO> dtos = neighbourhoodService.getLatestNeighbourhoodData();
 
         // Assert
         assertEquals(dtos.size(), 2);

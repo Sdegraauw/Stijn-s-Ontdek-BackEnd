@@ -1,13 +1,11 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
+import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
 @Table(name = "region_cords")
@@ -21,6 +19,8 @@ public class NeighbourhoodCoords {
     private float longitude;
     @Column(name = "latitude")
     private float latitude;
-    @Column(name = "region_id")
-    private long regionId;
+
+    @ManyToOne
+    @JoinColumn(name = "region_id")
+    private Neighbourhood neighbourhood;
 }
