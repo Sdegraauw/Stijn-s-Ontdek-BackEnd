@@ -96,7 +96,9 @@ public class MeetJeStadService {
 
             measurements.add(measurement);
         }
-        return measurements;
+        List<Measurement> filteredMeasurements = DataFilter(measurements);
+
+        return filteredMeasurements;
     }
 
     public List<Measurement> getLatestMeasurements() {
@@ -121,7 +123,9 @@ public class MeetJeStadService {
         }
 
         latestMeasurements = new ArrayList<>(uniqueLatestMeasurements.values());
-        return latestMeasurements;
+        List<Measurement> filteredMeasurements = DataFilter(latestMeasurements);
+
+        return filteredMeasurements;
     }
 
     public Measurement getLatestMeasurement(int id) {
@@ -146,5 +150,27 @@ public class MeetJeStadService {
         }
 
         return latestMeasurement;
+    }
+
+    private List<Measurement> DataFilter (List<Measurement> measurements) {
+        int differenceFromAveragePassPercentage = 50;
+        float total = 0;
+
+        for(Measurement measurement:measurements) {
+            total += measurement.getTemperature();
+            if (measurement.getHumidity() < 0 || measurement.getHumidity() > 100){
+                measurement.setHumidity(0);
+            }
+        }
+        float average = total/(float) (measurements.size());
+
+        List<Measurement> filteredMeasurements = new ArrayList<>();
+        for (Measurement measurement:measurements) {
+            float absoluteDifferenceFromAverage = Math.abs(((measurement.getTemperature()-average)/average) * 100);
+            if (absoluteDifferenceFromAverage < differenceFromAveragePassPercentage){
+                filteredMeasurements.add(measurement);
+            }
+        }
+        return filteredMeasurements;
     }
 }
