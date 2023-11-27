@@ -96,7 +96,7 @@ public class MeetJeStadService {
 
             measurements.add(measurement);
         }
-        List<Measurement> filteredMeasurements = IncorectValueFilter(measurements);
+        List<Measurement> filteredMeasurements = IncorrectValueFilter(measurements);
 
         return filteredMeasurements;
     }
@@ -123,7 +123,7 @@ public class MeetJeStadService {
         }
 
         latestMeasurements = new ArrayList<>(uniqueLatestMeasurements.values());
-        List<Measurement> filteredMeasurements = IncorectValueFilter(latestMeasurements);
+        List<Measurement> filteredMeasurements = IncorrectValueFilter(latestMeasurements);
 
         return filteredMeasurements;
     }
@@ -152,7 +152,7 @@ public class MeetJeStadService {
         return latestMeasurement;
     }
 
-    private List<Measurement> IncorectValueFilter(List<Measurement> measurements) {
+    public List<Measurement> IncorrectValueFilter(List<Measurement> measurements) {
         int differenceFromAverageDivider = 2;
         int baseAdjustmentValue = 3;
         float total = 0;
@@ -166,7 +166,7 @@ public class MeetJeStadService {
                 }
             }
         }
-        float adjustmentValue = Math.abs(min)-min+baseAdjustmentValue;
+        float adjustmentValue = Math.abs(min)+baseAdjustmentValue;
         float adjustedTotal = total + measurements.size()*adjustmentValue;
         float adjustedAverage = adjustedTotal/measurements.size();
         float allowedSpread = adjustedAverage/differenceFromAverageDivider;
