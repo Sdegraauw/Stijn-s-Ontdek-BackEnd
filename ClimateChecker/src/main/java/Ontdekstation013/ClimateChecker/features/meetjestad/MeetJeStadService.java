@@ -153,8 +153,8 @@ public class MeetJeStadService {
     }
 
     private List<Measurement> IncorectValueFilter(List<Measurement> measurements) {
-        int differenceFromAveragePassPercentage = 50;
-        int minimumAdjustmentValue = 3;
+        int differenceFromAverageDivider = 2;
+        int baseAdjustmentValue = 3;
         float total = 0;
         float min = Integer.MAX_VALUE;
 
@@ -166,20 +166,19 @@ public class MeetJeStadService {
                 }
             }
         }
-        float adjustmentValue = Math.abs(min)-min;
-        if (adjustmentValue < minimumAdjustmentValue){
-            adjustmentValue = minimumAdjustmentValue;
-        }
+        float adjustmentValue = Math.abs(min)-min+baseAdjustmentValue;
         float adjustedTotal = total + measurements.size()*adjustmentValue;
-        float average = (adjustedTotal)/measurements.size();
+        float adjustedAverage = adjustedTotal/measurements.size();
+        float allowedSpread = adjustedAverage/differenceFromAverageDivider;
+        float average = total/measurements.size();
 
         for (Measurement measurement:measurements) {
             if (measurement.getHumidity()!= null && (measurement.getHumidity()<0 || measurement.getHumidity()>100)){
                 measurement.setHumidity(null);
             }
             if (measurement.getTemperature() != null){
-                float absoluteDifferenceFromAverage = Math.abs((((measurement.getTemperature()+adjustmentValue)-average)/average) * 100);
-                if (absoluteDifferenceFromAverage > differenceFromAveragePassPercentage){
+                float absoluteDifferenceFromAverage = Math.abs(measurement.getTemperature()-average);
+                if (absoluteDifferenceFromAverage > allowedSpread){
                     measurement.setTemperature(null);
                 }
             }
