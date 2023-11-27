@@ -96,7 +96,7 @@ public class MeetJeStadService {
 
             measurements.add(measurement);
         }
-        List<Measurement> filteredMeasurements = DataFilter(measurements);
+        List<Measurement> filteredMeasurements = IncorectValueFilter(measurements);
 
         return filteredMeasurements;
     }
@@ -123,7 +123,7 @@ public class MeetJeStadService {
         }
 
         latestMeasurements = new ArrayList<>(uniqueLatestMeasurements.values());
-        List<Measurement> filteredMeasurements = DataFilter(latestMeasurements);
+        List<Measurement> filteredMeasurements = IncorectValueFilter(latestMeasurements);
 
         return filteredMeasurements;
     }
@@ -152,25 +152,38 @@ public class MeetJeStadService {
         return latestMeasurement;
     }
 
-    private List<Measurement> DataFilter (List<Measurement> measurements) {
+    private List<Measurement> IncorectValueFilter(List<Measurement> measurements) {
         int differenceFromAveragePassPercentage = 50;
+        int minimumAdjustmentValue = 3;
         float total = 0;
+        float min = Integer.MAX_VALUE;
 
         for(Measurement measurement:measurements) {
-            total += measurement.getTemperature();
-            if (measurement.getHumidity() < 0 || measurement.getHumidity() > 100){
-                measurement.setHumidity(0);
+            if (measurement.getTemperature()!= null){
+                total += measurement.getTemperature();
+                if (measurement.getTemperature()<min){
+                    min = measurement.getTemperature();
+                }
             }
         }
-        float average = total/(float) (measurements.size());
+        float adjustmentValue = Math.abs(min)-min;
+        if (adjustmentValue < minimumAdjustmentValue){
+            adjustmentValue = minimumAdjustmentValue;
+        }
+        float adjustedTotal = total + measurements.size()*adjustmentValue;
+        float average = (adjustedTotal)/measurements.size();
 
-        List<Measurement> filteredMeasurements = new ArrayList<>();
         for (Measurement measurement:measurements) {
-            float absoluteDifferenceFromAverage = Math.abs(((measurement.getTemperature()-average)/average) * 100);
-            if (absoluteDifferenceFromAverage < differenceFromAveragePassPercentage){
-                filteredMeasurements.add(measurement);
+            if (measurement.getHumidity()!= null && (measurement.getHumidity()<0 || measurement.getHumidity()>100)){
+                measurement.setHumidity(null);
+            }
+            if (measurement.getTemperature() != null){
+                float absoluteDifferenceFromAverage = Math.abs((((measurement.getTemperature()+adjustmentValue)-average)/average) * 100);
+                if (absoluteDifferenceFromAverage > differenceFromAveragePassPercentage){
+                    measurement.setTemperature(null);
+                }
             }
         }
-        return filteredMeasurements;
+        return measurements;
     }
 }
