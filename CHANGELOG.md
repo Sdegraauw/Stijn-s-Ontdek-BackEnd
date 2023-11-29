@@ -16,8 +16,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [UNRELEASED]
 
-## [0.1.0] - 2023-11-27
-- xxx
+## [0.1.0] - 2023-11-29
+
+### Fixed
+- Metingen worden nu gefiltered om incorrecte/onmogelijke waardes eruit te halen (SCRUM-130)
 
 ## [0.0.0]
 
