@@ -67,6 +67,10 @@ public class MeasurementController {
         LocalDateTime localDateTimeEnd = LocalDateTime.parse(endDate, formatter);
         Instant endInstant = localDateTimeEnd.atZone(ZoneId.systemDefault()).toInstant();
 
+        if (startInstant.isAfter(endInstant)){
+            throw new InvalidArgumentException("Start date is after end date");
+        }
+
         return measurementService.getMeasurements(id, startInstant, endInstant);
     }
 
@@ -79,6 +83,10 @@ public class MeasurementController {
 
         LocalDateTime localDateTimeEnd = LocalDateTime.parse(endDate, formatter);
         Instant endInstant = localDateTimeEnd.atZone(ZoneId.systemDefault()).toInstant();
+
+        if (startInstant.isAfter(endInstant)){
+            throw new InvalidArgumentException("Start date is after end date");
+        }
 
         return measurementService.getMeasurementsAverage(id, startInstant, endInstant);
     }
