@@ -85,11 +85,13 @@ public class MeasurementService {
 
         SortedMap<LocalDate, Set<Measurement>> dayMeasurements = new TreeMap<>();
         for (Measurement measurement : measurements) {
-            LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
-            if (!dayMeasurements.containsKey(date)) {
-                dayMeasurements.put(date, new HashSet<>());
+            if (measurement.getTemperature()!= null){
+                LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
+                if (!dayMeasurements.containsKey(date)) {
+                    dayMeasurements.put(date, new HashSet<>());
+                }
+                dayMeasurements.get(date).add(measurement);
             }
-            dayMeasurements.get(date).add(measurement);
         }
 
         List<MeasurementHistoricalDataResponse> responseList = new ArrayList<>();
@@ -140,3 +142,4 @@ public class MeasurementService {
         return dto;
     }
 }
+

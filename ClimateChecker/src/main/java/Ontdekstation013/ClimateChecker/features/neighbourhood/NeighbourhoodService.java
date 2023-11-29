@@ -60,9 +60,16 @@ public class NeighbourhoodService {
             }
             // Calculate average temperature of the measurements in this neighbourhood
             float totalTemp = 0.0f;
-            for (Measurement measurement : tempMeasurements)
-                totalTemp += measurement.getTemperature();
-            dto.setAvgTemp(totalTemp / tempMeasurements.size());
+            int measurementCount = tempMeasurements.size();
+            for (Measurement measurement : tempMeasurements) {
+                if (measurement.getTemperature() != null) {
+                    totalTemp += measurement.getTemperature();
+                }
+                else {
+                    measurementCount--;
+                }
+            }
+            dto.setAvgTemp(totalTemp / measurementCount);
 
             neighbourhoodDTOS.add(dto);
         }
