@@ -154,7 +154,7 @@ public class MeetJeStadService {
 
     public List<Measurement> IncorrectValueFilter(List<Measurement> measurements) {
         int differenceFromAverageDivider = 2;
-        int baseAdjustmentValue = 3;
+        int minimumDistanceAllowed = 3;
         float total = 0;
         float min = Integer.MAX_VALUE;
 
@@ -166,10 +166,13 @@ public class MeetJeStadService {
                 }
             }
         }
-        float adjustmentValue = Math.abs(min)+baseAdjustmentValue;
+        float adjustmentValue = Math.abs(min);
         float adjustedTotal = total + measurements.size()*adjustmentValue;
         float adjustedAverage = adjustedTotal/measurements.size();
         float allowedSpread = adjustedAverage/differenceFromAverageDivider;
+        if (allowedSpread < minimumDistanceAllowed){
+            allowedSpread = minimumDistanceAllowed;
+        }
         float average = total/measurements.size();
 
         for (Measurement measurement:measurements) {
