@@ -8,7 +8,7 @@ import java.util.List;
 
 import Ontdekstation013.ClimateChecker.exception.NotFoundException;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import lombok.RequiredArgsConstructor;
@@ -76,14 +76,14 @@ public class MeasurementService {
                 .toList();
     }
 
-    public List<MeasurementHistoricalDataResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
+    public List<DayMeasurementResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds.add(id);
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
-        HashMap<LocalDate, Set<Measurement>> dayMeasurements = new HashMap<>();
+        HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
             LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
             if (!dayMeasurements.containsKey(date)) {
@@ -92,7 +92,7 @@ public class MeasurementService {
             dayMeasurements.get(date).add(measurement);
         }
 
-        List<MeasurementHistoricalDataResponse> responseList = new ArrayList<>();
+        List<DayMeasurementResponse> responseList = new ArrayList<>();
 
         for (Map.Entry<LocalDate, Set<Measurement>> entry : dayMeasurements.entrySet()) {
             LocalDate date = entry.getKey();
@@ -114,7 +114,7 @@ public class MeasurementService {
 
             DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
 
-            MeasurementHistoricalDataResponse response = new MeasurementHistoricalDataResponse(
+            DayMeasurementResponse response = new DayMeasurementResponse(
                     date.format(pattern),
                     avgTemp,
                     minTemp,

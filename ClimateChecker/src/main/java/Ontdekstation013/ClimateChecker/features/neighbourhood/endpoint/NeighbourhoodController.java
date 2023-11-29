@@ -1,6 +1,6 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint;
 
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.NeighbourhoodService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -9,7 +9,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -24,7 +23,7 @@ public class NeighbourhoodController {
     }
 
     @GetMapping("/history/average/{id}")
-    public List<MeasurementHistoricalDataResponse> getNeighbourhoodData(@PathVariable Long id, @RequestParam String startDate, @RequestParam String endDate) {
+    public List<DayMeasurementResponse> getNeighbourhoodData(@PathVariable Long id, @RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
 
         LocalDateTime localDateTimeStart = LocalDateTime.parse(startDate, formatter);

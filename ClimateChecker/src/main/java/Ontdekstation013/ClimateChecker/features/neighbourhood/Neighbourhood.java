@@ -11,6 +11,7 @@ import java.util.List;
 @Entity
 @Table(name = "region")
 @Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 public class Neighbourhood {
@@ -21,7 +22,7 @@ public class Neighbourhood {
     @OneToMany(mappedBy = "neighbourhood")
     List<NeighbourhoodCoords> coordinates;
 
-    public Neighbourhood(int id, String name) {
+    public Neighbourhood(long id, String name) {
         this.id = id;
         this.name = name;
     }

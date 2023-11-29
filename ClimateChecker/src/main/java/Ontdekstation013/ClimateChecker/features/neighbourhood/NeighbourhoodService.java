@@ -1,7 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
@@ -10,14 +10,11 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.*;
-import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 
@@ -26,7 +23,6 @@ import org.slf4j.Logger;
 public class NeighbourhoodService {
     private final MeetJeStadService meetJeStadService;
     private final NeighbourhoodRepository neighbourhoodRepository;
-    private final NeighbourhoodCoordsRepository neighbourhoodCoordsRepository;
     private final Logger LOG = LoggerFactory.getLogger(NeighbourhoodService.class);
 
     // Latitude = Y
@@ -65,7 +61,7 @@ public class NeighbourhoodService {
         return neighbourhoodDTOS;
     }
 
-    public List<MeasurementHistoricalDataResponse> getNeighbourhoodDataAverage(Long id, Instant startDate, Instant endDate) {
+    public List<DayMeasurementResponse> getNeighbourhoodDataAverage(Long id, Instant startDate, Instant endDate) {
         Optional<Neighbourhood> neighbourhoodOptional = neighbourhoodRepository.findById(id);
         Neighbourhood neighbourhood;
         if (neighbourhoodOptional.isPresent())
@@ -96,7 +92,7 @@ public class NeighbourhoodService {
         measurements = meetJeStadService.getMeasurements(params);
 
         // Get the daily average
-        HashMap<LocalDate, List<Measurement>> dayMeasurements = new HashMap<>();
+        HashMap<LocalDate, List<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
             LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
             if (!dayMeasurements.containsKey(date)) {
@@ -105,7 +101,7 @@ public class NeighbourhoodService {
             dayMeasurements.get(date).add(measurement);
         }
 
-        List<MeasurementHistoricalDataResponse> responseList = new ArrayList<>();
+        List<DayMeasurementResponse> responseList = new ArrayList<>();
 
         for (Map.Entry<LocalDate, List<Measurement>> entry : dayMeasurements.entrySet()) {
             LocalDate date = entry.getKey();
@@ -127,7 +123,7 @@ public class NeighbourhoodService {
 
             DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
 
-            MeasurementHistoricalDataResponse response = new MeasurementHistoricalDataResponse(
+            DayMeasurementResponse response = new DayMeasurementResponse(
                     date.format(pattern),
                     avgTemp,
                     minTemp,

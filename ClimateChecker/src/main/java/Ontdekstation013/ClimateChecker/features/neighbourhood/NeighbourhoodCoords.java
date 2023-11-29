@@ -15,10 +15,8 @@ import javax.persistence.*;
 public class NeighbourhoodCoords {
     @Id
     private long id;
-    @Column(name = "longitude")
-    private float longitude;
-    @Column(name = "latitude")
     private float latitude;
+    private float longitude;
 
     @ManyToOne
     @JoinColumn(name = "region_id")
