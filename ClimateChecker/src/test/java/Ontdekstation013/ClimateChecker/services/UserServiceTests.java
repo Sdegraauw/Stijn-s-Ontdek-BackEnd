@@ -26,7 +26,7 @@ class UserServiceTests {
 	private UserConverter userConverter;
 
 	@BeforeEach
-	void setup() throws Exception{
+	void setup() {
 		this.mockUserRepo = new MockUserRepo();
 		this.mockTokenRepo = new MockTokenRepo();
 
