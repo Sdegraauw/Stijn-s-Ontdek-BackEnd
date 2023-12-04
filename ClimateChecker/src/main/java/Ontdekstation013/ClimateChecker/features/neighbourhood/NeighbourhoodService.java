@@ -52,9 +52,16 @@ public class NeighbourhoodService {
 
             // Calculate average temperature of the measurements in this neighbourhood
             float totalTemp = 0.0f;
-            for (Measurement measurement : tempMeasurements)
-                totalTemp += measurement.getTemperature();
-            dto.setAvgTemp(totalTemp / tempMeasurements.size());
+            int measurementCount = tempMeasurements.size();
+            for (Measurement measurement : tempMeasurements) {
+                if (measurement.getTemperature() != null) {
+                    totalTemp += measurement.getTemperature();
+                }
+                else {
+                    measurementCount--;
+                }
+            }
+            dto.setAvgTemp(totalTemp / measurementCount);
 
             neighbourhoodDTOS.add(dto);
         }
@@ -94,11 +101,14 @@ public class NeighbourhoodService {
         // Get the daily average
         HashMap<LocalDate, List<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
-            LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
-            if (!dayMeasurements.containsKey(date)) {
-                dayMeasurements.put(date, new ArrayList<>());
+            if (measurement.getTemperature() != null) {
+                LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
+                if (!dayMeasurements.containsKey(date)) {
+                    dayMeasurements.put(date, new ArrayList<>());
+                }
+
+                dayMeasurements.get(date).add(measurement);
             }
-            dayMeasurements.get(date).add(measurement);
         }
 
         List<DayMeasurementResponse> responseList = new ArrayList<>();
