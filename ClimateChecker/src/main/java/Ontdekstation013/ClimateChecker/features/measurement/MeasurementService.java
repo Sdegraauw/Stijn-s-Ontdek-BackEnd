@@ -8,7 +8,7 @@ import java.util.List;
 
 import Ontdekstation013.ClimateChecker.exception.NotFoundException;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import lombok.RequiredArgsConstructor;
@@ -76,14 +76,14 @@ public class MeasurementService {
                 .toList();
     }
 
-    public List<MeasurementHistoricalDataResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
+    public List<DayMeasurementResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds.add(id);
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
-        SortedMap<LocalDate, Set<Measurement>> dayMeasurements = new TreeMap<>();
+        HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
             if (measurement.getTemperature()!= null){
                 LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
@@ -94,7 +94,7 @@ public class MeasurementService {
             }
         }
 
-        List<MeasurementHistoricalDataResponse> responseList = new ArrayList<>();
+        List<DayMeasurementResponse> responseList = new ArrayList<>();
 
         for (Map.Entry<LocalDate, Set<Measurement>> entry : dayMeasurements.entrySet()) {
             LocalDate date = entry.getKey();
@@ -114,12 +114,15 @@ public class MeasurementService {
                     .average()
                     .orElse(Double.NaN);
 
-            MeasurementHistoricalDataResponse response = new MeasurementHistoricalDataResponse();
-            response.setMinTemp(minTemp);
-            response.setMaxTemp(maxTemp);
-            response.setAvgTemp(avgTemp);
             DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
-            response.setTimestamp(date.format(pattern));
+
+            DayMeasurementResponse response = new DayMeasurementResponse(
+                    date.format(pattern),
+                    avgTemp,
+                    minTemp,
+                    maxTemp
+            );
+
             responseList.add(response);
         }
 
