@@ -82,4 +82,9 @@ public class MeasurementController {
 
         return measurementService.getMeasurementsAverage(id, startInstant, endInstant);
     }
+
+    @GetMapping("/test")
+    public List<MeasurementDTO> test() {
+        return measurementService.getCachedMeasurements();
+    }
 }

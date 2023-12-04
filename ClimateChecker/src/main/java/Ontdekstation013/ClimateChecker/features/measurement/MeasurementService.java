@@ -18,6 +18,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MeasurementService {
     private final MeetJeStadService meetJeStadService;
+    private final MeasurementRepository measurementRepository;
 
     public List<MeasurementDTO> getLatestMeasurements() {
         List<Measurement> uniqueLatestMeasurements = meetJeStadService.getLatestMeasurements();
@@ -124,6 +125,12 @@ public class MeasurementService {
         return responseList;
     }
 
+    public List<MeasurementDTO> getCachedMeasurements() {
+        List<Measurement> measurements = measurementRepository.findAll();
+
+        return convertToDTO(measurements);
+    }
+
     private MeasurementDTO convertToDTO(Measurement entity) {
         MeasurementDTO dto = new MeasurementDTO();
         dto.setId(entity.getId());
@@ -138,5 +145,14 @@ public class MeasurementService {
         dto.setTimestamp(formatter.format(entity.getTimestamp()));
 
         return dto;
+    }
+
+    private List<MeasurementDTO> convertToDTO(List<Measurement> measurements) {
+        List<MeasurementDTO> measurementDTOS = new ArrayList<>();
+
+        for (Measurement measurement : measurements)
+            measurementDTOS.add(convertToDTO(measurement));
+
+        return measurementDTOS;
     }
 }
