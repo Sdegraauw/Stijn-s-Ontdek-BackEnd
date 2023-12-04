@@ -71,7 +71,7 @@ public class NeighbourhoodService {
 
         // Get all measurements from 1 day to filter out stations that are irrelevant
         MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = endDate.minusSeconds(60 * 60 * 24); // 1 day subtraction
+        params.StartDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
         params.EndDate = endDate;
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
