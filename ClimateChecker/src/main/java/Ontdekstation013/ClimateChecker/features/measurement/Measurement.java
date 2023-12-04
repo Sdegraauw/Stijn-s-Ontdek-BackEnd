@@ -2,7 +2,6 @@ package Ontdekstation013.ClimateChecker.features.measurement;
 
 import io.micrometer.core.lang.Nullable;
 import lombok.*;
-
 import java.time.Instant;
 
 @Getter
@@ -10,7 +9,7 @@ import java.time.Instant;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Measurement {
-    private int id;
+    private Long id;
     private Instant timestamp;
     private float latitude;
     private float longitude;
