@@ -15,7 +15,7 @@ import java.util.List;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
@@ -101,7 +101,7 @@ public class MeasurementUnitTests {
         Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
 
         // Act
-        List<MeasurementHistoricalDataResponse> responses = measurementService.getMeasurementsAverage(id, startDate, endDate);
+        List<DayMeasurementResponse> responses = measurementService.getMeasurementsAverage(id, startDate, endDate);
 
         // Assert
         assertEquals(3, responses.size());

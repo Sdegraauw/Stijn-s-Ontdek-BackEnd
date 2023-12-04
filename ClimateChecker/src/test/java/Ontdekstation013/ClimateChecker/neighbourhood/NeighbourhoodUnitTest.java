@@ -161,7 +161,7 @@ public class NeighbourhoodUnitTest {
         assertEquals(28, secondResponse.getMaxTemp());
 
         MeetJeStadParameters firstCall = paramCaptor.getAllValues().get(0);
-        assertEquals(endDate.minus(Duration.ofDays(1)), firstCall.StartDate);
+        assertEquals(endDate.minus(Duration.ofHours(1)), firstCall.StartDate);
         assertEquals(endDate, firstCall.EndDate);
 
         MeetJeStadParameters secondCall = paramCaptor.getAllValues().get(1);
