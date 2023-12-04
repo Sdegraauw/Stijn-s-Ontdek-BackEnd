@@ -1,5 +1,6 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint;
 
+import Ontdekstation013.ClimateChecker.exception.InvalidArgumentException;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.NeighbourhoodService;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +10,7 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 @RestController
@@ -17,9 +19,9 @@ import java.util.List;
 public class NeighbourhoodController {
     private final NeighbourhoodService neighbourhoodService;
 
-    @GetMapping("/all")
+    @GetMapping("/latest")
     public List<NeighbourhoodDTO> getLatestNeighbourhoodData() {
-        return neighbourhoodService.getLatestNeighbourhoodData();
+        return neighbourhoodService.getNeighbourhoodsLatest();
     }
 
     @GetMapping("/history/average/{id}")
@@ -32,6 +34,17 @@ public class NeighbourhoodController {
         LocalDateTime localDateTimeEnd = LocalDateTime.parse(endDate, formatter);
         Instant endInstant = localDateTimeEnd.atZone(ZoneId.systemDefault()).toInstant();
 
-        return neighbourhoodService.getNeighbourhoodDataAverage(id, startInstant, endInstant);
+        return neighbourhoodService.getNeighbourhoodData(id, startInstant, endInstant);
+    }
+
+    @GetMapping("/history")
+    public List<NeighbourhoodDTO> getNeighbourhoodsAtTime(@RequestParam(value = "timestamp") String timestamp) {
+        try {
+            Instant utcDateTime = Instant.parse(timestamp);
+            List<NeighbourhoodDTO> neighbourhoods = neighbourhoodService.getNeighbourhoodsAtTime(utcDateTime);
+            return neighbourhoods;
+        } catch (DateTimeParseException e) {
+            throw new InvalidArgumentException("Timestamp must be in ISO 8601 format");
+        }
     }
 }

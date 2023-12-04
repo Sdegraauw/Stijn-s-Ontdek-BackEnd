@@ -7,32 +7,27 @@ import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
-import org.slf4j.Logger;
-
 @Service
 @RequiredArgsConstructor
 public class NeighbourhoodService {
-    private final MeetJeStadService meetJeStadService;
-    private final NeighbourhoodRepository neighbourhoodRepository;
-    private final Logger LOG = LoggerFactory.getLogger(NeighbourhoodService.class);
-
     // Latitude = Y
     // Longitude = X
-    // Gets neighbourhood data with average temperature
-    public List<NeighbourhoodDTO> getLatestNeighbourhoodData() {
-        List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
-        List<NeighbourhoodDTO> neighbourhoodDTOS = new ArrayList<>();
 
-        List<Measurement> measurements = meetJeStadService.getLatestMeasurements();
+    private final MeetJeStadService meetJeStadService;
+    private final NeighbourhoodRepository neighbourhoodRepository;
+
+    // Process measurements into neighbourhoods
+    private List<NeighbourhoodDTO> getNeighbourhoodsAverageTemp(List<Neighbourhood> neighbourhoods, List<Measurement> measurements){
+        List<NeighbourhoodDTO> neighbourhoodDTOS = new ArrayList<>();
 
         for (Neighbourhood neighbourhood : neighbourhoods) {
             NeighbourhoodDTO dto = new NeighbourhoodDTO();
@@ -68,7 +63,28 @@ public class NeighbourhoodService {
         return neighbourhoodDTOS;
     }
 
-    public List<DayMeasurementResponse> getNeighbourhoodDataAverage(Long id, Instant startDate, Instant endDate) {
+    // Gets latest neighbourhood data with average temperature
+    public List<NeighbourhoodDTO> getNeighbourhoodsLatest() {
+        List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
+        List<Measurement> measurements = meetJeStadService.getLatestMeasurements();
+
+        return getNeighbourhoodsAverageTemp(neighbourhoods, measurements);
+    }
+
+    // Gets neighbourhood data at given time with average temperature
+    public List<NeighbourhoodDTO> getNeighbourhoodsAtTime(Instant dateTime){
+        List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
+
+        int minuteMargin = meetJeStadService.getMinuteLimit();
+        MeetJeStadParameters params = new MeetJeStadParameters();
+        params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
+        params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
+        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
+
+        return getNeighbourhoodsAverageTemp(neighbourhoods, allMeasurements);
+    }
+
+    public List<DayMeasurementResponse> getNeighbourhoodData(Long id, Instant startDate, Instant endDate) {
         Optional<Neighbourhood> neighbourhoodOptional = neighbourhoodRepository.findById(id);
         Neighbourhood neighbourhood;
         if (neighbourhoodOptional.isPresent())
