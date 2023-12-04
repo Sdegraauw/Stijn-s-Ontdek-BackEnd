@@ -1,7 +1,6 @@
 package Ontdekstation013.ClimateChecker.neighbourhood;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
@@ -15,9 +14,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-
 import java.time.Duration;
 import java.time.Instant;
 import java.util.ArrayList;
@@ -26,7 +22,6 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.will;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -89,7 +84,7 @@ public class NeighbourhoodUnitTest {
         when(meetJeStadService.getLatestMeasurements()).thenReturn(measurementList);
 
         // Act
-        List<NeighbourhoodDTO> dtos = neighbourhoodService.getLatestNeighbourhoodData();
+        List<NeighbourhoodDTO> dtos = neighbourhoodService.getNeighbourhoodsLatest();
 
         // Assert
         assertEquals(dtos.size(), 2);
@@ -140,7 +135,7 @@ public class NeighbourhoodUnitTest {
                 .thenReturn(lastDayMeasurements, allMeasurements);
 
         // Act
-        List<DayMeasurementResponse> dayMeasurements = neighbourhoodService.getNeighbourhoodDataAverage(stijn.getId(), startDate, endDate);
+        List<DayMeasurementResponse> dayMeasurements = neighbourhoodService.getNeighbourhoodData(stijn.getId(), startDate, endDate);
 
         // Assert
         verify(meetJeStadService, times(2)).getMeasurements(any());
