@@ -13,24 +13,20 @@ import java.time.Instant;
 @Setter
 public class Station {
     @Id
-    @Column
     private Long id;
 
-    @Column
-    private Long meetjestad_id;
+    @Column(name = "meetjestad_id")
+    private Long meetjestadId;
 
-    @Column
-    private float longitude;
+    @Column(name = "last_location_id")
+    private Long lastLocationId;
 
-    @Column
-    private float latitude;
+    @Column(name = "is_visible")
+    private boolean isVisible = true;
 
-    @Column
-    private boolean is_visible;
+    @Column(name = "created_at")
+    private Instant createdAt = Instant.now();
 
-    @Column
-    private Instant created_at;
-
-    @Column
-    private Instant updated_at;
+    @Column(name = "updated_at")
+    private Instant updatedAt;
 }

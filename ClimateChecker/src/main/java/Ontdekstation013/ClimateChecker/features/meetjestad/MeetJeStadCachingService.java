@@ -1,10 +1,10 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
-import Ontdekstation013.ClimateChecker.features.measurement.CachedMeasurement;
+import Ontdekstation013.ClimateChecker.features.location.Location;
+import Ontdekstation013.ClimateChecker.features.location.LocationRepository;
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementRepository;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementController;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementType;
 import Ontdekstation013.ClimateChecker.features.station.Station;
 import Ontdekstation013.ClimateChecker.features.station.StationRepository;
 import lombok.RequiredArgsConstructor;
@@ -13,13 +13,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import java.time.DayOfWeek;
 import java.time.Instant;
-import java.time.Month;
-import java.time.MonthDay;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -27,6 +24,7 @@ public class MeetJeStadCachingService {
     private final MeetJeStadService meetJeStadService;
     private final MeasurementRepository measurementRepository;
     private final StationRepository stationRepository;
+    private final LocationRepository locationRepository;
     private Logger LOG = LoggerFactory.getLogger(MeetJeStadCachingService.class);
 
     @Scheduled(cron = "0 0-59/1 * * * *")
@@ -34,28 +32,30 @@ public class MeetJeStadCachingService {
         LOG.info("Running UpdateCache");
 
         // Get the latest measurement to determine the start time
-        CachedMeasurement measurement = measurementRepository.findTopByOrderByIdDesc();
+        Measurement measurement = measurementRepository.findTopByOrderByIdDesc();
 
         // Get measurements of the last 5 minutes, where the start time is determined above
         MeetJeStadParameters params = new MeetJeStadParameters();
 
         // If there are no measurements, get all measurements since the beginning of time
+        // Also return latest measurement
         if (measurement == null)
             measurement = InstantiateCache();
 
         params.StartDate = measurement.getMeasurement_time();
         params.EndDate = Instant.now();
 
-        List<Measurement> measurementList = meetJeStadService.getMeasurements(params);
+        // Get measurements from MeetJeStad API
+        List<MeetJeStadDTO> measurementList = meetJeStadService.getMeasurements(params);
 
-        // Insert these measurements into the database along with creating stations if necessary
+        // Save these measurements into the database along with creating stations and locations if necessary
         SaveMeasurements(measurementList);
 
         LOG.info(String.valueOf(measurementRepository.count()));
     }
 
     // This will instantiate the cache the first time, without causing a stack overflow :)
-    private CachedMeasurement InstantiateCache() {
+    private Measurement InstantiateCache() {
         // Get measurements per day
         Instant currentDate = Instant.parse("2017-11-28T00:00:00Z"); // First measurement in Tilburg
         Instant endDate = Instant.now();
@@ -66,7 +66,7 @@ public class MeetJeStadCachingService {
             params.StartDate = currentDate;
             params.EndDate = currentDate.plus(1, ChronoUnit.DAYS);
 
-            List<Measurement> measurements = meetJeStadService.getMeasurements(params);
+            List<MeetJeStadDTO> measurements = meetJeStadService.getMeasurements(params);
 
             // Save measurements in database
             SaveMeasurements(measurements);
@@ -75,44 +75,79 @@ public class MeetJeStadCachingService {
             currentDate = currentDate.plus(1, ChronoUnit.DAYS);
         }
 
-        CachedMeasurement measurement = measurementRepository.findTopByOrderByIdDesc();
+        Measurement measurement = measurementRepository.findTopByOrderByIdDesc();
 
         return measurement;
     }
 
-    private void SaveMeasurements(List<Measurement> measurements) {
-        for (Measurement measurement : measurements) {
-            Long stationId = measurement.getId();
+    private void SaveMeasurements(List<MeetJeStadDTO> measurements) {
+        List<Station> stations = stationRepository.findAll();
+
+        for (MeetJeStadDTO measurement : measurements) {
+            int stationId = measurement.getId();
 
             // Add station to the db if not exists
-            if (!stationRepository.existsById(stationId)) {
-                Station station = new Station();
-                station.setMeetjestad_id(stationId);
-                station.set_visible(true);
+            boolean stationExists = false;
+            for (Station station : stations) {
+                if (Objects.equals(station.getMeetjestadId(), (long) stationId)) {
+                    stationExists = true;
+                    break;
+                }
+            }
 
+            // If station does not exist: create station and create new location
+            Station station = null;
+            Location location = null;
+            if (!stationExists) {
+                station = new Station();
+                station.setMeetjestadId((long) stationId);
+                station.setVisible(true);
+                station = stationRepository.save(station);
+
+                location = new Location();
+                location.setStation(station);
+                location.setLatitude(measurement.getLatitude());
+                location.setLongitude(measurement.getLongitude());
+                location = locationRepository.save(location);
+
+                station.setLastLocationId(location.getId());
                 stationRepository.save(station);
             }
 
-            // If station exists, update location to latest location
-            Station station = stationRepository.getById(stationId);
-            // if not null
-            station.setLatitude(measurement.getLatitude());
-            station.setLongitude(measurement.getLongitude());
+            // Add measurement to db and associate with location
+            station = stationRepository.findByMeetjestadId((long) measurement.getId());
+            location = locationRepository.getById(station.getLastLocationId());
 
-            stationRepository.save(station);
+            // If location has changed, update last known location
+            if (measurement.getLatitude() != location.getLatitude() || measurement.getLongitude() != location.getLongitude()) {
+                Location newLocation = new Location();
+                newLocation.setLatitude(measurement.getLatitude());
+                newLocation.setLongitude(measurement.getLongitude());
+                newLocation.setStation(station);
+                location = locationRepository.save(newLocation);
 
-            // Measurement in database opslaan
-            CachedMeasurement cachedMeasurement = new CachedMeasurement();
-            cachedMeasurement.setStation_id(station.getMeetjestad_id());
-            cachedMeasurement.setType_id(1L);
-            cachedMeasurement.setValue(measurement.getTemperature());
-            cachedMeasurement.setMeasurement_time(measurement.getTimestamp());
+                station.setLastLocationId(location.getId());
+                stationRepository.save(station);
+            }
 
-            CachedMeasurement cachedMeasurement = new CachedMeasurement();
-            cachedMeasurement.setStation_id(station.getMeetjestad_id());
-            cachedMeasurement.setType_id(2L);
-            cachedMeasurement.setValue(measurement.getTemperature());
-            cachedMeasurement.setMeasurement_time(measurement.getTimestamp());
+            // Add measurements to db
+            if (measurement.getTemperature() != null) {
+                Measurement cachedMeasurement = new Measurement();
+                cachedMeasurement.setStation(station);
+                cachedMeasurement.setLocation(location);
+                cachedMeasurement.setMeasurement_time(measurement.getTimestamp());
+                cachedMeasurement.setType(MeasurementType.TEMPERATURE);
+                cachedMeasurement.setValue(measurement.getTemperature());
+            }
+
+            if (measurement.getHumidity() != null) {
+                Measurement cachedMeasurement = new Measurement();
+                cachedMeasurement.setStation(station);
+                cachedMeasurement.setLocation(location);
+                cachedMeasurement.setMeasurement_time(measurement.getTimestamp());
+                cachedMeasurement.setType(MeasurementType.HUMIDITY);
+                cachedMeasurement.setValue(measurement.getHumidity());
+            }
         }
     }
 }
