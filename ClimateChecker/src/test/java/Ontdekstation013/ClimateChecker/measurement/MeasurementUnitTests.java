@@ -96,7 +96,7 @@ public class MeasurementUnitTests {
         Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
 
         // Act
-        List<DayMeasurementResponse> responses = measurementService.getMeasurementsAverage(id, startDate, endDate);
+        List<DayMeasurementResponse> responses = measurementService.getHistoricalMeasurements(id, startDate, endDate);
 
         // Assert
         assertEquals(3, responses.size());

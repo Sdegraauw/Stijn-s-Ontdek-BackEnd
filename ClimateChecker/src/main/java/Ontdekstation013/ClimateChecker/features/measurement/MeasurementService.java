@@ -76,12 +76,12 @@ public class MeasurementService {
                 .toList();
     }
 
-    public List<DayMeasurementResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
+    public List<DayMeasurementResponse> getHistoricalMeasurements(int id, Instant startDate, Instant endDate) {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds.add(id);
-        List<Measurement> measurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
+        List<Measurement> measurements = meetJeStadService.getUnfilteredMeasurements(params);
 
         HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
