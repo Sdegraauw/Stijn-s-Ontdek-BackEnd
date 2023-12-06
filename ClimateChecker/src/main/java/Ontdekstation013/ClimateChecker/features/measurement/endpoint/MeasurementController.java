@@ -29,17 +29,6 @@ public class MeasurementController {
     private final MeasurementService measurementService;
     private Logger LOG = LoggerFactory.getLogger(MeasurementController.class);
 
-    @GetMapping("/latest")
-    public ResponseEntity<List<MeasurementDTO>> getLatestMeasurements() {
-        try {
-            List<MeasurementDTO> measurements = measurementService.getLatestMeasurements();
-            return ResponseEntity.ok(measurements);
-        } catch (Exception e) {
-            LOG.error(e.getMessage());
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
     @GetMapping("/history")
     public List<MeasurementDTO> getMeasurementsAtTime(
             @RequestParam(value = "timestamp") String timestamp) {
@@ -52,11 +41,6 @@ public class MeasurementController {
         }
     }
     
-    @GetMapping("/latest/{id}")
-    public MeasurementDTO getLatestMeasurement(@PathVariable int id) {
-        return measurementService.getLatestMeasurement(id);
-    }
-
     @GetMapping("/history/all/{id}")
     public List<MeasurementDTO> getMeasurements(@PathVariable int id, @RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");

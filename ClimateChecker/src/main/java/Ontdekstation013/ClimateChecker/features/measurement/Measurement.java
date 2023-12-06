@@ -16,7 +16,7 @@ public class Measurement {
     @Id
     private Long id;
 
-    @OneToOne(cascade = CascadeType.ALL)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "location_id")
     private Location location;
 
@@ -29,6 +29,10 @@ public class Measurement {
     private MeasurementType type;
 
     private float value;
-    private Instant measurement_time;
-    private Instant created_at = Instant.now();
+
+    @Column(name = "measurement_time")
+    private Instant measurementTime;
+
+    @Column(name = "created_at")
+    private Instant createdAt = Instant.now();
 }

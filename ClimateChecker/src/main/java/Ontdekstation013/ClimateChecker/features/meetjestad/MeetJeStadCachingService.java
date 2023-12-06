@@ -80,6 +80,7 @@ public class MeetJeStadCachingService {
         return measurement;
     }
 
+    // TODO: Refresh stations list after adding new one
     private void SaveMeasurements(List<MeetJeStadDTO> measurements) {
         List<Station> stations = stationRepository.findAll();
 
@@ -135,18 +136,20 @@ public class MeetJeStadCachingService {
                 Measurement cachedMeasurement = new Measurement();
                 cachedMeasurement.setStation(station);
                 cachedMeasurement.setLocation(location);
-                cachedMeasurement.setMeasurement_time(measurement.getTimestamp());
+                cachedMeasurement.setMeasurementTime(measurement.getTimestamp());
                 cachedMeasurement.setType(MeasurementType.TEMPERATURE);
                 cachedMeasurement.setValue(measurement.getTemperature());
+                measurementRepository.save(cachedMeasurement);
             }
 
             if (measurement.getHumidity() != null) {
                 Measurement cachedMeasurement = new Measurement();
                 cachedMeasurement.setStation(station);
                 cachedMeasurement.setLocation(location);
-                cachedMeasurement.setMeasurement_time(measurement.getTimestamp());
+                cachedMeasurement.setMeasurementTime(measurement.getTimestamp());
                 cachedMeasurement.setType(MeasurementType.HUMIDITY);
                 cachedMeasurement.setValue(measurement.getHumidity());
+                measurementRepository.save(cachedMeasurement);
             }
         }
     }
