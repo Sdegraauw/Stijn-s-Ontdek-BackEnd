@@ -11,6 +11,8 @@ import Ontdekstation013.ClimateChecker.features.measurement.endpoint.Measurement
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
+import Ontdekstation013.ClimateChecker.features.station.Station;
+import Ontdekstation013.ClimateChecker.features.station.StationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -19,14 +21,7 @@ import org.springframework.stereotype.Service;
 public class MeasurementService {
     private final MeetJeStadService meetJeStadService;
     private final MeasurementRepository measurementRepository;
-
-    public List<MeasurementDTO> getLatestMeasurements() {
-        //List<Measurement> uniqueLatestMeasurements = meetJeStadService.getLatestMeasurements();
-        List<Measurement> uniqueLatestMeasurements = new ArrayList<>();
-        return uniqueLatestMeasurements.stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
+    private final StationRepository stationRepository;
 
     public List<MeasurementDTO> getMeasurementsAtTime(Instant dateTime) {
         // get measurements within a certain range of the dateTime
@@ -42,7 +37,6 @@ public class MeasurementService {
         Map<Integer, Measurement> measurementHashMap = new HashMap<>();
         for (Measurement measurement : allMeasurements) {
             int id = measurement.getId();
-            int id = 1;
             if (!measurementHashMap.containsKey(id))
                 measurementHashMap.put(id, measurement);
             else {
@@ -59,37 +53,23 @@ public class MeasurementService {
                 .toList();
     }
 
-    public MeasurementDTO getLatestMeasurement(int id) {
-        Measurement latestMeasurement = meetJeStadService.getLatestMeasurement(id);
-
-        if (latestMeasurement == null)
-            throw new NotFoundException("Measurement with stationId " + id + "could not be found");
-        else
-            return convertToDTO(latestMeasurement);
-    }
-
     public List<MeasurementDTO> getMeasurements(int id, Instant startDate, Instant endDate) {
-        MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = startDate;
-        params.EndDate = endDate;
-        params.StationIds.add(id);
+        Station station = stationRepository.findByMeetjestadId((long) id);
+        List<Measurement> measurements = measurementRepository.findByStationAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(station, startDate, endDate);
 
-        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
         return measurements.stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 
     public List<MeasurementHistoricalDataResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
-        MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = startDate;
-        params.EndDate = endDate;
-        params.StationIds.add(id);
-        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
+
+        Station station = stationRepository.findByMeetjestadId((long) id);
+        List<Measurement> measurements = measurementRepository.findByStationAndTypeAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(station, MeasurementType.TEMPERATURE, startDate, endDate);
 
         SortedMap<LocalDate, Set<Measurement>> dayMeasurements = new TreeMap<>();
         for (Measurement measurement : measurements) {
-            LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
+            LocalDate date = LocalDate.ofInstant(measurement.getMeasurementTime(), ZoneId.systemDefault());
             if (!dayMeasurements.containsKey(date)) {
                 dayMeasurements.put(date, new HashSet<>());
             }
@@ -102,17 +82,17 @@ public class MeasurementService {
             LocalDate date = entry.getKey();
             float minTemp = entry.getValue()
                     .stream()
-                    .map(Measurement::getTemperature)
+                    .map(Measurement::getValue)
                     .min(Float::compare)
                     .orElse(Float.NaN);
             float maxTemp = entry.getValue()
                     .stream()
-                    .map(Measurement::getTemperature)
+                    .map(Measurement::getValue)
                     .max(Float::compare)
                     .orElse(Float.NaN);
             float avgTemp = (float) entry.getValue()
                     .stream()
-                    .mapToDouble(Measurement::getTemperature)
+                    .mapToDouble(Measurement::getValue)
                     .average()
                     .orElse(Double.NaN);
 
@@ -136,9 +116,9 @@ public class MeasurementService {
 
     private MeasurementDTO convertToDTO(Measurement entity) {
         MeasurementDTO dto = new MeasurementDTO();
-        dto.setId(entity.getId());
-        dto.setLongitude(entity.getLongitude());
-        dto.setLatitude(entity.getLatitude());
+        dto.setId(entity.getStation().getMeetjestadId());
+        dto.setLongitude(entity.getLocation().getLongitude());
+        dto.setLatitude(entity.getLocation().getLatitude());
         dto.setTemperature(entity.getTemperature());
         dto.setHumidity(entity.getHumidity());
 
