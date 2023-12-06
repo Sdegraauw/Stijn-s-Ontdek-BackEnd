@@ -27,7 +27,80 @@ public class MeetJeStadService {
             {51.65077670571181f, 4.957086656750303f}
     };
 
-    public List<Measurement> getMeasurements(MeetJeStadParameters params) {
+    public List<Measurement> getUnfilteredMeasurements(MeetJeStadParameters params) {
+        StringBuilder url = new StringBuilder(baseUrl);
+
+        // Get measurements from this date
+        if (params.StartDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
+            String dateFormat = formatter.format(Instant.parse(params.StartDate.toString()));
+            url.append("&begin=").append(dateFormat);
+        }
+
+        // Get measurements until this date
+        if (params.EndDate != null) {
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd,HH:mm").withZone(ZoneOffset.UTC);
+            String dateFormat = formatter.format(Instant.parse(params.EndDate.toString()));
+            url.append("&end=").append(dateFormat);
+        }
+
+        // Do we limit the amount of measurements
+        if (params.Limit != 0)
+            url.append("&limit=").append(params.Limit);
+
+        // Do we want a specific set of stations or all stations
+        if (!params.StationIds.isEmpty()) {
+            url.append("&ids=");
+
+            for (int stationId : params.StationIds) {
+                url.append(stationId).append(",");
+            }
+        }
+
+        // Execute call and convert to json
+        RestTemplate restTemplate = new RestTemplate();
+        ResponseEntity<String> response = restTemplate.getForEntity(url.toString(), String.class);
+        String responseBody = response.getBody();
+
+        // Convert json to list object
+        TypeToken<List<MeasurementDTO>> typeToken = new TypeToken<>() {};
+
+        Gson gson = new Gson();
+        List<MeasurementDTO> measurementsDto = gson.fromJson(responseBody, typeToken);
+        // Set as empty array if null
+        if (measurementsDto == null)
+            measurementsDto = new ArrayList<>();
+
+        DateTimeFormatter formatter = DateTimeFormatter
+                .ofPattern("yyyy-MM-dd HH:mm:ss")   // input pattern
+                .withZone(ZoneOffset.UTC);          // input timezone
+
+
+        List<Measurement> measurements = new ArrayList<>();
+        // Convert MeasurementDTO to Measurement
+        for (MeasurementDTO dto : measurementsDto) {
+            // Filter out measurements which are outside city bounds
+            float[] point = {dto.getLatitude(), dto.getLongitude()};
+            if (!GpsTriangulation.pointInPolygon(cityLimits, point))
+                continue;
+
+            Measurement measurement = new Measurement();
+            measurement.setId(dto.getId());
+            measurement.setLongitude(dto.getLongitude());
+            measurement.setLatitude(dto.getLatitude());
+            measurement.setTemperature(dto.getTemperature());
+            measurement.setHumidity(dto.getHumidity());
+
+            TemporalAccessor temp = formatter.parse(dto.getTimestamp());
+            measurement.setTimestamp(Instant.from(temp));
+
+            measurements.add(measurement);
+        }
+
+        return measurements;
+    }
+
+    public List<Measurement> getFilteredMeasurementsShortPeriod(MeetJeStadParameters params) {
         StringBuilder url = new StringBuilder(baseUrl);
 
         // Get measurements from this date
@@ -111,7 +184,7 @@ public class MeetJeStadService {
         params.EndDate = endMoment;
 
         // get measurements from MeetJeStadAPI
-        List<Measurement> latestMeasurements = getMeasurements(params);
+        List<Measurement> latestMeasurements = getFilteredMeasurementsShortPeriod(params);
         // filter out older readings of same stationId
         SortedMap<Integer, Measurement> uniqueLatestMeasurements = new TreeMap<>();
         for (Measurement measurement : latestMeasurements) {
@@ -139,7 +212,7 @@ public class MeetJeStadService {
         params.StationIds.add(id);
 
         // get measurements from MeetJeStadAPI
-        List<Measurement> latestMeasurements = getMeasurements(params);
+        List<Measurement> latestMeasurements = getFilteredMeasurementsShortPeriod(params);
         Measurement latestMeasurement = null;
 
         // filter out older readings of same stationId
