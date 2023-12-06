@@ -1,6 +1,5 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
-import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
 import com.google.gson.Gson;
@@ -27,7 +26,7 @@ public class MeetJeStadService {
             {51.65077670571181f, 4.957086656750303f}
     };
 
-    public List<Measurement> getMeasurements(MeetJeStadParameters params) {
+    public List<MeetJeStadDTO> getMeasurements(MeetJeStadParameters params) {
         StringBuilder url = new StringBuilder(baseUrl);
 
         // Get measurements from this date
@@ -63,10 +62,10 @@ public class MeetJeStadService {
         String responseBody = response.getBody();
 
         // Convert json to list object
-        TypeToken<List<MeasurementDTO>> typeToken = new TypeToken<>() {};
+        TypeToken<List<MeetJeStadDTO>> typeToken = new TypeToken<>() {};
 
         Gson gson = new Gson();
-        List<MeasurementDTO> measurementsDto = gson.fromJson(responseBody, typeToken);
+        List<MeetJeStadDTO> measurementsDto = gson.fromJson(responseBody, typeToken);
         // Set as empty array if null
         if (measurementsDto == null)
             measurementsDto = new ArrayList<>();
@@ -75,33 +74,22 @@ public class MeetJeStadService {
                 .ofPattern("yyyy-MM-dd HH:mm:ss")   // input pattern
                 .withZone(ZoneOffset.UTC);          // input timezone
 
-
-        List<Measurement> measurements = new ArrayList<>();
+        List<MeetJeStadDTO> measurements = new ArrayList<>();
         // Convert MeasurementDTO to Measurement
-        for (MeasurementDTO dto : measurementsDto) {
+        for (MeetJeStadDTO dto : measurementsDto) {
             // Filter out measurements which are outside city bounds
             float[] point = {dto.getLatitude(), dto.getLongitude()};
             if (!GpsTriangulation.pointInPolygon(cityLimits, point))
                 continue;
 
-            Measurement measurement = new Measurement();
-            measurement.setId(dto.getId());
-            measurement.setLongitude(dto.getLongitude());
-            measurement.setLatitude(dto.getLatitude());
-            measurement.setTemperature(dto.getTemperature());
-            measurement.setHumidity(dto.getHumidity());
-
-            TemporalAccessor temp = formatter.parse(dto.getTimestamp());
-            measurement.setTimestamp(Instant.from(temp));
-
-            measurements.add(measurement);
+            measurements.add(dto);
         }
         List<Measurement> filteredMeasurements = IncorrectValueFilter(measurements);
 
         return filteredMeasurements;
     }
 
-    public List<Measurement> getLatestMeasurements() {
+    /*public List<Measurement> getLatestMeasurements() {
         // define start and end times
         Instant endMoment = Instant.now();
         Instant startMoment = endMoment.minus(Duration.ofMinutes(minuteLimit));

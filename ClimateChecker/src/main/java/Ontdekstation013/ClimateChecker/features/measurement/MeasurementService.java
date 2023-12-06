@@ -21,7 +21,8 @@ public class MeasurementService {
     private final MeasurementRepository measurementRepository;
 
     public List<MeasurementDTO> getLatestMeasurements() {
-        List<Measurement> uniqueLatestMeasurements = meetJeStadService.getLatestMeasurements();
+        //List<Measurement> uniqueLatestMeasurements = meetJeStadService.getLatestMeasurements();
+        List<Measurement> uniqueLatestMeasurements = new ArrayList<>();
         return uniqueLatestMeasurements.stream()
                 .map(this::convertToDTO)
                 .toList();
@@ -34,12 +35,14 @@ public class MeasurementService {
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
 
-        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
+        //List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
+        List<Measurement> allMeasurements = new ArrayList<>();
 
         // select closest measurements to datetime
         Map<Integer, Measurement> measurementHashMap = new HashMap<>();
         for (Measurement measurement : allMeasurements) {
             int id = measurement.getId();
+            int id = 1;
             if (!measurementHashMap.containsKey(id))
                 measurementHashMap.put(id, measurement);
             else {
