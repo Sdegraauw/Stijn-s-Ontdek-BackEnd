@@ -8,6 +8,8 @@ import java.time.format.DateTimeFormatter;
 
 import Ontdekstation013.ClimateChecker.exception.InvalidArgumentException;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementSet;
+import Ontdekstation013.ClimateChecker.utility.DateFormatUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -59,27 +61,27 @@ public class MeasurementController {
 
     @GetMapping("/history/all/{id}")
     public List<MeasurementDTO> getMeasurements(@PathVariable int id, @RequestParam String startDate, @RequestParam String endDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-
-        LocalDateTime localDateTimeStart = LocalDateTime.parse(startDate, formatter);
-        Instant startInstant = localDateTimeStart.atZone(ZoneId.systemDefault()).toInstant();
-
-        LocalDateTime localDateTimeEnd = LocalDateTime.parse(endDate, formatter);
-        Instant endInstant = localDateTimeEnd.atZone(ZoneId.systemDefault()).toInstant();
+        Instant startInstant = DateFormatUtil.toInstant(startDate);
+        Instant endInstant = DateFormatUtil.toInstant(endDate);
 
         return measurementService.getMeasurements(id, startInstant, endInstant);
     }
 
     @GetMapping("/history/average/{id}")
     public List<MeasurementHistoricalDataResponse> getMeasurementsAverage(@PathVariable int id, @RequestParam String startDate, @RequestParam String endDate) {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");
-
-        LocalDateTime localDateTimeStart = LocalDateTime.parse(startDate, formatter);
-        Instant startInstant = localDateTimeStart.atZone(ZoneId.systemDefault()).toInstant();
-
-        LocalDateTime localDateTimeEnd = LocalDateTime.parse(endDate, formatter);
-        Instant endInstant = localDateTimeEnd.atZone(ZoneId.systemDefault()).toInstant();
+        Instant startInstant = DateFormatUtil.toInstant(startDate);
+        Instant endInstant = DateFormatUtil.toInstant(endDate);
 
         return measurementService.getMeasurementsAverage(id, startInstant, endInstant);
+    }
+
+    @GetMapping("/history/")
+    public List<MeasurementSet> getAnimationData(@RequestParam int interval,
+                                                 @RequestParam String startDate,
+                                                 @RequestParam String endDate) {
+        Instant startInstant = DateFormatUtil.toInstant(startDate);
+        Instant endInstant = DateFormatUtil.toInstant(endDate);
+
+        return measurementService.getAnimationData(interval, startInstant, endInstant);
     }
 }

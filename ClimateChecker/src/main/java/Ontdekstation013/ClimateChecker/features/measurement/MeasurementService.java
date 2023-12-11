@@ -124,6 +124,42 @@ public class MeasurementService {
         return responseList;
     }
 
+    public List<MeasurementSet> getAnimationData(int interval, Instant startInstant, Instant endInstant) {
+        List<MeasurementSet> animationData;
+
+        Instant endMinusInterval = endInstant.minus(Duration.ofMinutes(interval));
+
+        long convertedStartEpoch = startInstant.toEpochMilli();
+        long convertedEndEpoch = endInstant.toEpochMilli();
+        long convertedIntervalEpoch = endMinusInterval.toEpochMilli();
+
+        for (long i = convertedEndEpoch; i > convertedStartEpoch; i-=convertedIntervalEpoch) {
+            MeetJeStadParameters mjsParams = new MeetJeStadParameters();
+            mjsParams.StartDate = endMinusInterval;
+            mjsParams.EndDate = endInstant;
+
+            List<Measurement> measurements = meetJeStadService.getMeasurements(mjsParams);
+        }
+
+
+        int startDate;
+        int endDate;
+
+        int newStartDate = endDate - interval;
+        int newEndDate = endDate;
+
+        newStartDate -= interval;
+        newEndDate -= interval;
+
+        MeetJeStadParameters mjsParams = new MeetJeStadParameters();
+        mjsParams.StartDate = startInstant;
+        mjsParams.EndDate = endInstant;
+
+        List<Measurement> measurements = meetJeStadService.getMeasurements(mjsParams);
+
+        return
+    }
+
     private MeasurementDTO convertToDTO(Measurement entity) {
         MeasurementDTO dto = new MeasurementDTO();
         dto.setId(entity.getId());
