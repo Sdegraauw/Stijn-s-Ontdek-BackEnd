@@ -1,6 +1,8 @@
-# ---- Base JDK 17 ----
+# ---- Base JDK ----
 FROM eclipse-temurin:17-jdk AS base
-ENV APP_PATH app/climatechecker
+ENV APP_PATH app/climatechecker/server
+EXPOSE 8082
+EXPOSE 3306
 
 
 # ---- Dependencies ----
@@ -22,7 +24,6 @@ RUN mvn clean package
 FROM base AS release
 # copy target .jar file
 COPY --from=dependencies /${APP_PATH}/target/*.jar climatechecker.jar
-EXPOSE 8082
 
 # start the application
 ENTRYPOINT ["java", "-jar", "/climatechecker.jar"]
