@@ -2,10 +2,7 @@ package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -16,7 +13,9 @@ import java.util.List;
 @NoArgsConstructor
 public class Neighbourhood {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
     private String name;
 
     @OneToMany(mappedBy = "neighbourhood")

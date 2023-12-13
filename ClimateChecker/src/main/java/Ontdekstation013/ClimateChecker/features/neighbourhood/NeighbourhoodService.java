@@ -1,8 +1,9 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
-import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementRepository;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementResult;
+import Ontdekstation013.ClimateChecker.features.measurement.MeasurementType;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
@@ -11,20 +12,23 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
+
+import org.slf4j.Logger;
 
 @Service
 @RequiredArgsConstructor
 public class NeighbourhoodService {
+    private final MeetJeStadService meetJeStadService;
+    private final MeasurementRepository measurementRepository;
+    private final NeighbourhoodRepository neighbourhoodRepository;
+    private final NeighbourhoodCoordsRepository neighbourhoodCoordsRepository;
+    private final Logger LOG = LoggerFactory.getLogger(NeighbourhoodService.class);
+
     // Latitude = Y
     // Longitude = X
-
-    private final MeetJeStadService meetJeStadService;
-    private final NeighbourhoodRepository neighbourhoodRepository;
-
     // Process measurements into neighbourhoods
     private List<NeighbourhoodDTO> getNeighbourhoodsAverageTemp(List<Neighbourhood> neighbourhoods, List<Measurement> measurements){
         List<NeighbourhoodDTO> neighbourhoodDTOS = new ArrayList<>();
@@ -39,24 +43,23 @@ public class NeighbourhoodService {
             // Get all measurements within this neighbourhood
             List<Measurement> tempMeasurements = new ArrayList<>();
             for (Measurement measurement : measurements) {
-                float[] point = { measurement.getLatitude(), measurement.getLongitude() };
+                float[] point = { measurement.getLocation().getLatitude(), measurement.getLocation().getLongitude() };
                 if (GpsTriangulation.pointInPolygon(dto.getCoordinates(), point)) {
                     tempMeasurements.add(measurement);
                 }
             }
 
             // Calculate average temperature of the measurements in this neighbourhood
+
             float totalTemp = 0.0f;
-            int measurementCount = tempMeasurements.size();
             for (Measurement measurement : tempMeasurements) {
-                if (measurement.getTemperature() != null) {
-                    totalTemp += measurement.getTemperature();
-                }
-                else {
-                    measurementCount--;
+                for (MeasurementResult measurementResult : measurement.getMeasurements()) {
+                    if (measurementResult.getMeasurementType() == MeasurementType.TEMPERATURE)
+                        totalTemp += measurementResult.getValue();
                 }
             }
-            dto.setAvgTemp(totalTemp / measurementCount);
+
+            dto.setAvgTemp(totalTemp / tempMeasurements.size());
 
             neighbourhoodDTOS.add(dto);
         }

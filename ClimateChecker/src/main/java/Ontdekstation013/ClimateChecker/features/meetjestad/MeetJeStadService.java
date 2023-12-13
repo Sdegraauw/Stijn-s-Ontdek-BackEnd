@@ -1,8 +1,9 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
+import Ontdekstation013.ClimateChecker.features.meetjestad.Serialization.InstantDeserializer;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 import lombok.Getter;
 import org.springframework.http.ResponseEntity;
@@ -11,7 +12,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.TemporalAccessor;
 import java.util.*;
 
 @Service
@@ -64,7 +64,10 @@ public class MeetJeStadService {
         // Convert json to list object
         TypeToken<List<MeetJeStadDTO>> typeToken = new TypeToken<>() {};
 
-        Gson gson = new Gson();
+        Gson gson = new GsonBuilder()
+                .registerTypeAdapter(Instant.class, new InstantDeserializer())
+                .create();
+
         List<MeetJeStadDTO> measurementsDto = gson.fromJson(responseBody, typeToken);
         // Set as empty array if null
         if (measurementsDto == null)

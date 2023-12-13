@@ -1,10 +1,13 @@
 package Ontdekstation013.ClimateChecker.features.meetjestad;
 
-import lombok.Getter;
+import lombok.*;
 
 import java.time.Instant;
 
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class MeetJeStadDTO {
     private int id;
     private Instant timestamp;

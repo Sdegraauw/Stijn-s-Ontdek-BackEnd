@@ -10,12 +10,12 @@ import java.time.Instant;
 @Getter
 @Setter
 @Entity
-@Table()
 public class Location {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "station_id")
     private Station station;
 
