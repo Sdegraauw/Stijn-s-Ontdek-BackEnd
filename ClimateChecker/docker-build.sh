@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 
 set -e
-
-IMAGE_TAG="server-build"
+!/usr/bin/env bas
+IMAGE_TAG="ontdekstation-server"
 VERSION="${1-latest}"
 
 # script takes an optional tag argument, otherwise uses "latest"
