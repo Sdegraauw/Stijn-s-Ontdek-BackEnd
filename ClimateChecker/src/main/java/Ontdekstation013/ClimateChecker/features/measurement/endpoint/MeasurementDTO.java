@@ -22,7 +22,7 @@ public class MeasurementDTO {
     @JsonProperty("latitude")
     private float latitude;
     @JsonProperty("temperature")
-    private float temperature;
+    private float temperature = 0.0f;
     @JsonProperty("humidity")
-    private float humidity;
+    private float humidity = 0.0f;
 }

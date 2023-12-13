@@ -6,6 +6,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,21 +16,20 @@ import java.time.Instant;
 @Entity
 public class Measurement {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "location_id")
     private Location location;
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne()
     @JoinColumn(name = "station_id")
     private Station station;
 
-    @Column(name = "type_id")
-    @Enumerated
-    private MeasurementType type;
-
-    private float value;
+    @OneToMany()
+    @JoinColumn(name = "measurement_id")
+    private List<MeasurementResult> measurements = new ArrayList<>();
 
     @Column(name = "measurement_time")
     private Instant measurementTime;
