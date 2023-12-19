@@ -18,7 +18,9 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     List<Measurement> findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(Instant startTime, Instant endTime);
 
     // Get measurements by station between timeframe
-    List<Measurement> findByStationAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(Station station, Instant measurementTime, Instant measurementTime2);
+    List<Measurement> findByStationAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(Station station, Instant startTime, Instant endTime);
+
+    List<Measurement> findAllByStationInAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(List<Station> stations, Instant startTime, Instant endTime);
 
     // Get measurements by station and measurement type between timeframe
     List<Measurement> findByStationAndMeasurements_MeasurementTypeAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(Station station, MeasurementType type, Instant measurementTime, Instant measurementTime2);

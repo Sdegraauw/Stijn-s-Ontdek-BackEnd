@@ -4,17 +4,21 @@ import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementRepository;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementResult;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementType;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
+import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
+import Ontdekstation013.ClimateChecker.features.station.Station;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
 import org.slf4j.Logger;
 
@@ -50,7 +54,6 @@ public class NeighbourhoodService {
             }
 
             // Calculate average temperature of the measurements in this neighbourhood
-
             float totalTemp = 0.0f;
             for (Measurement measurement : tempMeasurements) {
                 for (MeasurementResult measurementResult : measurement.getMeasurements()) {
@@ -63,13 +66,20 @@ public class NeighbourhoodService {
 
             neighbourhoodDTOS.add(dto);
         }
+
         return neighbourhoodDTOS;
     }
 
     // Gets latest neighbourhood data with average temperature
     public List<NeighbourhoodDTO> getNeighbourhoodsLatest() {
         List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
-        List<Measurement> measurements = meetJeStadService.getLatestMeasurements();
+
+        int minuteMargin = meetJeStadService.getMinuteLimit();
+
+        Instant startDate = Instant.now().minus(Duration.ofMinutes(minuteMargin));
+        Instant endDate = Instant.now().plus(Duration.ofMinutes(minuteMargin));
+
+        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
 
         return getNeighbourhoodsAverageTemp(neighbourhoods, measurements);
     }
@@ -79,10 +89,11 @@ public class NeighbourhoodService {
         List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
 
         int minuteMargin = meetJeStadService.getMinuteLimit();
-        MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
-        params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
-        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
+
+        Instant startDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
+        Instant endDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
+
+        List<Measurement> allMeasurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
 
         return getNeighbourhoodsAverageTemp(neighbourhoods, allMeasurements);
     }
@@ -96,71 +107,70 @@ public class NeighbourhoodService {
             return new ArrayList<>();
 
         // Get all measurements from 1 day to filter out stations that are irrelevant
-        MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
-        params.EndDate = endDate;
-        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
+        startDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
+
+        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
 
         // Get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
-        List<Integer> stations = new ArrayList<>();
+        List<Station> stations = new ArrayList<>();
         for (Measurement measurement : measurements) {
-            float[] point = { measurement.getLatitude(), measurement.getLongitude() };
-            if (GpsTriangulation.pointInPolygon(neighbourhoodCoords, point) && !stations.contains(measurement.getId()))
-                stations.add(measurement.getId());
-        }
+            float[] point = { measurement.getLocation().getLatitude(), measurement.getLocation().getLongitude() };
 
-        // Get all measurements within timeframe from these stations
-        params = new MeetJeStadParameters();
-        params.StartDate = startDate;
-        params.EndDate = endDate;
-        params.StationIds = stations;
-        measurements = meetJeStadService.getMeasurements(params);
-
-        // Get the daily average
-        HashMap<LocalDate, List<Measurement>> dayMeasurements = new LinkedHashMap<>();
-        for (Measurement measurement : measurements) {
-            if (measurement.getTemperature() != null) {
-                LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
-                if (!dayMeasurements.containsKey(date)) {
-                    dayMeasurements.put(date, new ArrayList<>());
-                }
-
-                dayMeasurements.get(date).add(measurement);
+            if (GpsTriangulation.pointInPolygon(neighbourhoodCoords, point) && !stations.contains(measurement.getStation())) {
+                stations.add(measurement.getStation());
             }
         }
 
+        // Get all measurements within timeframe from these stations
+        measurements = measurementRepository.findAllByStationInAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(stations, startDate, endDate);
+
+        // Get the daily average
+        // TODO: Fix this after data caching
+//        HashMap<LocalDate, List<Measurement>> dayMeasurements = new LinkedHashMap<>();
+//        for (Measurement measurement : measurements) {
+//            if (measurement.getTemperature() != null) {
+//                LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
+//                if (!dayMeasurements.containsKey(date)) {
+//                    dayMeasurements.put(date, new ArrayList<>());
+//                }
+//
+//                dayMeasurements.get(date).add(measurement);
+//            }
+//        }
+
         List<DayMeasurementResponse> responseList = new ArrayList<>();
 
-        for (Map.Entry<LocalDate, List<Measurement>> entry : dayMeasurements.entrySet()) {
-            LocalDate date = entry.getKey();
-            float minTemp = entry.getValue()
-                    .stream()
-                    .map(Measurement::getTemperature)
-                    .min(Float::compare)
-                    .orElse(Float.NaN);
-            float maxTemp = entry.getValue()
-                    .stream()
-                    .map(Measurement::getTemperature)
-                    .max(Float::compare)
-                    .orElse(Float.NaN);
-            float avgTemp = (float) entry.getValue()
-                    .stream()
-                    .mapToDouble(Measurement::getTemperature)
-                    .average()
-                    .orElse(Double.NaN);
+        // TODO: Fix this after data caching
+//        for (Map.Entry<LocalDate, List<Measurement>> entry : dayMeasurements.entrySet()) {
+//            LocalDate date = entry.getKey();
+//            float minTemp = entry.getValue()
+//                    .stream()
+//                    .map(Measurement::getTemperature)
+//                    .min(Float::compare)
+//                    .orElse(Float.NaN);
+//            float maxTemp = entry.getValue()
+//                    .stream()
+//                    .map(Measurement::getTemperature)
+//                    .max(Float::compare)
+//                    .orElse(Float.NaN);
+//            float avgTemp = (float) entry.getValue()
+//                    .stream()
+//                    .mapToDouble(Measurement::getTemperature)
+//                    .average()
+//                    .orElse(Double.NaN);
 
-            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
+//            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
+//
+//            DayMeasurementResponse response = new DayMeasurementResponse(
+//                    date.format(pattern),
+//                    avgTemp,
+//                    minTemp,
+//                    maxTemp
+//            );
 
-            DayMeasurementResponse response = new DayMeasurementResponse(
-                    date.format(pattern),
-                    avgTemp,
-                    minTemp,
-                    maxTemp
-            );
-
-            responseList.add(response);
-        }
+            //responseList.add(response);
+        //}
 
         return responseList;
     }

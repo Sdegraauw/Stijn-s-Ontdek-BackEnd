@@ -6,12 +6,8 @@ import java.util.*;
 
 import java.util.List;
 
-import Ontdekstation013.ClimateChecker.exception.NotFoundException;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementController;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.MeasurementHistoricalDataResponse;
-import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadDTO;
-import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
+import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.station.Station;
 import Ontdekstation013.ClimateChecker.features.station.StationRepository;
@@ -74,8 +70,8 @@ public class MeasurementService {
         // Sort measurements into key value map where the key is the date
         HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
-            if (measurement.getTemperature()!= null){
-                LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
+            if (measurement.getMeasurements() != null){
+                LocalDate date = LocalDate.ofInstant(measurement.getMeasurementTime(), ZoneId.systemDefault());
                 if (!dayMeasurements.containsKey(date)) {
                     dayMeasurements.put(date, new HashSet<>());
                 }
