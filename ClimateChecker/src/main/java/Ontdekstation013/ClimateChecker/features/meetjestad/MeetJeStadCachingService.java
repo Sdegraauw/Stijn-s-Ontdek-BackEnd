@@ -132,6 +132,7 @@ public class MeetJeStadCachingService {
                 location = locationRepository.save(newLocation);
 
                 station.setLastLocationId(location.getId());
+                // TODO: Update updated_at
                 stationRepository.save(station);
             }
 
