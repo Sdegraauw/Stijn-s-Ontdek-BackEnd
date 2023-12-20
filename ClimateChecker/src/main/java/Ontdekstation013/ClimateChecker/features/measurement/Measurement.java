@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
+@NamedEntityGraph(name = "Measurement.measurementResults", attributeNodes = { @NamedAttributeNode("measurementResults") })
 public class Measurement {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
