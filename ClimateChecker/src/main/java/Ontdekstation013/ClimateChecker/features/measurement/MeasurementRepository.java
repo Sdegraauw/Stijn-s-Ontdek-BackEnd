@@ -20,8 +20,8 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     // Get measurements by station between timeframe
     List<Measurement> findByStationAndMeasurementTimeBeforeAndMeasurementTimeAfter(Station station, Instant endDate, Instant startDate);
 
-    List<Measurement> findAllByStationInAndMeasurementTimeBeforeAndMeasurementTimeAfter(List<Station> stations, Instant endDate, Instant startDate);
+    List<Measurement> findAllByStationInAndMeasurementResults_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(List<Station> stations, MeasurementType type, Instant endDate, Instant startDate);
 
     // Get measurements by station and measurement type between timeframe
-    List<Measurement> findByStationAndMeasurements_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(Station station, MeasurementType type, Instant endDate, Instant startDate);
+    List<Measurement> findByStationAndMeasurementResults_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(Station station, MeasurementType type, Instant endDate, Instant startDate);
 }

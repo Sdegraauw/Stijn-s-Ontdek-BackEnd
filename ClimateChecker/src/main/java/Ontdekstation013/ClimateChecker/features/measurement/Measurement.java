@@ -29,7 +29,7 @@ public class Measurement {
 
     @OneToMany()
     @JoinColumn(name = "measurement_id")
-    private List<MeasurementResult> measurements = new ArrayList<>();
+    private List<MeasurementResult> measurementResults = new ArrayList<>();
 
     @Column(name = "measurement_time")
     private Instant measurementTime;

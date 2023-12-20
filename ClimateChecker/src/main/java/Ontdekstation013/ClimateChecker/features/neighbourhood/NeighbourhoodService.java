@@ -15,6 +15,9 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -54,7 +57,7 @@ public class NeighbourhoodService {
 
             float totalTemp = 0.0f;
             for (Measurement measurement : tempMeasurements) {
-                for (MeasurementResult measurementResult : measurement.getMeasurements()) {
+                for (MeasurementResult measurementResult : measurement.getMeasurementResults()) {
                     if (measurementResult.getMeasurementType() == MeasurementType.TEMPERATURE)
                         totalTemp += measurementResult.getValue();
                 }
@@ -105,9 +108,7 @@ public class NeighbourhoodService {
             return new ArrayList<>();
 
         // Get all measurements from 1 day to filter out stations that are irrelevant
-        startDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
-
-        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(endDate, startDate);
+        List<Measurement> measurements = measurementRepository.findAllByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(endDate, endDate.minusSeconds(60 * 60));
 
         // Get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
@@ -121,54 +122,62 @@ public class NeighbourhoodService {
         }
 
         // Get all measurements within timeframe from these stations
-        measurements = measurementRepository.findAllByStationInAndMeasurementTimeBeforeAndMeasurementTimeAfter(stations, endDate, startDate);
+        measurements = measurementRepository.findAllByStationInAndMeasurementResults_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(stations, MeasurementType.TEMPERATURE, endDate, startDate);
 
         // Get the daily average
-        // TODO: Fix this after data caching
-//        HashMap<LocalDate, List<Measurement>> dayMeasurements = new LinkedHashMap<>();
-//        for (Measurement measurement : measurements) {
-//            if (measurement.getTemperature() != null) {
-//                LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
-//                if (!dayMeasurements.containsKey(date)) {
-//                    dayMeasurements.put(date, new ArrayList<>());
-//                }
-//
-//                dayMeasurements.get(date).add(measurement);
-//            }
-//        }
+        HashMap<LocalDate, List<Float>> dayMeasurements = new LinkedHashMap<>();
+        for (Measurement measurement : measurements) {
+            if (measurement.getMeasurementResults().isEmpty())
+                continue;
+
+            float temperature = Float.MIN_VALUE;
+            for (MeasurementResult result : measurement.getMeasurementResults())
+                if (result.getMeasurementType() == MeasurementType.TEMPERATURE) {/////////
+                    temperature = result.getValue();
+                    break;
+                }
+
+            if (temperature == Float.MIN_VALUE)
+                continue;
+
+            LocalDate date = LocalDate.ofInstant(measurement.getMeasurementTime(), ZoneId.systemDefault());
+            if (!dayMeasurements.containsKey(date)) {
+                dayMeasurements.put(date, new ArrayList<>());
+            }
+
+            dayMeasurements.get(date).add(temperature);
+        }
 
         List<DayMeasurementResponse> responseList = new ArrayList<>();
 
         // TODO: Fix this after data caching
-//        for (Map.Entry<LocalDate, List<Measurement>> entry : dayMeasurements.entrySet()) {
-//            LocalDate date = entry.getKey();
-//            float minTemp = entry.getValue()
-//                    .stream()
-//                    .map(Measurement::getTemperature)
-//                    .min(Float::compare)
-//                    .orElse(Float.NaN);
-//            float maxTemp = entry.getValue()
-//                    .stream()
-//                    .map(Measurement::getTemperature)
-//                    .max(Float::compare)
-//                    .orElse(Float.NaN);
-//            float avgTemp = (float) entry.getValue()
-//                    .stream()
-//                    .mapToDouble(Measurement::getTemperature)
-//                    .average()
-//                    .orElse(Double.NaN);
+        for (Map.Entry<LocalDate, List<Float>> entry : dayMeasurements.entrySet()) {
+            LocalDate date = entry.getKey();
+            float minTemp = entry.getValue()
+                    .stream()
+                    .min(Float::compare)
+                    .orElse(Float.NaN);
+            float maxTemp = entry.getValue()
+                    .stream()
+                    .max(Float::compare)
+                    .orElse(Float.NaN);
+            float avgTemp = (float) entry.getValue()
+                    .stream()
+                    .mapToDouble(Float::doubleValue)
+                    .average()
+                    .orElse(Double.NaN);
 
-//            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
-//
-//            DayMeasurementResponse response = new DayMeasurementResponse(
-//                    date.format(pattern),
-//                    avgTemp,
-//                    minTemp,
-//                    maxTemp
-//            );
+            DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
 
-            //responseList.add(response);
-        //}
+            DayMeasurementResponse response = new DayMeasurementResponse(
+                    date.format(pattern),
+                    avgTemp,
+                    minTemp,
+                    maxTemp
+            );
+
+            responseList.add(response);
+        }
 
         return responseList;
     }

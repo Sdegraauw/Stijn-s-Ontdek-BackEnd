@@ -58,6 +58,7 @@ public class MeasurementController {
         return measurementService.getMeasurements(id, startInstant, endInstant);
     }
 
+    // TODO: Geeft voor mintemp 1.4E-45
     @GetMapping("/history/average/{id}")
     public List<DayMeasurementResponse> getMeasurementsAverage(@PathVariable int id, @RequestParam String startDate, @RequestParam String endDate) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm");

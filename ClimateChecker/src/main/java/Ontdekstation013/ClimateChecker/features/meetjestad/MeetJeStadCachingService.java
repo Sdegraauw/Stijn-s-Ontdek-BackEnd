@@ -5,20 +5,15 @@ import Ontdekstation013.ClimateChecker.features.location.LocationRepository;
 import Ontdekstation013.ClimateChecker.features.measurement.*;
 import Ontdekstation013.ClimateChecker.features.station.Station;
 import Ontdekstation013.ClimateChecker.features.station.StationRepository;
-import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
 import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
-import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
-import javax.transaction.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -132,7 +127,7 @@ public class MeetJeStadCachingService {
                 location = locationRepository.save(newLocation);
 
                 station.setLastLocationId(location.getId());
-                // TODO: Update updated_at
+                station.setUpdatedAt(Instant.now());
                 stationRepository.save(station);
             }
 
@@ -151,7 +146,7 @@ public class MeetJeStadCachingService {
                 result.setMeasurementId(cachedMeasurement.getId());
 
                 measurementResultRepository.save(result);
-                cachedMeasurement.getMeasurements().add(result);
+                cachedMeasurement.getMeasurementResults().add(result);
             }
 
             if (measurement.getHumidity() != null) {
@@ -161,7 +156,7 @@ public class MeetJeStadCachingService {
                 result.setMeasurementId(cachedMeasurement.getId());
 
                 measurementResultRepository.save(result);
-                cachedMeasurement.getMeasurements().add(result);
+                cachedMeasurement.getMeasurementResults().add(result);
             }
 
             measurementRepository.save(cachedMeasurement);

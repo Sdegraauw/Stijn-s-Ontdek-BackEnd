@@ -65,12 +65,12 @@ public class MeasurementService {
 
     public List<DayMeasurementResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
         Station station = stationRepository.findByMeetjestadId((long) id);
-        List<Measurement> measurements = measurementRepository.findByStationAndMeasurements_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(station, MeasurementType.TEMPERATURE, endDate, startDate);
+        List<Measurement> measurements = measurementRepository.findByStationAndMeasurementResults_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(station, MeasurementType.TEMPERATURE, endDate, startDate);
 
         // Sort measurements into key value map where the key is the date
         HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
-            if (measurement.getMeasurements() != null){
+            if (measurement.getMeasurementResults() != null){
                 LocalDate date = LocalDate.ofInstant(measurement.getMeasurementTime(), ZoneId.systemDefault());
                 if (!dayMeasurements.containsKey(date)) {
                     dayMeasurements.put(date, new HashSet<>());
@@ -87,13 +87,13 @@ public class MeasurementService {
             float avgTemp = 0.0f;
             int count = 0;
             for (Measurement measurement1 : measurement.getValue()) {
-                if (measurement1.getMeasurements().isEmpty())
+                if (measurement1.getMeasurementResults().isEmpty())
                     continue;
 
-                if (measurement1.getMeasurements().size() > 1)
+                if (measurement1.getMeasurementResults().size() > 1)
                     LOG.error("THIS SHOULD NOT BE POSSIBLE!");
 
-                MeasurementResult measurementResult = measurement1.getMeasurements().get(0);
+                MeasurementResult measurementResult = measurement1.getMeasurementResults().get(0);
                 float value = measurementResult.getValue();
 
                 if (value > maxTemp)
@@ -134,10 +134,10 @@ public class MeasurementService {
         dto.setLongitude(entity.getLocation().getLongitude());
         dto.setLatitude(entity.getLocation().getLatitude());
 
-        Optional<MeasurementResult> optTemp = entity.getMeasurements().stream().filter(measurement -> MeasurementType.TEMPERATURE.equals(measurement.getMeasurementType())).findAny();
+        Optional<MeasurementResult> optTemp = entity.getMeasurementResults().stream().filter(measurement -> MeasurementType.TEMPERATURE.equals(measurement.getMeasurementType())).findAny();
         optTemp.ifPresent(measurementResult -> dto.setTemperature(measurementResult.getValue()));
 
-        Optional<MeasurementResult> optHum = entity.getMeasurements().stream().filter(measurement -> MeasurementType.HUMIDITY.equals(measurement.getMeasurementType())).findAny();
+        Optional<MeasurementResult> optHum = entity.getMeasurementResults().stream().filter(measurement -> MeasurementType.HUMIDITY.equals(measurement.getMeasurementType())).findAny();
         optHum.ifPresent(measurementResult -> dto.setHumidity(measurementResult.getValue()));
 
         DateTimeFormatter formatter = DateTimeFormatter
