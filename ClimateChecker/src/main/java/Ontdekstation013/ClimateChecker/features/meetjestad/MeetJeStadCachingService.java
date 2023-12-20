@@ -36,7 +36,7 @@ public class MeetJeStadCachingService {
 
     // TODO: Daadwerkelijk schedulen, zie cron hieronder
     //@Scheduled(cron = "0 0-59/1 * * * *")
-    @Scheduled(initialDelay = 3000, fixedDelay = 600000000)
+    //@Scheduled(initialDelay = 3000, fixedDelay = 600000000)
     public void UpdateCache() {
         LOG.info("Running UpdateCache");
 

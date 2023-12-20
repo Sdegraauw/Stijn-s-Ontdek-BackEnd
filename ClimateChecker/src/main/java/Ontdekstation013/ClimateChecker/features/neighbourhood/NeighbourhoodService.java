@@ -37,13 +37,6 @@ public class NeighbourhoodService {
     private List<NeighbourhoodDTO> getNeighbourhoodsAverageTemp(List<Neighbourhood> neighbourhoods, List<Measurement> measurements){
         List<NeighbourhoodDTO> neighbourhoodDTOS = new ArrayList<>();
 
-        int minuteMargin = meetJeStadService.getMinuteLimit();
-
-        Instant startDate = Instant.now().minus(Duration.ofMinutes(minuteMargin));
-        Instant endDate = Instant.now().plus(Duration.ofMinutes(minuteMargin));
-
-        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
-
         for (Neighbourhood neighbourhood : neighbourhoods) {
             NeighbourhoodDTO dto = new NeighbourhoodDTO();
 
