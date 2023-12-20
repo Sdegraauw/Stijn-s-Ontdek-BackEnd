@@ -5,7 +5,6 @@ import Ontdekstation013.ClimateChecker.features.measurement.MeasurementRepositor
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementResult;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementType;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
-import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import Ontdekstation013.ClimateChecker.features.station.Station;
@@ -16,8 +15,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import org.slf4j.Logger;
@@ -80,7 +77,7 @@ public class NeighbourhoodService {
         Instant startDate = Instant.now().minus(Duration.ofMinutes(minuteMargin));
         Instant endDate = Instant.now().plus(Duration.ofMinutes(minuteMargin));
 
-        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
+        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(endDate, startDate);
 
         return getNeighbourhoodsAverageTemp(neighbourhoods, measurements);
     }
@@ -94,7 +91,7 @@ public class NeighbourhoodService {
         Instant startDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         Instant endDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
 
-        List<Measurement> allMeasurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
+        List<Measurement> allMeasurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(endDate, startDate);
 
         return getNeighbourhoodsAverageTemp(neighbourhoods, allMeasurements);
     }
@@ -110,7 +107,7 @@ public class NeighbourhoodService {
         // Get all measurements from 1 day to filter out stations that are irrelevant
         startDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
 
-        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
+        List<Measurement> measurements = measurementRepository.findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(endDate, startDate);
 
         // Get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
@@ -124,7 +121,7 @@ public class NeighbourhoodService {
         }
 
         // Get all measurements within timeframe from these stations
-        measurements = measurementRepository.findAllByStationInAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(stations, startDate, endDate);
+        measurements = measurementRepository.findAllByStationInAndMeasurementTimeBeforeAndMeasurementTimeAfter(stations, endDate, startDate);
 
         // Get the daily average
         // TODO: Fix this after data caching

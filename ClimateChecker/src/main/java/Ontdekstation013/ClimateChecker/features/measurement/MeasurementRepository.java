@@ -12,16 +12,16 @@ public interface MeasurementRepository extends JpaRepository<Measurement, Long> 
     Measurement findTopByOrderByIdDesc();
 
     // Get all measurements between timeframe
-    List<Measurement> findAllByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(Instant startTime, Instant endTime);
+    List<Measurement> findAllByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(Instant endDate, Instant startDate);
 
     // Get all unique measurements between timeframe
-    List<Measurement> findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(Instant startTime, Instant endTime);
+    List<Measurement> findDistinctByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(Instant endDate, Instant startDate);
 
     // Get measurements by station between timeframe
-    List<Measurement> findByStationAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(Station station, Instant startTime, Instant endTime);
+    List<Measurement> findByStationAndMeasurementTimeBeforeAndMeasurementTimeAfter(Station station, Instant endDate, Instant startDate);
 
-    List<Measurement> findAllByStationInAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(List<Station> stations, Instant startTime, Instant endTime);
+    List<Measurement> findAllByStationInAndMeasurementTimeBeforeAndMeasurementTimeAfter(List<Station> stations, Instant endDate, Instant startDate);
 
     // Get measurements by station and measurement type between timeframe
-    List<Measurement> findByStationAndMeasurements_MeasurementTypeAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(Station station, MeasurementType type, Instant measurementTime, Instant measurementTime2);
+    List<Measurement> findByStationAndMeasurements_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(Station station, MeasurementType type, Instant endDate, Instant startDate);
 }

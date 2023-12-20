@@ -31,7 +31,7 @@ public class MeasurementService {
         Instant startDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         Instant endDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
 
-        List<Measurement> allMeasurements = measurementRepository.findAllByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(startDate, endDate);
+        List<Measurement> allMeasurements = measurementRepository.findAllByMeasurementTimeBeforeAndMeasurementTimeAfterOrderByMeasurementTimeDesc(endDate, startDate);
 
         // select closest measurements to datetime
         Map<Long, Measurement> measurementHashMap = new HashMap<>();
@@ -56,7 +56,7 @@ public class MeasurementService {
     public List<MeasurementDTO> getMeasurements(int id, Instant startDate, Instant endDate) {
         Station station = stationRepository.findByMeetjestadId((long) id);
         List<Measurement> measurements = measurementRepository
-                .findByStationAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(station, startDate, endDate);
+                .findByStationAndMeasurementTimeBeforeAndMeasurementTimeAfter(station, endDate, startDate);
 
         return measurements.stream()
                 .map(this::convertToDTO)
@@ -65,7 +65,7 @@ public class MeasurementService {
 
     public List<DayMeasurementResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
         Station station = stationRepository.findByMeetjestadId((long) id);
-        List<Measurement> measurements = measurementRepository.findByStationAndMeasurements_MeasurementTypeAndMeasurementTimeIsAfterAndMeasurementTimeIsBefore(station, MeasurementType.TEMPERATURE, startDate, endDate);
+        List<Measurement> measurements = measurementRepository.findByStationAndMeasurements_MeasurementTypeAndMeasurementTimeBeforeAndMeasurementTimeAfter(station, MeasurementType.TEMPERATURE, endDate, startDate);
 
         // Sort measurements into key value map where the key is the date
         HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
