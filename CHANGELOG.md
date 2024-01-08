@@ -16,6 +16,11 @@ De changelog voor deze repository is pas later in het project ingezet. Daardoor 
 ### Fixed
 - Grafieken vormen een plateau bij hoge temperatuur
 
+## [0.1.2] - 2023-12-13
+
+### Added
+- Dockerfile en docker-build script
+
 ## [0.1.1] - 2023-12-04
 
 ### Added
