@@ -8,6 +8,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Note
 De changelog voor deze repository is pas later in het project ingezet. Daardoor is de changelog niet representatief voor de periode voor 29 november.
 
+## [0.1.2] - 2024-01-08
+
+### Fixed
+- Grafieken vormen een plateau bij hoge temperatuur
+
 ## [0.1.1] - 2023-12-04
 
 ### Added
