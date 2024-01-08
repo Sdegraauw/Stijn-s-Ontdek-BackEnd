@@ -10,6 +10,9 @@ De changelog voor deze repository is pas later in het project ingezet. Daardoor 
 
 ## [0.1.2] - 2024-01-08
 
+### Added
+- Dockerfile toegevoegd
+
 ### Fixed
 - Grafieken vormen een plateau bij hoge temperatuur
 
