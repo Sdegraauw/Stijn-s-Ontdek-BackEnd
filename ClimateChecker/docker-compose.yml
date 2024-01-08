@@ -1,16 +1,18 @@
 version: "3.7"
 services:
   api_service:
-    build: .
     restart: always
+    build:
+      context: .
+      dockerfile: api.Dockerfile
     ports:
       - 8082:8082
+    depends_on:
+      - mariadb
     networks:
       - springapimysql-net
     environment:
       - spring.datasource.url=jdbc:mariadb://mariadb:3306/ontdekstation013?allowPublicKeyRetrieval=true
-    depends_on:
-      - mariadb
 
     volumes:
       - .m2:/root/.m2
@@ -27,5 +29,8 @@ services:
       MYSQL_USER: ontdekstation
       MYSQL_PASSWORD: ontdekstation013
       MYSQL_ROOT_PASSWORD: ontdekstation
+    volumes:
+      - "./dump-ontdekstation013.sql:/docker-entrypoint-initdb.d/1.sql"
+
 networks:
   springapimysql-net:
