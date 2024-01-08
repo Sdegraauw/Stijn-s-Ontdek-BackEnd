@@ -26,7 +26,6 @@ De changelog voor deze repository is pas later in het project ingezet. Daardoor 
 
 ### Fixed
 - Onrealistische metingen worden uitgefilterd (SCRUM-130)
-- 
 
 ## [0.1.0] - 2023-11-29
 
