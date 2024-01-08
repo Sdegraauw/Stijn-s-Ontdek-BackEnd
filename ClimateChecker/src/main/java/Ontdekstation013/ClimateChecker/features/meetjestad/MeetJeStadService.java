@@ -83,7 +83,8 @@ public class MeetJeStadService {
         for (MeetJeStadDTO dto : measurementsDto) {
             // Filter out measurements which are outside city bounds
             float[] point = {dto.getLatitude(), dto.getLongitude()};
-            if (!GpsTriangulation.pointInPolygon(cityLimits, point))
+            if (!GpsTriangulation.pointInPolygon(cityLimits, point) &&
+                (point[0] != 0.0f && point[1] != 0.0f))
                 continue;
 
             measurements.add(dto);

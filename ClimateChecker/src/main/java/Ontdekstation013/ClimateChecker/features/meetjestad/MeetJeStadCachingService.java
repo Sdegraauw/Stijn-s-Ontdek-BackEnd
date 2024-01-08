@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityManagerFactory;
@@ -25,7 +26,6 @@ public class MeetJeStadCachingService {
     private final MeasurementResultRepository measurementResultRepository;
     private final StationRepository stationRepository;
     private final LocationRepository locationRepository;
-    private final EntityManagerFactory entityManagerFactory;
 
     private final Logger LOG = LoggerFactory.getLogger(MeetJeStadCachingService.class);
 
@@ -119,6 +119,8 @@ public class MeetJeStadCachingService {
                 location = locationRepository.findTopByStationOrderByCreatedAtDesc(station);
 
             // If location has changed, update last known location
+
+            // TODO: If measurement.location = 0.0f -> set location to last location id
             if (measurement.getLatitude() != location.getLatitude() || measurement.getLongitude() != location.getLongitude()) {
                 Location newLocation = new Location();
                 newLocation.setLatitude(measurement.getLatitude());
