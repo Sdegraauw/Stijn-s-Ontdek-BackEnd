@@ -5,12 +5,10 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-import java.time.Duration;
 import java.time.Instant;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
@@ -18,9 +16,6 @@ import Ontdekstation013.ClimateChecker.features.measurement.endpoint.Measurement
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
-import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,7 +51,7 @@ public class MeasurementUnitTests {
         measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:48:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:16:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:20:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
-        when(meetJeStadService.getMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
+        when(meetJeStadService.getFilteredMeasurementsShortPeriod(any(MeetJeStadParameters.class))).thenReturn(measurementList);
 
         Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
 
@@ -96,12 +91,12 @@ public class MeasurementUnitTests {
         measurementList.add(new Measurement(1, Instant.parse("2000-01-03T12:48:00.00Z"), 51.55f, 5f, 16.0f, 50.0f));
         measurementList.add(new Measurement(1, Instant.parse("2000-01-03T12:16:00.00Z"), 51.55f, 5f, 16.0f, 50.0f));
         measurementList.add(new Measurement(1, Instant.parse("2000-01-03T12:20:00.00Z"), 51.55f, 5f, 28.0f, 50.0f));
-        when(meetJeStadService.getMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
+        when(meetJeStadService.getUnfilteredMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
 
         Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
 
         // Act
-        List<DayMeasurementResponse> responses = measurementService.getMeasurementsAverage(id, startDate, endDate);
+        List<DayMeasurementResponse> responses = measurementService.getHistoricalMeasurements(id, startDate, endDate);
 
         // Assert
         assertEquals(3, responses.size());

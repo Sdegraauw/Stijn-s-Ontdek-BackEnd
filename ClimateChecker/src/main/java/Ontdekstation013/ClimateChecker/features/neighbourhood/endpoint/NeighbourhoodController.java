@@ -34,7 +34,7 @@ public class NeighbourhoodController {
         LocalDateTime localDateTimeEnd = LocalDateTime.parse(endDate, formatter);
         Instant endInstant = localDateTimeEnd.atZone(ZoneId.systemDefault()).toInstant();
 
-        return neighbourhoodService.getNeighbourhoodData(id, startInstant, endInstant);
+        return neighbourhoodService.getHistoricalNeighbourhoodData(id, startInstant, endInstant);
     }
 
     @GetMapping("/history")

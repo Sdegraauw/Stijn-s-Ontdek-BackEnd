@@ -33,7 +33,7 @@ public class MeasurementService {
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
 
-        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
+        List<Measurement> allMeasurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
 
         // select closest measurements to datetime
         Map<Integer, Measurement> measurementHashMap = new HashMap<>();
@@ -70,18 +70,18 @@ public class MeasurementService {
         params.EndDate = endDate;
         params.StationIds.add(id);
 
-        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
+        List<Measurement> measurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
         return measurements.stream()
                 .map(this::convertToDTO)
                 .toList();
     }
 
-    public List<DayMeasurementResponse> getMeasurementsAverage(int id, Instant startDate, Instant endDate) {
+    public List<DayMeasurementResponse> getHistoricalMeasurements(int id, Instant startDate, Instant endDate) {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds.add(id);
-        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
+        List<Measurement> measurements = meetJeStadService.getUnfilteredMeasurements(params);
 
         HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {

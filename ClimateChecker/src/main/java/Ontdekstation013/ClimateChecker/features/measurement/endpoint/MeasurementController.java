@@ -88,6 +88,6 @@ public class MeasurementController {
             throw new InvalidArgumentException("Start date is after end date");
         }
 
-        return measurementService.getMeasurementsAverage(id, startInstant, endInstant);
+        return measurementService.getHistoricalMeasurements(id, startInstant, endInstant);
     }
 }
