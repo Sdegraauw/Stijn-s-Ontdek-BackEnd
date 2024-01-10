@@ -31,7 +31,7 @@ public class MeasurementService {
         int minuteMargin = meetJeStadService.getMinuteLimit();
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
-        params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
+        params.EndDate = dateTime;
 
         List<Measurement> allMeasurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
 

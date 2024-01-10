@@ -78,10 +78,26 @@ public class NeighbourhoodService {
         int minuteMargin = meetJeStadService.getMinuteLimit();
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
-        params.EndDate = dateTime.plus(Duration.ofMinutes(minuteMargin));
+        params.EndDate = dateTime;
         List<Measurement> allMeasurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
 
-        return getNeighbourhoodsAverageTemp(neighbourhoods, allMeasurements);
+        // select closest measurements to datetime
+        Map<Integer, Measurement> measurementHashMap = new HashMap<>();
+        for (Measurement measurement : allMeasurements) {
+            int id = measurement.getId();
+            if (!measurementHashMap.containsKey(id))
+                measurementHashMap.put(id, measurement);
+            else {
+                Duration existingDifference = Duration.between(dateTime, measurementHashMap.get(id).getTimestamp()).abs();
+                Duration newDifference = Duration.between(dateTime, measurement.getTimestamp()).abs();
+                if (existingDifference.toSeconds() > newDifference.toSeconds())
+                    measurementHashMap.put(id, measurement);
+            }
+        }
+
+        List<Measurement> closestMeasurements = new ArrayList<>(measurementHashMap.values());
+
+        return getNeighbourhoodsAverageTemp(neighbourhoods, closestMeasurements);
     }
 
     public List<DayMeasurementResponse> getHistoricalNeighbourhoodData(Long id, Instant startDate, Instant endDate) {
