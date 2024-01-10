@@ -78,7 +78,7 @@ public class NeighbourhoodUnitTest {
     }
 
     @Test
-    public void getNeighbourhoodData() {
+    public void getNeighbourhoodsLatest() {
         // Arrange
         when(neighbourhoodRepository.findAll()).thenReturn(neighbourhoodList);
         when(meetJeStadService.getLatestMeasurements()).thenReturn(measurementList);
@@ -101,7 +101,7 @@ public class NeighbourhoodUnitTest {
     }
 
     @Test
-    public void getNeighbourhoodDataAverage_Algorithm() {
+    public void getHistoricalNeighbourhoodData_Algorithm() {
         // Arrange
         Instant startDate = Instant.parse("2000-01-01T20:00:00.00Z");
         Instant endDate = Instant.parse("2000-01-10T20:00:00.00Z");

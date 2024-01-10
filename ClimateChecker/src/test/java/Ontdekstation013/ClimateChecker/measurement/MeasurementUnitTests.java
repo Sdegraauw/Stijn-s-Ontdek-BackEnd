@@ -42,15 +42,13 @@ public class MeasurementUnitTests {
     @Test
     public void getMeasurementsAtTime_ClosestToSpecifiedTime() {
         // Arrange
-        int minuteMargin = 36;
+        int minuteMargin = 35;
         when(meetJeStadService.getMinuteLimit()).thenReturn(minuteMargin);
 
-        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:00:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:12:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:24:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:48:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:08:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
+        measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:14:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:16:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
-        measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:20:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
         when(meetJeStadService.getFilteredMeasurementsShortPeriod(any(MeetJeStadParameters.class))).thenReturn(measurementList);
 
         Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
@@ -59,7 +57,7 @@ public class MeasurementUnitTests {
         List<MeasurementDTO> dtos = measurementService.getMeasurementsAtTime(datetime);
 
         // Assert
-        assertEquals(dtos.size(), 2);
+        assertEquals(2, dtos.size());
 
         //IMPORTANT NOTE:
         // I think this formatter in convertToDTO takes daylight savings time into account,
