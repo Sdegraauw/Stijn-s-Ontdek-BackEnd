@@ -1,13 +1,29 @@
 # MB Ontdekt
 
-### Projectbeschrijving
-MB Ontdekt is een samenwerking tussen Fontys, Bibliotheek Midden-Brabant en Ontdekstation013.
+### Introductie
 
-De bibliotheek midden-brabant en het ontdekstation013 maken meetstations, die in regio Tilburg worden opgehangen (Te zien op: Meet je stad!). Deze meetstations sturen vanuit de erg energiezuinige microprocessor een stukje data de lucht in die later weer opgevangen wordt door verschillende punten die deze signalen kunnen horen. Deze slaan dit op in een database die weergegeven wordt op de meetjestad website. De stakeholders willen voor de opdracht een website gemaakt zien die dezelfde gegevens kan weergeven op een meer gebruiksvriendelijke manier. Zo moet er gebruik gemaakt worden van een heatmap om zo in één overzicht duidelijk te krijgen wat de temperatuurverschillen zijn tussen verschillende meetpunten. Daarnaast is er naast de kleurtjesook meer data beschikbaar waar gebruikers ook toegang tot moeten hebben. Naast de kaart met alle meetpunten moeten gebruikers zich ook kunnen registreren en zo hun eigen meetstation kunnen aanmaken en vervolgens beheren. Hierbij rond dat het basisidee af van de applicatie.
+Ontdekstation013 is een organisatie in Tilburg waar jongeren hun talenten kunnen ontdekken op gebied van wetenschap en techniek. In samenwerking met Bibliotheek Midden-Brabant en de gemeente Tilburg hebben zij een project opgezet rondom het meten van luchtkwaliteit in de regio Tilburg. In de regio staan meerdere meetstations om verschillende waardes op te meten. Op het moment gaat dit over temperatuur en luchtvochtigheid. Waar dit project tot stand is gekomen is bij de wens om deze gegevens eenvoudig inzichtelijk te maken voor het publiek. Ontdekstation013 geeft workshops om meetstations te maken en de data hiervan wordt automatisch naar MeetJeStad gestuurd. Wij halen deze data vervolgens weer op om deze vervolgens op een nette manier online weer te geven.
 
-## Build
-Om het project op te starten heb je in principe geen datadump nodig, wel is dit natuurlijk nodig voor het kunnen gebruiken van alle features. Deze datadump is te vinden in [de documentatie repository](https://github.com/OntdekIT/Software-Documents).
+### Opstart instructies
 
-Verder hebben wij binnen onze groep met IntelliJ gewerkt waarin alles automatisch geregeld wordt. Als je het project handmatig wilt builden, kan je dit met de volgende commando's doen:
+**Backend**
 
-``mvn clean package``
+- Zorg dat je een mariadb database draaiende hebt en dat je hierbij de database dump geïmporteerd hebt. Deze is te vinden in de documentatie repository
+- Build en run de backend in IntelliJ
+  - Indien je dit handmatig doet: `mvn package --file pom.xml -DskipTests`
+
+**Frontend**
+- Download de dependencies van de frontend: `npm install`
+- Build de frontend: `npm start`
+
+### Gebruikte technologieën
+- Backend
+  - Java
+  - Springboot
+  - Lombok
+  - Gson
+- Frontend
+  - React.JS
+  - Cypress
+
+Daarnaast gebruiken wij een externe API van [MeetJeStad](https://meetjestad.net/data/) om de data op te halen en gebruiken wij als database een MariaDB database.
