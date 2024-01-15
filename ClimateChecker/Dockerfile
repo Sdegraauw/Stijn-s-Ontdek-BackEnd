@@ -1,6 +1,6 @@
 # ---- Base JDK ----
 FROM eclipse-temurin:17-jdk AS base
-ENV APP_PATH app/climatechecker/server
+ENV APP_PATH app/climatechecker/api-server
 EXPOSE 8082
 EXPOSE 3306
 

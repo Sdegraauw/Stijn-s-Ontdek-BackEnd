@@ -4,7 +4,7 @@ services:
     restart: always
     build:
       context: .
-      dockerfile: api.Dockerfile
+      dockerfile: Dockerfile
     ports:
       - 8082:8082
     depends_on:
