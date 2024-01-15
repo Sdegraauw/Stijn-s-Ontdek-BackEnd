@@ -1,7 +1,7 @@
 package Ontdekstation013.ClimateChecker.features.neighbourhood;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
+import Ontdekstation013.ClimateChecker.utility.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
@@ -63,15 +63,6 @@ public class NeighbourhoodService {
         return neighbourhoodDTOS;
     }
 
-    // Gets latest neighbourhood data with average temperature
-    public List<NeighbourhoodDTO> getNeighbourhoodsLatest() {
-        List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
-        List<Measurement> measurements = meetJeStadService.getLatestMeasurements();
-
-        return getNeighbourhoodsAverageTemp(neighbourhoods, measurements);
-    }
-
-    // Gets neighbourhood data at given time with average temperature
     public List<NeighbourhoodDTO> getNeighbourhoodsAtTime(Instant dateTime){
         List<Neighbourhood> neighbourhoods = neighbourhoodRepository.findAll();
 
@@ -178,7 +169,9 @@ public class NeighbourhoodService {
         return responseList;
     }
 
-    // Converting a list of coordinates to a two-dimensional float array
+    /**
+     * Converts list of {@link NeighbourhoodCoords} into format required for {@link NeighbourhoodDTO} and {@link GpsTriangulation#pointInPolygon(float[][], float[]) pointInPolygon}
+     */
     private float[][] convertToFloatArray(List<NeighbourhoodCoords> coordinates) {
         return coordinates.stream()
                 .map(coord -> new float[]{ coord.getLatitude(), coord.getLongitude() })

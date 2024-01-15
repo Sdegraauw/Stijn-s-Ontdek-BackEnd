@@ -6,9 +6,8 @@ import java.util.*;
 
 import java.util.List;
 
-import Ontdekstation013.ClimateChecker.exception.NotFoundException;
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
+import Ontdekstation013.ClimateChecker.utility.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +17,6 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class MeasurementService {
     private final MeetJeStadService meetJeStadService;
-
-    public List<MeasurementDTO> getLatestMeasurements() {
-        List<Measurement> uniqueLatestMeasurements = meetJeStadService.getLatestMeasurements();
-        return uniqueLatestMeasurements.stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
 
     public List<MeasurementDTO> getMeasurementsAtTime(Instant dateTime) {
         // get measurements within a certain range of the dateTime
@@ -51,27 +43,6 @@ public class MeasurementService {
 
         List<Measurement> closestMeasurements = new ArrayList<>(measurementHashMap.values());
         return closestMeasurements.stream()
-                .map(this::convertToDTO)
-                .toList();
-    }
-
-    public MeasurementDTO getLatestMeasurement(int id) {
-        Measurement latestMeasurement = meetJeStadService.getLatestMeasurement(id);
-
-        if (latestMeasurement == null)
-            throw new NotFoundException("Measurement with stationId " + id + "could not be found");
-        else
-            return convertToDTO(latestMeasurement);
-    }
-
-    public List<MeasurementDTO> getMeasurements(int id, Instant startDate, Instant endDate) {
-        MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = startDate;
-        params.EndDate = endDate;
-        params.StationIds.add(id);
-
-        List<Measurement> measurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
-        return measurements.stream()
                 .map(this::convertToDTO)
                 .toList();
     }
