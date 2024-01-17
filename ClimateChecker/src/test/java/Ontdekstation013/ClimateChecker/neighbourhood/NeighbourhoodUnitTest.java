@@ -1,11 +1,10 @@
 package Ontdekstation013.ClimateChecker.neighbourhood;
 
 import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
-import Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses.DayMeasurementResponse;
+import Ontdekstation013.ClimateChecker.utility.DayMeasurementResponse;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.*;
-import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -75,29 +74,6 @@ public class NeighbourhoodUnitTest {
         neighbourhoodList.add(niels);
         measurementList.add(new Measurement(3, Instant.now(), 51.5869f, 4.999210f, 23.0f, 50.0f));
         measurementList.add(new Measurement(4, Instant.now(), 51.5869f, 4.999210f, 22.0f, 50.0f));
-    }
-
-    @Test
-    public void getNeighbourhoodsLatest() {
-        // Arrange
-        when(neighbourhoodRepository.findAll()).thenReturn(neighbourhoodList);
-        when(meetJeStadService.getLatestMeasurements()).thenReturn(measurementList);
-
-        // Act
-        List<NeighbourhoodDTO> dtos = neighbourhoodService.getNeighbourhoodsLatest();
-
-        // Assert
-        assertEquals(dtos.size(), 2);
-
-        {
-            NeighbourhoodDTO dto = dtos.stream().filter(obj -> obj.getId() == 1).toList().get(0);
-            assertEquals(dto.getAvgTemp(), 22.0f);
-        }
-
-        {
-            NeighbourhoodDTO dto = dtos.stream().filter(obj -> obj.getId() == 2).toList().get(0);
-            assertEquals(dto.getAvgTemp(), 22.5f);
-        }
     }
 
     @Test

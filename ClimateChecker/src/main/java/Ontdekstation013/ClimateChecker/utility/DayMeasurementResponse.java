@@ -1,4 +1,4 @@
-package Ontdekstation013.ClimateChecker.features.measurement.endpoint.responses;
+package Ontdekstation013.ClimateChecker.utility;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
@@ -6,6 +6,9 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+/**
+ * Used in compiling data into single days
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
