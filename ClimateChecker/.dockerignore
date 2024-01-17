@@ -10,7 +10,7 @@ README.md
 HELP.md
 
 docker-build.sh
-api.Dockerfile
+Dockerfile
 
 mvnw
 mvnw.cmd

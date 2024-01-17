@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 set -e
-!/usr/bin/env bas
+
 IMAGE_TAG="ontdekstation-server"
 VERSION="${1-latest}"
 
