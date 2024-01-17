@@ -1,18 +1,16 @@
 package Ontdekstation013.ClimateChecker.utility;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 /**
  * Used in compiling data into single days
  */
-@Data
 @NoArgsConstructor
-@AllArgsConstructor
+@Getter
+@Setter
 public class DayMeasurementResponse {
+    @Setter
     @JsonProperty("timestamp")
     private String timestamp; // Format "dd-MM"
     @JsonProperty("avgTemp")
@@ -21,4 +19,5 @@ public class DayMeasurementResponse {
     private float minTemp;
     @JsonProperty("maxTemp")
     private float maxTemp;
+
 }
