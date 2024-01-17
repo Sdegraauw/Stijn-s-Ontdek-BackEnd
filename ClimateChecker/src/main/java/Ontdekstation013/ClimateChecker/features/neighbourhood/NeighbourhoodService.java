@@ -103,6 +103,9 @@ public class NeighbourhoodService {
                 stations.add(measurement.getId());
         }
 
+        if (stations.isEmpty())
+            return new ArrayList<DayMeasurementResponse>();
+
         // Get all measurements within timeframe from these stations
         params = new MeetJeStadParameters();
         params.StartDate = startDate;
