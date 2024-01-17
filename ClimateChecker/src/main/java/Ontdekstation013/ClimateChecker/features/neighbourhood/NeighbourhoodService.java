@@ -6,6 +6,7 @@ import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
+import Ontdekstation013.ClimateChecker.utility.MeasurementLogic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -70,23 +71,10 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime;
+
         List<Measurement> allMeasurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
 
-        // select closest measurements to datetime
-        Map<Integer, Measurement> measurementHashMap = new HashMap<>();
-        for (Measurement measurement : allMeasurements) {
-            int id = measurement.getId();
-            if (!measurementHashMap.containsKey(id))
-                measurementHashMap.put(id, measurement);
-            else {
-                Duration existingDifference = Duration.between(dateTime, measurementHashMap.get(id).getTimestamp()).abs();
-                Duration newDifference = Duration.between(dateTime, measurement.getTimestamp()).abs();
-                if (existingDifference.toSeconds() > newDifference.toSeconds())
-                    measurementHashMap.put(id, measurement);
-            }
-        }
-
-        List<Measurement> closestMeasurements = new ArrayList<>(measurementHashMap.values());
+        List<Measurement> closestMeasurements = MeasurementLogic.filterClosestMeasurements(allMeasurements, dateTime);
 
         return getNeighbourhoodsAverageTemp(neighbourhoods, closestMeasurements);
     }
