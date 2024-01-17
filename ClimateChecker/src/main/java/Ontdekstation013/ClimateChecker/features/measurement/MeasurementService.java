@@ -25,8 +25,8 @@ public class MeasurementService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime;
-
-        List<Measurement> allMeasurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
+        params.includeFaultyMeasurements = false;
+        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
 
         List<Measurement> closestMeasurements = MeasurementLogic.filterClosestMeasurements(allMeasurements, dateTime);
 
@@ -40,7 +40,8 @@ public class MeasurementService {
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds.add(id);
-        List<Measurement> measurements = meetJeStadService.getUnfilteredMeasurements(params);
+        params.includeFaultyMeasurements = true;
+        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
         HashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
         for (Measurement measurement : measurements) {
