@@ -6,6 +6,9 @@ import java.time.Duration;
 import java.time.Instant;
 import java.util.*;
 
+/**
+ * We use this class for measurement-related logic that is used in both MeasurementService and NeighbourhoodService
+ */
 public class MeasurementLogic {
     /**
      * Filters out measurements of the same station that are further away from the given timestamp
