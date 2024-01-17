@@ -91,7 +91,7 @@ public class NeighbourhoodService {
         //      First get all measurements from a 1-hour period to get "all" operational stationIds,
         //      the longer timespan you query, the more stations will be included, but the longer it will take
         MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
+        params.StartDate = endDate.minusSeconds(60 * 60);
         params.EndDate = endDate;
         params.includeFaultyMeasurements = true;
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
