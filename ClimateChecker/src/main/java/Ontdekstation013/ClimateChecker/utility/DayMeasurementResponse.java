@@ -12,6 +12,7 @@ import java.util.*;
  * Used in compiling data into single days
  */
 @NoArgsConstructor
+@Getter
 public class DayMeasurementResponse {
     @Setter
     @JsonProperty("timestamp")
