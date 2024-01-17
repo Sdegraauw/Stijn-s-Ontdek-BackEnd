@@ -107,14 +107,14 @@ public class NeighbourhoodUnitTest {
         when(neighbourhoodRepository.findById(1L)).thenReturn(Optional.of(stijn));
 
         ArgumentCaptor<MeetJeStadParameters> paramCaptor = ArgumentCaptor.forClass(MeetJeStadParameters.class);
-        when(meetJeStadService.getUnfilteredMeasurements(paramCaptor.capture()))
+        when(meetJeStadService.getMeasurements(paramCaptor.capture()))
                 .thenReturn(lastDayMeasurements, allMeasurements);
 
         // Act
         List<DayMeasurementResponse> dayMeasurements = neighbourhoodService.getHistoricalNeighbourhoodData(stijn.getId(), startDate, endDate);
 
         // Assert
-        verify(meetJeStadService, times(2)).getUnfilteredMeasurements(any());
+        verify(meetJeStadService, times(2)).getMeasurements(any());
         verify(neighbourhoodRepository).findById(1L);
 
         assertEquals(2, dayMeasurements.size());

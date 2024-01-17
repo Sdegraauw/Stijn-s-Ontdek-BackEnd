@@ -49,7 +49,7 @@ public class MeasurementUnitTests {
         measurementList.add(new Measurement(1, Instant.parse("2000-01-01T12:08:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:14:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
         measurementList.add(new Measurement(2, Instant.parse("2000-01-01T12:16:00.00Z"), 51.55f, 5f, 20.0f, 50.0f));
-        when(meetJeStadService.getFilteredMeasurementsShortPeriod(any(MeetJeStadParameters.class))).thenReturn(measurementList);
+        when(meetJeStadService.getMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
 
         Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
 
@@ -89,7 +89,7 @@ public class MeasurementUnitTests {
         measurementList.add(new Measurement(1, Instant.parse("2000-01-03T12:48:00.00Z"), 51.55f, 5f, 16.0f, 50.0f));
         measurementList.add(new Measurement(1, Instant.parse("2000-01-03T12:16:00.00Z"), 51.55f, 5f, 16.0f, 50.0f));
         measurementList.add(new Measurement(1, Instant.parse("2000-01-03T12:20:00.00Z"), 51.55f, 5f, 28.0f, 50.0f));
-        when(meetJeStadService.getUnfilteredMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
+        when(meetJeStadService.getMeasurements(any(MeetJeStadParameters.class))).thenReturn(measurementList);
 
         Instant datetime = Instant.parse("2000-01-01T12:16:00.00Z");
 

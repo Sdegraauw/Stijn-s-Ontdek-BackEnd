@@ -71,23 +71,10 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime;
-        List<Measurement> allMeasurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
+        params.includeFaultyMeasurements = false;
+        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
 
-        // select closest measurements to datetime
-        Map<Integer, Measurement> measurementHashMap = new HashMap<>();
-        for (Measurement measurement : allMeasurements) {
-            int id = measurement.getId();
-            if (!measurementHashMap.containsKey(id))
-                measurementHashMap.put(id, measurement);
-            else {
-                Duration existingDifference = Duration.between(dateTime, measurementHashMap.get(id).getTimestamp()).abs();
-                Duration newDifference = Duration.between(dateTime, measurement.getTimestamp()).abs();
-                if (existingDifference.toSeconds() > newDifference.toSeconds())
-                    measurementHashMap.put(id, measurement);
-            }
-        }
-
-        List<Measurement> closestMeasurements = new ArrayList<>(measurementHashMap.values());
+        List<Measurement> closestMeasurements = MeasurementLogic.filterClosestMeasurements(allMeasurements, dateTime);
 
         return getNeighbourhoodsAverageTemp(neighbourhoods, closestMeasurements);
     }
@@ -104,7 +91,8 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
         params.EndDate = endDate;
-        List<Measurement> measurements = meetJeStadService.getUnfilteredMeasurements(params);
+        params.includeFaultyMeasurements = true;
+        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
         // Get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
@@ -120,7 +108,8 @@ public class NeighbourhoodService {
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds = stations;
-        measurements = meetJeStadService.getUnfilteredMeasurements(params);
+        params.includeFaultyMeasurements = true;
+        measurements = meetJeStadService.getMeasurements(params);
 
         return MeasurementLogic.splitIntoDayMeasurements(measurements);
     }
