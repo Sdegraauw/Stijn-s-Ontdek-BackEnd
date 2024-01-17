@@ -8,6 +8,7 @@ import java.util.List;
 
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
 import Ontdekstation013.ClimateChecker.utility.DayMeasurementResponse;
+import Ontdekstation013.ClimateChecker.utility.MeasurementLogic;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import lombok.RequiredArgsConstructor;
@@ -54,7 +55,7 @@ public class MeasurementService {
         params.StationIds.add(id);
         List<Measurement> measurements = meetJeStadService.getUnfilteredMeasurements(params);
 
-        return DayMeasurementResponse.splitIntoDayMeasurements(measurements);
+        return MeasurementLogic.splitIntoDayMeasurements(measurements);
     }
 
     private MeasurementDTO convertToDTO(Measurement entity) {

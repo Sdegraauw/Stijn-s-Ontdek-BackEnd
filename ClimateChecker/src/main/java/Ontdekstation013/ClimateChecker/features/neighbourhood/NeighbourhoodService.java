@@ -6,6 +6,7 @@ import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadParameters;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import Ontdekstation013.ClimateChecker.features.neighbourhood.endpoint.NeighbourhoodDTO;
 import Ontdekstation013.ClimateChecker.utility.GpsTriangulation;
+import Ontdekstation013.ClimateChecker.utility.MeasurementLogic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -121,7 +122,7 @@ public class NeighbourhoodService {
         params.StationIds = stations;
         measurements = meetJeStadService.getUnfilteredMeasurements(params);
 
-        return DayMeasurementResponse.splitIntoDayMeasurements(measurements);
+        return MeasurementLogic.splitIntoDayMeasurements(measurements);
     }
 
     /**
