@@ -87,14 +87,15 @@ public class NeighbourhoodService {
         else
             return new ArrayList<>();
 
-        // Get all measurements from 1 day to filter out stations that are irrelevant
+        // This code is a patch to get the data from all stations in a neighbourhood, it can be improved with data caching
+        //      First get all measurements from a 1-hour period to get "all" operational stationIds,
+        //      the longer timespan you query, the more stations will be included, but the longer it will take
         MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
+        params.StartDate = endDate.minusSeconds(60 * 60);
         params.EndDate = endDate;
         params.includeFaultyMeasurements = true;
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
-
-        // Get all station id's within this neighbourhood
+        //      Then get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
         List<Integer> stations = new ArrayList<>();
         for (Measurement measurement : measurements) {
@@ -102,11 +103,11 @@ public class NeighbourhoodService {
             if (GpsTriangulation.pointInPolygon(neighbourhoodCoords, point) && !stations.contains(measurement.getId()))
                 stations.add(measurement.getId());
         }
-
+        //      If no stations in neighbourhood, no query has to be done
+        //      Removing this code causes MeetJeStadService to get the data of ALL stations (+/- 350.000 for 1 month)
         if (stations.isEmpty())
             return new ArrayList<DayMeasurementResponse>();
-
-        // Get all measurements within timeframe from these stations
+        //      Lastly, get all measurements within timeframe from these stations
         params = new MeetJeStadParameters();
         params.StartDate = startDate;
         params.EndDate = endDate;
