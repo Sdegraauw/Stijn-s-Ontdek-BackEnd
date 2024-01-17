@@ -70,7 +70,8 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime;
-        List<Measurement> allMeasurements = meetJeStadService.getFilteredMeasurementsShortPeriod(params);
+        params.includeFaultyMeasurements = false;
+        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
 
         // select closest measurements to datetime
         Map<Integer, Measurement> measurementHashMap = new HashMap<>();
@@ -103,7 +104,8 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = endDate.minusSeconds(60 * 60); // 1 day subtraction
         params.EndDate = endDate;
-        List<Measurement> measurements = meetJeStadService.getUnfilteredMeasurements(params);
+        params.includeFaultyMeasurements = true;
+        List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
         // Get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
@@ -119,7 +121,8 @@ public class NeighbourhoodService {
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds = stations;
-        measurements = meetJeStadService.getUnfilteredMeasurements(params);
+        params.includeFaultyMeasurements = true;
+        measurements = meetJeStadService.getMeasurements(params);
 
         // Get the daily average
         HashMap<LocalDate, List<Measurement>> dayMeasurements = new LinkedHashMap<>();
