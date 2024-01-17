@@ -1,6 +1,7 @@
 package Ontdekstation013.ClimateChecker.utility;
 
 import java.time.LocalDate;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,30 +19,44 @@ import Ontdekstation013.ClimateChecker.features.measurement.Measurement;
  * We use this class for measurement-related logic that is used in both MeasurementService and NeighbourhoodService
  */
 public class MeasurementLogic {
-  
-    public static List<DayMeasurementResponse> splitIntoDayMeasurements(Collection<Measurement> measurements){
-        LinkedHashMap<LocalDate, Set<Measurement>> dayMeasurements = Measurement.splitIntoDays(measurements);
 
+    public static List<DayMeasurementResponse> splitIntoDayMeasurements(Collection<Measurement> measurements) {
+        // split measurements into days
+        LinkedHashMap<LocalDate, Set<Measurement>> dayMeasurements = new LinkedHashMap<>();
+        for (Measurement measurement : measurements) {
+            if (measurement.getTemperature() != null) {
+                LocalDate date = LocalDate.ofInstant(measurement.getTimestamp(), ZoneId.systemDefault());
+                if (!dayMeasurements.containsKey(date)) {
+                    dayMeasurements.put(date, new HashSet<>());
+                }
+
+                dayMeasurements.get(date).add(measurement);
+            }
+        }
+
+        // process into DayMeasurementResponses
         DateTimeFormatter pattern = DateTimeFormatter.ofPattern("dd-MM");
         List<DayMeasurementResponse> responseList = new ArrayList<>();
         for (Map.Entry<LocalDate, Set<Measurement>> entry : dayMeasurements.entrySet()) {
             DayMeasurementResponse response = new DayMeasurementResponse();
+
             response.setTimestamp(entry.getKey().format(pattern));
             response.setAvgTemp((float) entry.getValue()
-                                .stream()
-                                .mapToDouble(Measurement::getTemperature)
-                                .average()
-                                .orElse(Double.NaN));
+                    .stream()
+                    .mapToDouble(Measurement::getTemperature)
+                    .average()
+                    .orElse(Double.NaN));
             response.setMinTemp(entry.getValue()
-                                .stream()
-                                .map(Measurement::getTemperature)
-                                .min(Float::compare)
-                                .orElse(Float.NaN));
+                    .stream()
+                    .map(Measurement::getTemperature)
+                    .min(Float::compare)
+                    .orElse(Float.NaN));
             response.setMaxTemp(entry.getValue()
-                                .stream()
-                                .map(Measurement::getTemperature)
-                                .max(Float::compare)
-                                .orElse(Float.NaN));
+                    .stream()
+                    .map(Measurement::getTemperature)
+                    .max(Float::compare)
+                    .orElse(Float.NaN));
+
             responseList.add(response);
         }
 
