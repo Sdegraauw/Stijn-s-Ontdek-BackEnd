@@ -3,6 +3,7 @@ package Ontdekstation013.ClimateChecker.features.measurement;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import Ontdekstation013.ClimateChecker.features.measurement.endpoint.MeasurementDTO;
@@ -96,12 +97,21 @@ public class MeasurementService {
                 }
             }
         }
-        List<MeasurementDTO> measurementDTOS = measurements.stream()
-                .map(this::convertToDTO)
-                .toList();
-        measurementOverview.setMeasurements(measurementDTOS);
+        measurementOverview.setMeasurements(new ArrayList<>());
+        measurementOverview.setMaxTemp(Integer.MIN_VALUE);
+        measurementOverview.setMinTemp(Integer.MAX_VALUE);
+        for (Measurement measurement:measurements) {
+            if (measurement.getTemperature()!=null){
+                if (measurement.getTemperature()<measurementOverview.getMinTemp()){
+                    measurementOverview.setMinTemp(measurement.getTemperature());
+                }
+                if (measurement.getTemperature()>measurementOverview.getMaxTemp()){
+                    measurementOverview.setMaxTemp(measurement.getTemperature());
+                }
+            }
+            measurementOverview.measurements.add(convertToDTO(measurement));
+        }
 
         return measurementOverview;
     }
 }
-

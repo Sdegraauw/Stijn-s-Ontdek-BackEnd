@@ -16,5 +16,5 @@ public class MeasurementOverview {
     @JsonProperty("minTemp")
     private float minTemp;
     @JsonProperty("measurements")
-    private List<MeasurementDTO> measurements;
+    public List<MeasurementDTO> measurements;
 }
