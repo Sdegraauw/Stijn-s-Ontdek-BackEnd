@@ -71,7 +71,6 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime;
-        params.includeFaultyMeasurements = false;
         List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
 
         List<Measurement> closestMeasurements = MeasurementLogic.filterClosestMeasurements(allMeasurements, dateTime);
@@ -93,7 +92,7 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = endDate.minusSeconds(60 * 60);
         params.EndDate = endDate;
-        params.includeFaultyMeasurements = true;
+        //TODO alternative to => params.includeFaultyMeasurements = true;
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
         //      Then get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
@@ -112,7 +111,7 @@ public class NeighbourhoodService {
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds = stations;
-        params.includeFaultyMeasurements = true;
+        //TODO alternative to => params.includeFaultyMeasurements = true;
         measurements = meetJeStadService.getMeasurements(params);
 
         return MeasurementLogic.splitIntoDayMeasurements(measurements);

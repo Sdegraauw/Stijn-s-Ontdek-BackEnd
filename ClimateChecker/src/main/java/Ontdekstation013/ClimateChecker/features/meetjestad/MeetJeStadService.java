@@ -97,46 +97,6 @@ public class MeetJeStadService {
             measurements.add(measurement);
         }
 
-        if (params.includeFaultyMeasurements)
-            return measurements;
-        else
-            return IncorrectValueFilter(measurements);
-    }
-
-    public List<Measurement> IncorrectValueFilter(List<Measurement> measurements) {
-        int differenceFromAverageDivider = 2;
-        int minimumDistanceAllowed = 3;
-        float total = 0;
-        float min = Integer.MAX_VALUE;
-
-        for(Measurement measurement:measurements) {
-            if (measurement.getTemperature()!= null){
-                total += measurement.getTemperature();
-                if (measurement.getTemperature()<min){
-                    min = measurement.getTemperature();
-                }
-            }
-        }
-        float adjustmentValue = Math.abs(min);
-        float adjustedTotal = total + measurements.size()*adjustmentValue;
-        float adjustedAverage = adjustedTotal/measurements.size();
-        float allowedSpread = adjustedAverage/differenceFromAverageDivider;
-        if (allowedSpread < minimumDistanceAllowed){
-            allowedSpread = minimumDistanceAllowed;
-        }
-        float average = total/measurements.size();
-
-        for (Measurement measurement:measurements) {
-            if (measurement.getHumidity()!= null && (measurement.getHumidity()<0 || measurement.getHumidity()>100)){
-                measurement.setHumidity(null);
-            }
-            if (measurement.getTemperature() != null){
-                float absoluteDifferenceFromAverage = Math.abs(measurement.getTemperature()-average);
-                if (absoluteDifferenceFromAverage > allowedSpread){
-                    measurement.setTemperature(null);
-                }
-            }
-        }
         return measurements;
     }
 }

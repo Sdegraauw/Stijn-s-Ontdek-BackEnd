@@ -8,6 +8,7 @@ import java.time.format.DateTimeFormatter;
 
 import Ontdekstation013.ClimateChecker.exception.InvalidArgumentException;
 import Ontdekstation013.ClimateChecker.features.measurement.MeasurementService;
+import Ontdekstation013.ClimateChecker.features.measurement.response.MeasurementOverview;
 import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -35,11 +36,11 @@ public class MeasurementController {
      * @param timestamp - ISO 8601 format
      */
     @GetMapping("/history")
-    public List<MeasurementDTO> getMeasurementsAtTime(
+    public MeasurementOverview getMeasurementsAtTime(
             @RequestParam(value = "timestamp") String timestamp) {
         try {
             Instant utcDateTime = Instant.parse(timestamp);
-            List<MeasurementDTO> measurements = measurementService.getMeasurementsAtTime(utcDateTime);
+            MeasurementOverview measurements = measurementService.getMeasurementsAtTime(utcDateTime);
             return measurements;
         } catch (DateTimeParseException e) {
             throw new InvalidArgumentException("Timestamp must be in ISO 8601 format");
