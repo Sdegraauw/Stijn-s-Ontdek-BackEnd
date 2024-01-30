@@ -15,6 +15,8 @@ import Ontdekstation013.ClimateChecker.features.meetjestad.MeetJeStadService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static Ontdekstation013.ClimateChecker.utility.MeasurementLogic.IncorrectValueFilter;
+
 @Service
 @RequiredArgsConstructor
 public class MeasurementService {
@@ -30,7 +32,7 @@ public class MeasurementService {
 
         List<Measurement> closestMeasurements = MeasurementLogic.filterClosestMeasurements(allMeasurements, dateTime);
 
-        return IncorrectValueFilter(closestMeasurements);
+        return IncorrectValueFilterO(closestMeasurements);
     }
 
     public List<DayMeasurementResponse> getHistoricalMeasurements(int id, Instant startDate, Instant endDate) {
@@ -58,45 +60,10 @@ public class MeasurementService {
 
         return dto;
     }
-    private MeasurementOverview IncorrectValueFilter(List<Measurement> measurements) {
+    private MeasurementOverview IncorrectValueFilterO(List<Measurement> measurements) {
+        IncorrectValueFilter(measurements);
+
         MeasurementOverview measurementOverview = new MeasurementOverview();
-        int differenceFromAverageDivider = 2;
-        int minimumDistanceAllowed = 3;
-        float total = 0;
-        measurementOverview.setMaxTemp(Integer.MIN_VALUE);
-        measurementOverview.setMinTemp(Integer.MAX_VALUE);
-
-        for(Measurement measurement:measurements) {
-            if (measurement.getTemperature()!= null){
-                total += measurement.getTemperature();
-                if(measurement.getTemperature()>measurementOverview.getMaxTemp()){
-                    measurementOverview.setMaxTemp(measurement.getTemperature());
-                }
-                if (measurement.getTemperature()<measurementOverview.getMinTemp()){
-                    measurementOverview.setMinTemp(measurement.getTemperature());
-                }
-            }
-        }
-        float adjustmentValue = Math.abs(measurementOverview.getMinTemp());
-        float adjustedTotal = total + measurements.size()*adjustmentValue;
-        float adjustedAverage = adjustedTotal/measurements.size();
-        float allowedSpread = adjustedAverage/differenceFromAverageDivider;
-        if (allowedSpread < minimumDistanceAllowed){
-            allowedSpread = minimumDistanceAllowed;
-        }
-        float average = total/measurements.size();
-
-        for (Measurement measurement:measurements) {
-            if (measurement.getHumidity()!= null && (measurement.getHumidity()<0 || measurement.getHumidity()>100)){
-                measurement.setHumidity(null);
-            }
-            if (measurement.getTemperature() != null){
-                float absoluteDifferenceFromAverage = Math.abs(measurement.getTemperature()-average);
-                if (absoluteDifferenceFromAverage > allowedSpread){
-                    measurement.setTemperature(null);
-                }
-            }
-        }
         measurementOverview.setMeasurements(new ArrayList<>());
         measurementOverview.setMaxTemp(Integer.MIN_VALUE);
         measurementOverview.setMinTemp(Integer.MAX_VALUE);

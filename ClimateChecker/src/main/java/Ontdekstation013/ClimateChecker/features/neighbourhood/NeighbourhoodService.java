@@ -10,6 +10,8 @@ import Ontdekstation013.ClimateChecker.utility.MeasurementLogic;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import static Ontdekstation013.ClimateChecker.utility.MeasurementLogic.IncorrectValueFilter;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.LocalDate;
@@ -71,7 +73,7 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = dateTime.minus(Duration.ofMinutes(minuteMargin));
         params.EndDate = dateTime;
-        List<Measurement> allMeasurements = meetJeStadService.getMeasurements(params);
+        List<Measurement> allMeasurements = IncorrectValueFilter(meetJeStadService.getMeasurements(params));
 
         List<Measurement> closestMeasurements = MeasurementLogic.filterClosestMeasurements(allMeasurements, dateTime);
 
@@ -90,9 +92,8 @@ public class NeighbourhoodService {
         //      First get all measurements from a 1-hour period to get "all" operational stationIds,
         //      the longer timespan you query, the more stations will be included, but the longer it will take
         MeetJeStadParameters params = new MeetJeStadParameters();
-        params.StartDate = endDate.minusSeconds(60 * 60);
+        params.StartDate = endDate.minusSeconds(60 * 60 * 6);
         params.EndDate = endDate;
-        //TODO alternative to => params.includeFaultyMeasurements = true;
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
         //      Then get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);
@@ -111,7 +112,6 @@ public class NeighbourhoodService {
         params.StartDate = startDate;
         params.EndDate = endDate;
         params.StationIds = stations;
-        //TODO alternative to => params.includeFaultyMeasurements = true;
         measurements = meetJeStadService.getMeasurements(params);
 
         return MeasurementLogic.splitIntoDayMeasurements(measurements);

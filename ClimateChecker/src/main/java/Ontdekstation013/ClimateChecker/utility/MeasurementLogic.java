@@ -31,6 +31,7 @@ public class MeasurementLogic {
                 }
 
                 dayMeasurements.get(date).add(measurement);
+                IncorrectValueFilter(dayMeasurements.get(date).stream().toList());
             }
         }
 
@@ -43,17 +44,20 @@ public class MeasurementLogic {
             response.setTimestamp(entry.getKey().format(pattern));
             response.setAvgTemp((float) entry.getValue()
                     .stream()
+                    .filter(m -> m.getTemperature() != null)
                     .mapToDouble(Measurement::getTemperature)
                     .average()
                     .orElse(Double.NaN));
             response.setMinTemp(entry.getValue()
                     .stream()
                     .map(Measurement::getTemperature)
+                    .filter(Objects::nonNull)
                     .min(Float::compare)
                     .orElse(Float.NaN));
             response.setMaxTemp(entry.getValue()
                     .stream()
                     .map(Measurement::getTemperature)
+                    .filter(Objects::nonNull)
                     .max(Float::compare)
                     .orElse(Float.NaN));
 
@@ -82,5 +86,46 @@ public class MeasurementLogic {
             }
         }
         return new ArrayList<>(measurementHashMap.values());
+    }
+    public static List<Measurement> IncorrectValueFilter(List<Measurement> measurements) {
+        int differenceFromAverageDivider = 2;
+        int minimumDistanceAllowed = 3;
+        float total = 0;
+        float max = Integer.MIN_VALUE;
+        float min = Integer.MAX_VALUE;
+
+        for(Measurement measurement:measurements) {
+            if (measurement.getTemperature()!= null){
+                total += measurement.getTemperature();
+                if(measurement.getTemperature()>max){
+                    max = measurement.getTemperature();
+                }
+                if (measurement.getTemperature()<min){
+                    min = measurement.getTemperature();
+                }
+            }
+        }
+        float adjustmentValue = Math.abs(min);
+        float adjustedTotal = total + measurements.size()*adjustmentValue;
+        float adjustedAverage = adjustedTotal/measurements.size();
+        float allowedSpread = adjustedAverage/differenceFromAverageDivider;
+        if (allowedSpread < minimumDistanceAllowed){
+            allowedSpread = minimumDistanceAllowed;
+        }
+        float average = total/measurements.size();
+
+        for (Measurement measurement:measurements) {
+            if (measurement.getHumidity()!= null && (measurement.getHumidity()<0 || measurement.getHumidity()>100)){
+                measurement.setHumidity(null);
+            }
+            if (measurement.getTemperature() != null){
+                float absoluteDifferenceFromAverage = Math.abs(measurement.getTemperature()-average);
+                if (absoluteDifferenceFromAverage > allowedSpread){
+                    measurement.setTemperature(null);
+                }
+            }
+        }
+
+        return measurements;
     }
 }
