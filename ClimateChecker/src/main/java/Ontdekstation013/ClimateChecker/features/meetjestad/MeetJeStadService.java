@@ -81,7 +81,7 @@ public class MeetJeStadService {
         // Convert MeasurementDTO to Measurement
         for (MeasurementDTO dto : measurementsDto) {
             if (dto.getLongitude() == null || dto.getLatitude() == null){
-                if (!params.locationCorrection){
+                if (params.locationCorrection){
                     badLocations.add(dto.getId());
                 }
                 continue;
@@ -103,7 +103,7 @@ public class MeetJeStadService {
 
             measurements.add(measurement);
         }
-        if (!params.locationCorrection){
+        if (params.locationCorrection){
             measurements.addAll(correctLocation(badLocations,params));
         }
 
@@ -113,7 +113,7 @@ public class MeetJeStadService {
         MeetJeStadParameters subParams = new MeetJeStadParameters();
         subParams.StartDate = params.StartDate;
         subParams.EndDate = params.StartDate.minusSeconds(60*60*24);
-        subParams.locationCorrection = true;
+        subParams.locationCorrection = false;
         subParams.StationIds.addAll(ids);
 
         List<Measurement> tempMeasurements = this.getMeasurements(subParams);

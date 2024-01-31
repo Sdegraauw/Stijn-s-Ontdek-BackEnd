@@ -37,21 +37,22 @@ public class NeighbourhoodService {
             dto.setCoordinates(convertToFloatArray(neighbourhood.coordinates));
 
             // Get all measurements within this neighbourhood
-            List<Measurement> tempMeasurements = new ArrayList<>();
-            for (Measurement measurement : measurements) {
-                float[] point = { measurement.getLatitude(), measurement.getLongitude() };
-                if (GpsTriangulation.pointInPolygon(dto.getCoordinates(), point)) {
-                    tempMeasurements.add(measurement);
-                }
-            }
+            List<Measurement> tempMeasurements = new ArrayList<>(measurements.stream()
+                    .filter(measurement -> GpsTriangulation.pointInPolygon(dto.getCoordinates(), new float[]{measurement.getLatitude(), measurement.getLongitude()}))
+                    .toList());
 
             // Calculate average temperature of the measurements in this neighbourhood
-            float totalTemp = 0.0f;
             Double average = tempMeasurements.stream()
                     .filter(m->m.getTemperature()!=null)
                     .mapToDouble(Measurement::getTemperature)
                     .average().orElse(Double.NaN);
-            Float averageF = average.floatValue();
+            Float averageF;
+            if (average!=null){
+                averageF = average.floatValue();
+            }
+            else {
+                averageF = null;
+            }
 
             dto.setAvgTemp(averageF);
 
@@ -88,6 +89,7 @@ public class NeighbourhoodService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = endDate.minusSeconds(60 * 60 * 6);
         params.EndDate = endDate;
+        params.locationCorrection = false;
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
         //      Then get all station id's within this neighbourhood
         float[][] neighbourhoodCoords = convertToFloatArray(neighbourhood.coordinates);

@@ -39,6 +39,7 @@ public class MeasurementService {
         MeetJeStadParameters params = new MeetJeStadParameters();
         params.StartDate = startDate;
         params.EndDate = endDate;
+        params.locationCorrection = false;
         params.StationIds.add(id);
         List<Measurement> measurements = meetJeStadService.getMeasurements(params);
 
