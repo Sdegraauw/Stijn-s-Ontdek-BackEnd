@@ -14,9 +14,6 @@ import static Ontdekstation013.ClimateChecker.utility.MeasurementLogic.Incorrect
 
 import java.time.Duration;
 import java.time.Instant;
-import java.time.LocalDate;
-import java.time.ZoneId;
-import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 @Service
@@ -50,16 +47,13 @@ public class NeighbourhoodService {
 
             // Calculate average temperature of the measurements in this neighbourhood
             float totalTemp = 0.0f;
-            int measurementCount = tempMeasurements.size();
-            for (Measurement measurement : tempMeasurements) {
-                if (measurement.getTemperature() != null) {
-                    totalTemp += measurement.getTemperature();
-                }
-                else {
-                    measurementCount--;
-                }
-            }
-            dto.setAvgTemp(totalTemp / measurementCount);
+            Double average = tempMeasurements.stream()
+                    .filter(m->m.getTemperature()!=null)
+                    .mapToDouble(Measurement::getTemperature)
+                    .average().orElse(Double.NaN);
+            Float averageF = average.floatValue();
+
+            dto.setAvgTemp(averageF);
 
             neighbourhoodDTOS.add(dto);
         }
