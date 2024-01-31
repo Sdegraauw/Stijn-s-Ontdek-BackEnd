@@ -1,7 +1,13 @@
 package Ontdekstation013.ClimateChecker.Mocks;
 
+<<<<<<< HEAD
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.repositories.UserRepository;
+=======
+import Ontdekstation013.ClimateChecker.features.user.User;
+import Ontdekstation013.ClimateChecker.features.user.UserRepository;
+
+>>>>>>> s3nj23
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

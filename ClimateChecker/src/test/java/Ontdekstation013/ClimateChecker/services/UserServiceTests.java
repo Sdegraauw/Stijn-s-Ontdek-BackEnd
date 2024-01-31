@@ -2,9 +2,20 @@ package Ontdekstation013.ClimateChecker.services;
 
 import Ontdekstation013.ClimateChecker.Mocks.MockTokenRepo;
 import Ontdekstation013.ClimateChecker.Mocks.MockUserRepo;
+<<<<<<< HEAD
 import Ontdekstation013.ClimateChecker.models.User;
 import Ontdekstation013.ClimateChecker.models.dto.*;
 import Ontdekstation013.ClimateChecker.services.converters.UserConverter;
+=======
+import Ontdekstation013.ClimateChecker.features.authentication.endpoint.registerDto;
+import Ontdekstation013.ClimateChecker.features.user.User;
+import Ontdekstation013.ClimateChecker.features.user.UserConverter;
+import Ontdekstation013.ClimateChecker.features.user.UserService;
+import Ontdekstation013.ClimateChecker.features.user.endpoint.editUserDto;
+import Ontdekstation013.ClimateChecker.features.user.endpoint.userDataDto;
+import Ontdekstation013.ClimateChecker.features.user.endpoint.userDto;
+
+>>>>>>> s3nj23
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
