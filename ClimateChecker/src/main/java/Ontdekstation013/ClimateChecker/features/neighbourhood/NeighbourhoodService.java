@@ -46,13 +46,7 @@ public class NeighbourhoodService {
                     .filter(m->m.getTemperature()!=null)
                     .mapToDouble(Measurement::getTemperature)
                     .average().orElse(Double.NaN);
-            Float averageF;
-            if (average!=null){
-                averageF = average.floatValue();
-            }
-            else {
-                averageF = null;
-            }
+            Float averageF = average.floatValue();
 
             dto.setAvgTemp(averageF);
 
