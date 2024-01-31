@@ -77,16 +77,12 @@ public class MeetJeStadService {
 
 
         List<Measurement> measurements = new ArrayList<>();
+        List<Integer> badLocations = new ArrayList<>();
         // Convert MeasurementDTO to Measurement
         for (MeasurementDTO dto : measurementsDto) {
             if (dto.getLongitude() == null || dto.getLatitude() == null){
                 if (!params.locationCorrection){
-                    MeetJeStadParameters subParams = new MeetJeStadParameters();
-                    subParams.StartDate = params.StartDate;
-                    subParams.EndDate = params.StartDate.minusSeconds(60*60*6);
-                    subParams.locationCorrection = true;
-                    subParams.StationIds.add(dto.getId());
-                    this.getMeasurements(subParams).stream().findFirst().ifPresent(m -> setCords(dto,m));
+                    badLocations.add(dto.getId());
                 }
                 continue;
             }
@@ -107,11 +103,27 @@ public class MeetJeStadService {
 
             measurements.add(measurement);
         }
+        if (!params.locationCorrection){
+            measurements.addAll(correctLocation(badLocations,params));
+        }
 
         return measurements;
     }
-    private void setCords (MeasurementDTO measurementDTO, Measurement measurement){
-        measurementDTO.setLatitude(measurement.getLatitude());
-        measurementDTO.setLongitude(measurement.getLongitude());
+    private List<Measurement> correctLocation(List<Integer> ids, MeetJeStadParameters params){
+        MeetJeStadParameters subParams = new MeetJeStadParameters();
+        subParams.StartDate = params.StartDate;
+        subParams.EndDate = params.StartDate.minusSeconds(60*60*24);
+        subParams.locationCorrection = true;
+        subParams.StationIds.addAll(ids);
+
+        List<Measurement> tempMeasurements = this.getMeasurements(subParams);
+        List<Measurement> correctMeasurements = new ArrayList<>();
+        for (int id: ids){
+            tempMeasurements.stream()
+                    .filter(m -> m.getId()==id)
+                    .findFirst()
+                    .ifPresent(correctMeasurements::add);
+        }
+        return correctMeasurements;
     }
 }
