@@ -18,9 +18,9 @@ public class MeasurementDTO {
     @JsonProperty("timestamp")
     private String timestamp;
     @JsonProperty("longitude")
-    private float longitude;
+    private Float longitude;
     @JsonProperty("latitude")
-    private float latitude;
+    private Float latitude;
     @JsonProperty("temperatuur")
     private Float temperature;
     @JsonProperty("luchtvochtigheid")

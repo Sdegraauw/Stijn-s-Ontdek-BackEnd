@@ -9,4 +9,5 @@ public class MeetJeStadParameters {
     public Instant EndDate;
     public List<Integer> StationIds = new ArrayList<>();
     public int Limit;
+    public boolean locationCorrection = false;
 }

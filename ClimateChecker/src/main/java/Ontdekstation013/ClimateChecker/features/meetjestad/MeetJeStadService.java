@@ -79,6 +79,17 @@ public class MeetJeStadService {
         List<Measurement> measurements = new ArrayList<>();
         // Convert MeasurementDTO to Measurement
         for (MeasurementDTO dto : measurementsDto) {
+            if (dto.getLongitude() == null || dto.getLatitude() == null){
+                if (!params.locationCorrection){
+                    MeetJeStadParameters subParams = new MeetJeStadParameters();
+                    subParams.StartDate = params.StartDate;
+                    subParams.EndDate = params.StartDate.minusSeconds(60*60*6);
+                    subParams.locationCorrection = true;
+                    subParams.StationIds.add(dto.getId());
+                    this.getMeasurements(subParams).stream().findFirst().ifPresent(m -> setCords(dto,m));
+                }
+                continue;
+            }
             // Filter out measurements which are outside city bounds
             float[] point = {dto.getLatitude(), dto.getLongitude()};
             if (!GpsTriangulation.pointInPolygon(cityLimits, point))
@@ -98,5 +109,9 @@ public class MeetJeStadService {
         }
 
         return measurements;
+    }
+    private void setCords (MeasurementDTO measurementDTO, Measurement measurement){
+        measurementDTO.setLatitude(measurement.getLatitude());
+        measurementDTO.setLongitude(measurement.getLongitude());
     }
 }
