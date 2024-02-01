@@ -94,7 +94,10 @@ public class MeetJeStadService {
                 point = new float[]{dto.getLatitude(), dto.getLongitude()};
             }catch (Exception e){
                 if (params.locationCorrection){
-                    corectionList.stream().filter(m -> m.getId()== dto.getId()).findFirst().ifPresent(m->correctLocation(dto,m));
+                    corectionList.stream()
+                            .filter(m -> m.getId()== dto.getId())
+                            .findFirst()
+                            .ifPresent(m->correctLocation(dto,m));
                 }
                 else {
                     continue;
