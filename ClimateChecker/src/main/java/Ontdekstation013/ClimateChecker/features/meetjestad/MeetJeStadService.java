@@ -77,17 +77,31 @@ public class MeetJeStadService {
 
 
         List<Measurement> measurements = new ArrayList<>();
-        List<Integer> badLocations = new ArrayList<>();
+        List<Measurement> corectionList = new ArrayList<>();
+
+        if (params.locationCorrection){
+            List<Integer> badLocations = new ArrayList<>();
+            measurementsDto.stream()
+                    .filter(m -> m.getLatitude() == null || m.getLongitude() == null)
+                    .forEach(m -> badLocations.add(m.getId()));
+            corectionList.addAll(correctLocation(badLocations,params));
+        }
+
         // Convert MeasurementDTO to Measurement
         for (MeasurementDTO dto : measurementsDto) {
-            if (dto.getLongitude() == null || dto.getLatitude() == null){
+            float[] point = new float[]{};
+            try {
+                point = new float[]{dto.getLatitude(), dto.getLongitude()};
+            }catch (Exception e){
                 if (params.locationCorrection){
-                    badLocations.add(dto.getId());
+                    corectionList.stream().filter(m -> m.getId()== dto.getId()).findFirst().ifPresent(m->correctLocation(dto,m));
                 }
-                continue;
+                else {
+                    continue;
+                }
             }
+            if (point.length != 2){continue;}
             // Filter out measurements which are outside city bounds
-            float[] point = {dto.getLatitude(), dto.getLongitude()};
             if (!GpsTriangulation.pointInPolygon(cityLimits, point))
                 continue;
 
@@ -102,9 +116,6 @@ public class MeetJeStadService {
             measurement.setTimestamp(Instant.from(temp));
 
             measurements.add(measurement);
-        }
-        if (params.locationCorrection){
-            measurements.addAll(correctLocation(badLocations,params));
         }
 
         return measurements;
@@ -125,5 +136,9 @@ public class MeetJeStadService {
                     .ifPresent(correctMeasurements::add);
         }
         return correctMeasurements;
+    }
+    private void correctLocation (MeasurementDTO toBeCorrected,Measurement toCorrectWith){
+        toBeCorrected.setLongitude(toCorrectWith.getLongitude());
+        toBeCorrected.setLatitude(toCorrectWith.getLatitude());
     }
 }
