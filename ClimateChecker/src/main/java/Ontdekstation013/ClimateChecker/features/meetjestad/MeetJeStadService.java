@@ -75,7 +75,6 @@ public class MeetJeStadService {
                 .ofPattern("yyyy-MM-dd HH:mm:ss")   // input pattern
                 .withZone(ZoneOffset.UTC);          // input timezone
 
-
         List<Measurement> measurements = new ArrayList<>();
         List<Measurement> corectionList = new ArrayList<>();
 
