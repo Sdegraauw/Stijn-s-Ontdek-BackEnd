@@ -104,8 +104,9 @@ public class MeetJeStadService {
             }
             if (point.length != 2){continue;}
             // Filter out measurements which are outside city bounds
-            if (!GpsTriangulation.pointInPolygon(cityLimits, point))
+            if (!GpsTriangulation.pointInPolygon(cityLimits, point)){
                 continue;
+            }
 
             Measurement measurement = new Measurement();
             measurement.setId(dto.getId());
@@ -124,8 +125,8 @@ public class MeetJeStadService {
     }
     private List<Measurement> correctLocation(List<Integer> ids, MeetJeStadParameters params){
         MeetJeStadParameters subParams = new MeetJeStadParameters();
-        subParams.StartDate = params.StartDate;
-        subParams.EndDate = params.StartDate.minusSeconds(60*60*24);
+        subParams.StartDate = params.StartDate.minusSeconds(60*60*24*7);
+        subParams.EndDate = params.StartDate;
         subParams.locationCorrection = false;
         subParams.StationIds.addAll(ids);
 
